@@ -12,16 +12,20 @@ body {
 
 /* NAV BAR */
 nav {
-    background-color: #212121;;
+    background-color: #212121;
+    ;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
     font-family: 'Montserrat', sans-serif;
 }
+
 .greeting {
     color: #ffffff;
 }
+
 .greetingTime {
-    color:  #afafaf;
+    color: #afafaf;
 }
+
 .hamburgerMenu {
     color: #aeaeae;
 }
@@ -44,42 +48,52 @@ nav {
     z-index: 1000;
     padding: 20px;
 }
+
 .closeBtn {
     position: absolute;
     right: 20px;
-    top: 20px;  /* This will align it with the top padding of the sidebar */
+    top: 20px;
+    /* This will align it with the top padding of the sidebar */
     font-size: 30px;
     background: none;
     border: none;
     color: #ffffff;
     cursor: pointer;
 }
+
 .links-section {
-    margin-top: 20px;  /* Adjust this value if needed to align with closeBtn */
+    margin-top: 20px;
+    /* Adjust this value if needed to align with closeBtn */
 }
+
 .sidebarLink {
     display: block;
     color: white;
     text-decoration: none;
     margin-bottom: 10px;
 }
+
 .sidebarLink:hover {
     color: rgb(157, 157, 157);
 }
+
 .sidebarTitle {
     color: white;
     text-decoration: underline;
     font-weight: 700;
 }
+
 .sidebarSubtitle {
     color: white;
     text-decoration: none;
     font-weight: 600;
 }
+
 .sidebarSchoolLink {
     color: white;
     text-decoration: none;
 }
+
 .sidebarSchoolLink:hover {
     color: rgb(157, 157, 157);
 }
@@ -96,20 +110,24 @@ nav {
     background-color: #212121;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
 }
+
 .class-name {
     font-weight: bold;
     color: #e3e3e3;
 }
+
 .time {
     font-size: 80%;
     float: right;
     font-weight: bold;
     color: #afafaf;
 }
+
 .teacher-name {
     font-size: 80%;
     color: #afafaf;
 }
+
 .color-dot {
     display: inline-block;
     width: 10px;
@@ -129,27 +147,33 @@ nav {
     padding: 10px;
     margin-bottom: 10px;
     background-color: #212121;
-    box-shadow:3px 3px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
     color: white;
 }
+
 .messages-container::-webkit-scrollbar-track {
     background: #2d2d2d;
 }
+
 .messages-container::-webkit-scrollbar-thumb {
     background: #555;
     border-radius: 5px;
 }
+
 .messages-container::-webkit-scrollbar-thumb:hover {
     background: #444;
 }
+
 .messages-container::-webkit-scrollbar {
     width: 10px;
 }
+
 @media (min-width: 768px) {
     .messages-container {
         height: 525px;
     }
 }
+
 @media (max-width: 767px) {
     .messages-container {
         height: auto;
@@ -170,12 +194,14 @@ nav {
     color: white;
     text-align: center;
 }
+
 .submitButton {
     color: #ffffff;
     background-color: #212121;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
     border: none;
 }
+
 .submitButton:hover {
     background-color: #2e2e2e;
     box-shadow: 3px 3px 10px rgba(48, 48, 48, 0.2);
@@ -191,6 +217,7 @@ nav {
 h4 {
     color: azure;
 }
+
 .pageSubtitleSub {
     color: #afafaf;
 }
@@ -213,40 +240,39 @@ h6 {
 .container-fluid {
     height: 100%;
 }
-
 .row.h-100 {
     height: 100%;
 }
-
-.col-3.h-100, .col-6.h-100 {
+.col-3.h-100,
+.col-6.h-100 {
     display: flex;
     flex-direction: column;
 }
-
 h3 {
     margin-bottom: 10px;
 }
-
-input, textarea {
-    margin-bottom: 20px;
-    padding: 8px 12px;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
-    text-align: center;
-}
-
-
-
 .modal-content {
     background-color: #1d1d1d;
 }
-
-
-
-
-
-
-
-
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+.form-signin .checkbox {
+    font-weight: 400;
+}
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+.form-signin .textInput {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-signin .passwordInput {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
