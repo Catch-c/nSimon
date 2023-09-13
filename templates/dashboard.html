@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <div class="container-fluid h-100 pt-5">
+        <span style="color: #ffffff; font-size: 185%;"><span style="color: #ffffff;" id="greeting">Hi</span>, {{
+            userInformation.name }}.
+            
+                <span style="color: #b1b1b1; font-size: 60%;" id="currentDate"></span>
+                <span style="color: #b1b1b1; font-size: 60%;" id="currentTime"></span>
+        </span>
+        <br>
+        <a href="https://simon.sfx.vic.edu.au" class="btn btn-outline-secondary" role="button" data-bs-toggle="button"
+            aria-pressed="true"><i class="bi bi-box-arrow-in-up-right"></i> Open SIMON</a>
+        <a href="/logout" class="btn btn-outline-secondary" role="button" data-bs-toggle="button"
+            aria-pressed="true">Logout</a>
+
+
+
+
+
+        <hr>
+        <div class="row h-100">
+            <div class="col-md-3">
+                <span style="color: #ffffff; font-size: 160%;">Timetable <span
+                        style="color: #bfbfbf; font-size: 60%;">{{fullTimetable.d.Info|strip_timetable}}</span></span>
+                <!-- Example Box -->
+
+                {% for class in classes %}
+                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <span class="color-dot bg-primary me-2"></span>
+                            <h4 class="mb-0">{{ class.Classes[0].TimeTableClass }}</h4>
+                        </div>
+                        <small class="text-muted" style="color: #888;">{{ class.Classes[0].Room|strip_prefix }} - {{
+                            class.Classes[0].TeacherName }}</small>
+                    </div>
+                    <span style="color: #ffffff; font-size: 80%;">{{ class.StartTime|convert12Hour }} - {{
+                        class.EndTime|convert12Hour }}</span>
+                </div>
+                {% endfor %}
+                <!-- ... Add more boxes similarly -->
+            </div>
+
+            <div class="col-md-6">
+                <span style="color: #ffffff; font-size: 160%;">Daily Messages</span>
+                <div class="big-box rounded p-4">
+                    {% for message in dailyMessages %}
+                    <h6>{{ message.MessageTitle }}</h6>
+                    <div style="font-size:60%">{{ message.MessageContent|allow_br_tags_only|safe }}</div>
+                    <hr>
+                    {% endfor %}
+
+                </div>
+            </div>
+
+            <div class="col-md-3">
+
+                <span style="color: #ffffff; font-size: 160%;">Weather</span>
+                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
+                    <div>
+                        <div class="d-flex align-items-center mb-1">
+                            <h4 class="mb-0">{{ weather.currentTemp }}°</h4>
+                        </div>
+                        <small class="text-muted" style="color: #888;">☀️ {{weather.sunrise}} | 🌕 {{weather.sunset}} | ☔ {{weather.precipitation}}ml</small>
+                    </div>
+                    <span style="color: #ffffff; font-size: 80%;">{{ weather.oneHour }}° | {{ weather.twoHour }}° | {{ weather.threeHour }}°</span>
+                </div>
+
+                <span style="color: #ffffff; font-size: 160%;">Tasks</span>
+
+                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <span class="color-dot bg-primary me-2"></span>
+                            <h4 class="mb-0">{{ dueTasks }} Due</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <span class="color-dot bg-danger me-2"></span>
+                            <h4 class="mb-0">{{ overdueTasks }} Overdue</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
+                    <div>
+                        <div class="d-flex align-items-center">
+                            <span class="color-dot bg-success me-2"></span>
+                            <h4 class="mb-0">{{ resultsTasks }} Results</h4>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Additional content can be added here -->
+        </div>
+    </div>
+    <script>
+        // Get current time
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+
+        // Get the div element to display the greeting
+        const greetingDiv = document.getElementById('greeting');
+
+        if (hours < 5) {
+            greetingDiv.textContent = "Good Night";
+        } else if (hours < 10 || (hours === 10 && minutes < 30)) {
+            greetingDiv.textContent = "Good Morning";
+        } else if (hours < 12 || (hours === 12 && minutes < 30)) {
+            greetingDiv.textContent = "Hi";
+        } else if (hours < 16) {
+            greetingDiv.textContent = "Good Afternoon";
+        } else if (hours < 20) {
+            greetingDiv.textContent = "Good Evening";
+        } else {
+            greetingDiv.textContent = "Good Night";
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            function updateDateAndTime() {
+                const today = new Date();
+        
+                // Update Date
+                const day = String(today.getDate()).padStart(2, '0');
+                const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const year = today.getFullYear();
+                const formattedDate = `${day}/${month}/${year}`;
+                document.getElementById("currentDate").textContent = formattedDate;
+        
+                // Update Time
+                let hours = today.getHours();
+                const minutes = String(today.getMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+                // Convert 24-hour time to 12-hour time format
+                hours = hours % 12;
+                // If hour is 0 (which would be 12 in 24-hour time), set it to 12
+                hours = hours ? hours : 12; 
+                const formattedTime = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+                document.getElementById("currentTime").textContent = formattedTime;
+            }
+        
+            // Call the function to initialize the display
+            updateDateAndTime();
+        
+            // Set an interval to update the time every minute
+            setInterval(updateDateAndTime, 1 * 1000); // 60 * 1000ms = 1 minute
+        });
+        
+
+
+    </script>
+</body>
+
+</html>

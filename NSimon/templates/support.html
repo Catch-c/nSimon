@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSimon | Support</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='favicon/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#3a3a3a">
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
+</style>
+
+<body>
+
+
+    <!-- NavBar & Sidebar -->
+    <nav class="navbar navbar-light">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1" style="font-weight: 700; color: white;">
+
+                <!-- This will be hidden on mobile -->
+                <a href="/" style="text-decoration: none; color: inherit;">
+                    <div class="d-none d-md-inline greeting">
+                        Good evening, <span id="yourName">Placeholder Jones</span>.
+                    </div>
+                </a>
+
+                <!-- This will always be visible -->
+                <span class="greetingTime" style="font-size:medium;">
+                    <span id="currentDate">1/01/2023</span>
+                    <span id="currentTime">0:00AM</span>
+                </span>
+
+            </span>
+
+            <button class="btn" id="hamburgerBtn">
+                <i class="bi bi-list hamburgerMenu"></i>
+
+            </button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <button class="closeBtn">&times;</button>
+
+        <div class="links-section">
+            <a href="/" class="sidebarLink">Home</a>
+            <a href="/settings" class="sidebarLink">Settings</a>
+            <a href="https://discord.gg/zUZv7GVEuF" class="sidebarLink">Discord (Support)</a>
+            <a href="/support" class="sidebarLink">Support</a>
+            <a href="/logout" class="sidebarLink">Logout</a>
+        </div>
+
+        <div class="school-links-section">
+            <br>
+            <span class="sidebarTitle">School Links</span><br>
+
+            <span class="sidebarSubtitle">General Resources</span><br>
+            <a href="https://simon.sfx.vic.edu.au/" class="sidebarSchoolLink">• SIMON</a><br>
+            <a href="https://www.sfxcareers.com.au/" class="sidebarSchoolLink">• Careers</a><br>
+            <a href="https://shop.sfx.vic.edu.au/mymonitor/" class="sidebarSchoolLink">• CDF Pay</a><br>
+            <a href="http://bea-v-print-01:9191/app" class="sidebarSchoolLink">• WebPrint</a><br><br>
+
+            <span class="sidebarSubtitle">College Links</span><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=19761&KBankID=11"
+                class="sidebarSchoolLink">• 2022 Yearbook</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=14283&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• College Awards/Colours</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=21040&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• 2024 Beaconsfield Leadership</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=18795&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• 2024 Berwick/Officer Leadership</a><br>
+            <a href="https://saml-in3.clickview.com.au/Shibboleth.sso/STF1792" class="sidebarSchoolLink">•
+                Clickview</a><br>
+
+        </div>
+    </div>
+
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.querySelector('.sidebar');
+        const closeBtn = document.querySelector('.closeBtn');
+
+        hamburgerBtn.addEventListener('click', function () {
+            sidebar.style.right = "0";
+        });
+
+        closeBtn.addEventListener('click', function () {
+            sidebar.style.right = "-300px";
+        });
+
+        // If clicking outside the sidebar
+        document.addEventListener('click', function (event) {
+            if (!sidebar.contains(event.target) && !hamburgerBtn.contains(event.target)) {
+                sidebar.style.right = "-300px";
+            }
+        });
+
+    </script>
+
+
+
+    <div class="mainBody container-fluid h-100 pt-3 ps-2">
+
+
+        <h4 class="pageSubtitle" style="font-weight: 600;">Support
+        </h4>
+        <h5><b>Need help with something? Have a suggestion? Found a bug?</b></h5>
+        <h6>Well, you found the place! It is recommend to join our <b><a href="https://discord.gg/zUZv7GVEuF" style="text-decoration: none;">Discord Server</a></b> as that will get you a response the fastest and already has readily available answers to questions, and information. However, if you do not have a Discord account feel free to fill in this form below. We will try to look at them as fast as we can, but once again, Discord will be faster.</h6>
+
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePmxr4KLOilJ-NOY9ojB-j2SvaWqow2rI06hg9SVoU9Y8fsw/viewform?embedded=true" width="640" height="966" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <!-- Variables -->
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('darkModeToggle');
+            let currentTheme = localStorage.getItem('theme');
+
+            // Set default theme if none exists
+            if (!currentTheme) {
+                currentTheme = 'dark';
+                localStorage.setItem('theme', 'dark');
+            }
+
+            document.documentElement.setAttribute('data-theme', currentTheme);
+
+
+
+
+            // ... rest of the code remains the same
+        });
+
+        
+
+    </script>
+
+
+    <!-- Time/Data Updated -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function updateDateAndTime() {
+                const today = new Date();
+
+                // Update Date
+                const day = String(today.getDate()).padStart(2, '0');
+                const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const year = today.getFullYear();
+                const formattedDate = `${day}/${month}/${year}`;
+                document.getElementById("currentDate").textContent = formattedDate;
+
+                // Update Time
+                let hours = today.getHours();
+                const minutes = String(today.getMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+
+                // Convert 24-hour time to 12-hour time format
+                hours = hours % 12;
+                // If hour is 0 (which would be 12 in 24-hour time), set it to 12
+                hours = hours ? hours : 12;
+                const formattedTime = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
+                document.getElementById("currentTime").textContent = formattedTime;
+            }
+
+            // Call the function to initialize the display
+            updateDateAndTime();
+
+            // Set an interval to update the time every minute
+            setInterval(updateDateAndTime, 60 * 1000); // 60 * 1000ms = 1 minute
+        });
+    </script>
+
+
+    <!-- Functions -->
+    <script>
+
+        function getNextMonday(currentISODate) {
+            const currentDate = new Date(currentISODate);
+            const dayOfWeek = currentDate.getDay();
+            const daysUntilMonday = (8 - dayOfWeek) % 7; // Calculate how many days until Monday
+            const nextMonday = new Date(currentDate);
+            nextMonday.setDate(currentDate.getDate() + daysUntilMonday);
+            return nextMonday.toISOString();
+        }
+
+
+        function convertToAMPM(timeString) {
+            // Split the input time string into hours and minutes
+            const [hours, minutes] = timeString.split(':');
+
+            // Convert hours to a number
+            const hour = parseInt(hours, 10);
+
+            // Determine whether it's AM or PM based on the hour
+            const period = hour >= 12 ? 'PM' : 'AM';
+
+            // Convert hours to 12-hour format
+            const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+
+            // Create the formatted time string
+            const formattedTime = `${formattedHour}:${minutes}${period}`;
+
+            return formattedTime;
+        }
+
+        function removeFirstFourCharacters(inputString) {
+            if (inputString.length >= 4) {
+                return inputString.substring(4);
+            } else {
+                // Handle cases where the input string is less than 4 characters
+                return "Input string is too short";
+            }
+        }
+
+        function removeFirstThreeCharacters(inputString) {
+            if (inputString.length >= 3) {
+                return inputString.substring(3);
+            } else {
+                // Handle cases where the input string is less than 4 characters
+                return "Input string is too short";
+            }
+        }
+
+        function extractNumberFromString(text) {
+            // Use a regular expression to match the number inside the text
+            const regex = /(\d+)/;
+
+            // Use the match method to find the first occurrence of the number
+            const match = text.match(regex);
+
+            // Check if a match was found
+            if (match) {
+                // Convert the matched string to a number
+                const number = parseInt(match[0]);
+
+                return number;
+            }
+
+            // If no match was found, return null or an appropriate value
+            return null;
+        }
+
+        function countTotalTasks(data) {
+            let totalTasks = 0;
+
+            const classes = data.d.ResultTasksStudent;
+            for (let i = 0; i < classes.length; i++) {
+                totalTasks += classes[i].Tasks.length;
+            }
+
+            return totalTasks;
+        }
+    </script>
+
+    <!-- User Information -->
+    <script>
+        fetch(`/api/getUserInfo?cookie={{cookie}}`)
+            .then(response => response.json())
+            .then(data => {
+                const yourNameText = document.getElementById('yourName');
+                yourNameText.textContent = data.d.name
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+
+
+</body>
+
+</html>

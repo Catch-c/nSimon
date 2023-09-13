@@ -1,0 +1,35 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #1c1c1c;
+}
+
+.timetableItem {
+    width: 350px;  /* Box width */
+    background-color: #212121;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.timetableItem h4 {
+    font-weight: bold;
+    color: #e3e3e3;
+}
+.timetableItem span {
+    font-weight: bold;
+    color: #bfbfbf;
+}
+
+
+.timetableItem small {
+    font-size: 80%;
+    color: #888;  /* Darker color */
+}
+
+.color-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;  /* Makes the dot circular */
+    vertical-align: middle;  /* Aligns with the text */
+}
