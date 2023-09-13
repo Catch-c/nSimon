@@ -1,15 +1,62 @@
-from flask import Flask, render_template, request, redirect, make_response, url_for
+from flask import Flask, request, jsonify, redirect, render_template, url_for, make_response, flash
 import Simon as Simon
-import datetime, re, requests
+import requests
 
-def get_weather():
-    BASE_URL = 'https://api.open-meteo.com/v1/forecast?latitude=-38.041&longitude=145.349&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,uv_index_clear_sky_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant,shortwave_radiation_sum,et0_fao_evapotranspiration&current_weather=true&timezone=Australia%2FSydney&models=best_match'
-    
+app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
 
 
-    response = requests.get(BASE_URL)
+@app.route('/api/getTimetable', methods=['GET'])
+def getTimetable():
+    cookie = request.args.get('cookie')
+    date = request.args.get('date')
+
+    return jsonify(Simon.getTimetable(cookie, date)), 200
+
+@app.route('/api/getDailyMessages', methods=['GET'])
+def getMessages():
+    cookie = request.args.get('cookie')
+    date = request.args.get('date')
+
+    return jsonify(Simon.getDailyMessages(cookie, date)), 200
+
+@app.route('/api/getUserInfo', methods=['GET'])
+def getUserInfo():
+    cookie = request.args.get('cookie')
+
+    return jsonify(Simon.getUserInfo(cookie)), 200
+
+@app.route('/api/getClasses', methods=['GET'])
+def getClasses():
+    cookie = request.args.get('cookie')
+
+    return jsonify(Simon.getClasses(cookie)), 200
+
+@app.route('/api/getToday', methods=['GET'])
+def getToday():
+    cookie = request.args.get('cookie')
+
+    return jsonify(Simon.getToday(cookie)), 200
+
+@app.route('/api/getWeather', methods=['GET'])
+def getWeather():
+    campus = request.cookies.get('campus')
+    LATITUDE = -38.069780
+    LONGITUDE = 145.336950
+    match campus:
+        case "Berwick":
+            LATITUDE = -38.069780
+            LONGITUDE = 145.336950
+        case "Beaconsfield":
+            LATITUDE = -38.051690
+            LONGITUDE = 145.373290
+        case "Officer":
+            LATITUDE = -38.062630
+            LONGITUDE = 145.431780     
+
+    requestURL = f'https://api.open-meteo.com/v1/forecast?latitude={LATITUDE}&longitude={LONGITUDE}&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,uv_index_clear_sky_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant,shortwave_radiation_sum,et0_fao_evapotranspiration&current_weather=true&timezone=Australia%2FSydney&models=best_match'
+    response = requests.get(requestURL)
     data = response.json()
-
 
     if response.status_code == 200:
         current_temp = data['current_weather']['temperature']
@@ -27,7 +74,8 @@ def get_weather():
 
 
 
-        return 200, {
+        return jsonify({
+            "campus": campus,
             "currentTemp": current_temp,
             "oneHour": next_hour_temp,
             "twoHour": next_2_hour_temp,
@@ -35,107 +83,129 @@ def get_weather():
             "sunrise": sunrise,
             "sunset": sunset,
             "precipitation": data['daily']['precipitation_sum'][0]
-        }
-
-
+        }), 200
     else:
-        return 100, None
+        jsonify({
+            "campus": campus,
+            "currentTemp": '??',
+            "oneHour": '??',
+            "twoHour": '??',
+            "threeHour": '??',
+            "sunrise": '?:??',
+            "sunset": '?:??',
+            "precipitation": '???'
+        }), 200
+
+@app.route('/api/checkCookie', methods=['GET'])
+def checkCookie():
+    cookie = request.args.get('cookie')
+
+    if not Simon.checkCookie(cookie):
+        return jsonify({'status': False}), 404
+    else:
+        return jsonify({'status': True}), 200
+
+
+@app.route('/api/getCookie', methods=['GET'])
+def getCookie():
+    username = request.args.get('username')
+    password = request.args.get('password')
+    campus = request.args.get('campus')
+
+    status, cookie = Simon.login(username, password)
+
+    if status == 404:
+        return jsonify({'status': 404}), 404
+    else:
+        return jsonify({'status': 200, 'cookie': cookie}), 200
 
 
 
 
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    campus = request.form.get('campusSelection')
 
+    status, cookie = Simon.login(username, password)
 
+    if status == 404:
+        flash("This is a message from the backend.")
+        return redirect(url_for('home'))
+    else:
+        response = make_response(redirect(url_for('dashboard')))
+        response.set_cookie('adAuthCookie', cookie)
+        response.set_cookie('campus', campus)
+        return response
 
-app = Flask(__name__)
-
-def convert12Hour(time_str):
-    # Parse the 24-hour time string into a datetime object
-    dt = datetime.datetime.strptime(time_str, "%H:%M")
     
-    # Format the datetime object into a 12-hour format string with AM/PM
-    return dt.strftime("%I:%M%p")
-app.jinja_env.filters['convert12Hour'] = convert12Hour
-
-def strip_prefix(input_str):
-    return input_str.split("_")[-1] if "BER_" in input_str else input_str
-app.jinja_env.filters['strip_prefix'] = strip_prefix
-
-def strip_timetable(input_str):
-    return input_str.replace("Timetable ", "").strip()
-app.jinja_env.filters['strip_timetable'] = strip_timetable
-
-def allow_br_tags_only(input_str):
-    # First, replace <br> tags with a placeholder to prevent them from getting removed
-    temp_str = input_str.replace('<br>', '[BR]')
-    
-    # Strip out all other HTML tags
-    stripped = re.sub(r'<[^>]+>', '', temp_str)
-    
-    # Restore the <br> tags
-    return stripped.replace('[BR]', '<br>')
-app.jinja_env.filters['allow_br_tags_only'] = allow_br_tags_only
-
-
-
-
-
-
-@app.route('/')
-def home():
-    user_id = request.cookies.get('user_id')
-    if user_id:
-        return redirect(url_for('dashboard'))
-    return render_template('home.html')
-
-@app.route('/submit', methods=['POST'])
-def submit_id():
-    user_id = request.form.get('user_id')
+@app.route('/logout')
+def logout():
     response = make_response(redirect(url_for('dashboard')))
-    response.set_cookie('user_id', user_id)
+    response.set_cookie('adAuthCookie', '')
+    response.set_cookie('campus', '')
+
     return response
+
 
 @app.route('/dashboard')
 def dashboard():
-    user_id = request.cookies.get('user_id')
-    if not user_id:
+    cookie = request.cookies.get('adAuthCookie')
+    campus = request.cookies.get('campus')
+
+    if not cookie:
         return redirect(url_for('home'))
 
-    timetable = Simon.getTimetable(user_id, datetime.datetime.now().isoformat() + 'Z')
-    dailyMessages = Simon.getDailyMessages(user_id, datetime.datetime.now().isoformat() + 'Z')
-    userInformation = Simon.getUserInfo(user_id)
-    today = Simon.getToday(user_id)
-    classesD = Simon.getClasses(user_id)
 
-    classes = timetable["d"]["Periods"]
-    dailyMessages = dailyMessages["d"]["SchoolMessages"]
-    userInformation = userInformation["d"]
-    today = today["d"]["Events"]
-    overdueTasks = len(classesD["d"]["OverDueTasksStudent"])
-    dueTasks = len(classesD["d"]["DueTasksStudent"])
-    resultsTasks = len(classesD["d"]["ResultTasksStudent"])
+    if not campus:
+        return redirect(url_for('home'))
 
-    status, weather = get_weather()
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for('home'))
 
-    if status == 100:
-        weather = {
-            "currentTemp": 10,
-            "oneHour": 11,
-            "twoHour": 12,
-            "threeHour": 13,
-            "sunrise": "05:00",
-            "sunset": "20:00",
-            "precipitation": 0
-        }
+    return render_template('dashboard.html', cookie=cookie, campus=campus)   
 
 
+@app.route('/support')
+def support():
+    cookie = request.cookies.get('adAuthCookie')
+    campus = request.cookies.get('campus')
 
-    return render_template('dashboard.html', weather=weather, userInformation=userInformation, classes=classes, fullTimetable=timetable, dailyMessages=dailyMessages, today=today, overdueTasks=overdueTasks, dueTasks=dueTasks, resultsTasks=resultsTasks)
+    if not cookie:
+        return redirect(url_for('home'))
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for('home'))
 
-if __name__ == "__main__":
-    from waitress import serve
-    print("STARTED!")
-    serve(app, host="0.0.0.0", port=8080)
+    return render_template('support.html', cookie=cookie, campus=campus)   
+
+
+@app.route('/settings')
+def settings():
+    cookie = request.cookies.get('adAuthCookie')
+    campus = request.cookies.get('campus')
+
+    if not cookie:
+        return redirect(url_for('home'))
+
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for('home'))
+
+    return render_template('settings.html', cookie=cookie, campus=campus)   
+
+@app.route('/')
+def home():
+    cookie = request.cookies.get('adAuthCookie')
+    if cookie:
+        return redirect(url_for('dashboard'))
+    return render_template('home.html')
+
+
+# if __name__ == "__main__":
+#     from waitress import serve
+#     print("STARTED!")
+#     serve(app, host="0.0.0.0", port=8080)
+
+if __name__ == '__main__':
+    app.run(debug=True,  port=8080)

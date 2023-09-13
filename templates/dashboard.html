@@ -4,168 +4,742 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSimon | Student Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
-    <title>Student Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='favicon/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#3a3a3a">
+
 </head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
+</style>
 
 <body>
-    <div class="container-fluid h-100 pt-5">
-        <span style="color: #ffffff; font-size: 185%;"><span style="color: #ffffff;" id="greeting">Hi</span>, {{
-            userInformation.name }}.
-            
-                <span style="color: #b1b1b1; font-size: 60%;" id="currentDate"></span>
-                <span style="color: #b1b1b1; font-size: 60%;" id="currentTime"></span>
-        </span>
-        <br>
-        <a href="https://simon.sfx.vic.edu.au" class="btn btn-outline-secondary" role="button" data-bs-toggle="button"
-            aria-pressed="true"><i class="bi bi-box-arrow-in-up-right"></i> Open SIMON</a>
-        <a href="/logout" class="btn btn-outline-secondary" role="button" data-bs-toggle="button"
-            aria-pressed="true">Logout</a>
+    <!-- NavBar & Sidebar -->
+    <nav class="navbar">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1" style="font-weight: 700; color: white;">
 
-
-
-
-
-        <hr>
-        <div class="row h-100">
-            <div class="col-md-3">
-                <span style="color: #ffffff; font-size: 160%;">Timetable <span
-                        style="color: #bfbfbf; font-size: 60%;">{{fullTimetable.d.Info|strip_timetable}}</span></span>
-                <!-- Example Box -->
-
-                {% for class in classes %}
-                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
-                    <div>
-                        <div class="d-flex align-items-center">
-                            <span class="color-dot bg-primary me-2"></span>
-                            <h4 class="mb-0">{{ class.Classes[0].TimeTableClass }}</h4>
-                        </div>
-                        <small class="text-muted" style="color: #888;">{{ class.Classes[0].Room|strip_prefix }} - {{
-                            class.Classes[0].TeacherName }}</small>
+                <!-- This will be hidden on mobile -->
+                <a href="/" style="text-decoration: none; color: inherit;">
+                    <div class="d-none d-md-inline greeting">
+                        Good evening, <span id="yourName">Placeholder Jones</span>.
                     </div>
-                    <span style="color: #ffffff; font-size: 80%;">{{ class.StartTime|convert12Hour }} - {{
-                        class.EndTime|convert12Hour }}</span>
-                </div>
-                {% endfor %}
-                <!-- ... Add more boxes similarly -->
-            </div>
+                </a>
 
-            <div class="col-md-6">
-                <span style="color: #ffffff; font-size: 160%;">Daily Messages</span>
-                <div class="big-box rounded p-4">
-                    {% for message in dailyMessages %}
-                    <h6>{{ message.MessageTitle }}</h6>
-                    <div style="font-size:60%">{{ message.MessageContent|allow_br_tags_only|safe }}</div>
-                    <hr>
-                    {% endfor %}
+                <!-- This will always be visible -->
+                <span class="greetingTime" style="font-size:medium;">
+                    <span id="currentDate">1/01/2023</span>
+                    <span id="currentTime">0:00AM</span>
+                </span>
 
-                </div>
-            </div>
+            </span>
 
-            <div class="col-md-3">
+            <button class="btn" id="hamburgerBtn">
+                <i class="bi bi-list hamburgerMenu"></i>
 
-                <span style="color: #ffffff; font-size: 160%;">Weather</span>
-                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
-                    <div>
-                        <div class="d-flex align-items-center mb-1">
-                            <h4 class="mb-0">{{ weather.currentTemp }}°</h4>
-                        </div>
-                        <small class="text-muted" style="color: #888;">☀️ {{weather.sunrise}} | 🌕 {{weather.sunset}} | ☔ {{weather.precipitation}}ml</small>
-                    </div>
-                    <span style="color: #ffffff; font-size: 80%;">{{ weather.oneHour }}° | {{ weather.twoHour }}° | {{ weather.threeHour }}°</span>
-                </div>
+            </button>
+        </div>
+    </nav>
 
-                <span style="color: #ffffff; font-size: 160%;">Tasks</span>
+    <div class="sidebar">
+        <button class="closeBtn">&times;</button>
 
-                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
-                    <div>
-                        <div class="d-flex align-items-center">
-                            <span class="color-dot bg-primary me-2"></span>
-                            <h4 class="mb-0">{{ dueTasks }} Due</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
-                    <div>
-                        <div class="d-flex align-items-center">
-                            <span class="color-dot bg-danger me-2"></span>
-                            <h4 class="mb-0">{{ overdueTasks }} Overdue</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="box timetableItem d-flex justify-content-between rounded p-3 mb-2">
-                    <div>
-                        <div class="d-flex align-items-center">
-                            <span class="color-dot bg-success me-2"></span>
-                            <h4 class="mb-0">{{ resultsTasks }} Results</h4>
-                        </div>
-                    </div>
-                </div>
+        <div class="links-section">
+            <a href="/" class="sidebarLink">Home</a>
+            <a href="/settings" class="sidebarLink">Settings</a>
+            <a href="https://discord.gg/zUZv7GVEuF" class="sidebarLink">Discord (Support)</a>
+            <a href="/support" class="sidebarLink">Support</a>
+            <a href="/logout" class="sidebarLink">Logout</a>
+        </div>
 
-            </div>
+        <div class="school-links-section">
+            <br>
+            <span class="sidebarTitle">School Links</span><br>
 
+            <span class="sidebarSubtitle">General Resources</span><br>
+            <a href="https://simon.sfx.vic.edu.au/" class="sidebarSchoolLink">• SIMON</a><br>
+            <a href="https://www.sfxcareers.com.au/" class="sidebarSchoolLink">• Careers</a><br>
+            <a href="https://shop.sfx.vic.edu.au/mymonitor/" class="sidebarSchoolLink">• CDF Pay</a><br>
+            <a href="http://bea-v-print-01:9191/app" class="sidebarSchoolLink">• WebPrint</a><br><br>
 
-            <!-- Additional content can be added here -->
+            <span class="sidebarSubtitle">College Links</span><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=19761&KBankID=11"
+                class="sidebarSchoolLink">• 2022 Yearbook</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=14283&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• College Awards/Colours</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=21040&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• 2024 Beaconsfield Leadership</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=18795&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• 2024 Berwick/Officer Leadership</a><br>
+            <a href="https://saml-in3.clickview.com.au/Shibboleth.sso/STF1792" class="sidebarSchoolLink">•
+                Clickview</a><br>
+
         </div>
     </div>
+
     <script>
-        // Get current time
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.querySelector('.sidebar');
+        const closeBtn = document.querySelector('.closeBtn');
 
-        // Get the div element to display the greeting
-        const greetingDiv = document.getElementById('greeting');
+        hamburgerBtn.addEventListener('click', function () {
+            sidebar.style.right = "0";
+        });
 
-        if (hours < 5) {
-            greetingDiv.textContent = "Good Night";
-        } else if (hours < 10 || (hours === 10 && minutes < 30)) {
-            greetingDiv.textContent = "Good Morning";
-        } else if (hours < 12 || (hours === 12 && minutes < 30)) {
-            greetingDiv.textContent = "Hi";
-        } else if (hours < 16) {
-            greetingDiv.textContent = "Good Afternoon";
-        } else if (hours < 20) {
-            greetingDiv.textContent = "Good Evening";
-        } else {
-            greetingDiv.textContent = "Good Night";
-        }
-        document.addEventListener("DOMContentLoaded", function() {
+        closeBtn.addEventListener('click', function () {
+            sidebar.style.right = "-300px";
+        });
+
+        // If clicking outside the sidebar
+        document.addEventListener('click', function (event) {
+            if (!sidebar.contains(event.target) && !hamburgerBtn.contains(event.target)) {
+                sidebar.style.right = "-300px";
+            }
+        });
+
+    </script>
+
+    <div class="mainBody container-fluid h-100">
+        <div class="row h-100 ps-2 pt-3">
+            <!-- Weather -->
+            <div class="col-md-3 col-12p-3 order-2 order-md-1">
+                <h4 class="pageSubtitle" style="font-weight: 600;">Weather <span style="font-size:medium;"
+                        id="weatherCampus" class="pageSubtitleSub">Berwick</span>
+                </h4>
+                <div class="class rounded p-3 mb-2">
+                    <span class="class-name" id="currentWeather">Loading°</span>
+                    <span class="time" id="upcomingWeather">Loading° | Loading° | Loading°</span>
+                    <div class="teacher-name" id="weatherInformation">☀️ Loading | 🌑 Loading | 🌧️ Loading</div>
+                </div>
+                <h4 class="pageSubtitle" style="font-weight: 600;">Class Resources
+                </h4>
+                <div class="class rounded p-3 mb-2">
+                    <span class="color-dot bg-primary me-2"></span>
+                    <span class="class-name" id="dueTasks">0 Due</span>
+                </div>
+                <div class="class rounded p-3 mb-2">
+                    <span class="color-dot bg-danger me-2"></span>
+                    <span class="class-name" id="overdueTasks">0 Overdue</span>
+                </div>
+                <div class="class rounded p-3 mb-2">
+                    <span class="color-dot bg-success me-2"></span>
+                    <span class="class-name" id="resultTasks">0 Results</span>
+
+                </div>
+
+                <h4 class="pageSubtitle" style="font-weight: 600;">Today <span style="font-size:medium;" id="todayDate"
+                        class="pageSubtitleSub">LOADING</span>
+                </h4>
+                <div id="todayActivities">
+
+                </div>
+
+            </div>
+
+            <!-- Daily Messages -->
+            <div class="col-md-6 col-12p-3 order-3 order-md-2">
+                <h4 class="pageSubtitle" style="font-weight: 600;">Daily Messages <span style="font-size:medium;"
+                        id="totalDailyMessages" class="pageSubtitleSub">LOADING...</span>
+                </h4>
+                <div class="messages-container rounded p-3" id="dailyMessages">
+                    <div id="dailyMessagesLoading">
+                        <h6>LOADING...</h6>
+                        <div style="font-size:75%;"> Your daily messages are loading...</div>
+                        <hr>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Timetable -->
+            <div class="col-md-3 col-12p-3 order-1 order-md-3">
+                <h4 class="pageSubtitle" style="font-weight: 600;">Timetable
+                </h4>
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <button id="prevDay" class="btn btn-light">&#8592;</button>
+                    <span id="timetableDay" class="pageSubtitleSub mx-3">LOADING...</span>
+                    <button id="nextDay" class="btn btn-light">&#8594;</button>
+                </div>
+
+                <div id="timetable">
+
+                    <div class="class rounded p-3 mb-2" id="timetableLoading">
+                        <span class="color-dot bg-primary me-2"></span>
+                        <span class="class-name">Loading</span>
+                        <div class="teacher-name">Your classes are loading...</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <!-- Variables -->
+    <script>
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Days of the Week
+        let currentDate = new Date(); // Current Date
+        let currentISOString = currentDate.toISOString();
+        let unixTimestamp = currentDate.getTime(); // Current UNIX Timestamp
+        let unixTimestampInSeconds = Math.floor(unixTimestamp / 1000); // Current UNIX Timestamp in Seconds
+        var totalDailyMessages = 0
+    </script>
+
+
+    <!-- Time/Data Updated -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
             function updateDateAndTime() {
                 const today = new Date();
-        
+
                 // Update Date
                 const day = String(today.getDate()).padStart(2, '0');
                 const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
                 const year = today.getFullYear();
                 const formattedDate = `${day}/${month}/${year}`;
                 document.getElementById("currentDate").textContent = formattedDate;
-        
+                document.getElementById("todayDate").textContent = formattedDate;
+
                 // Update Time
                 let hours = today.getHours();
                 const minutes = String(today.getMinutes()).padStart(2, '0');
                 const ampm = hours >= 12 ? 'PM' : 'AM';
-        
+
                 // Convert 24-hour time to 12-hour time format
                 hours = hours % 12;
                 // If hour is 0 (which would be 12 in 24-hour time), set it to 12
-                hours = hours ? hours : 12; 
+                hours = hours ? hours : 12;
                 const formattedTime = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
                 document.getElementById("currentTime").textContent = formattedTime;
             }
-        
+
             // Call the function to initialize the display
             updateDateAndTime();
-        
-            // Set an interval to update the time every minute
-            setInterval(updateDateAndTime, 1 * 1000); // 60 * 1000ms = 1 minute
-        });
-        
 
+            // Set an interval to update the time every minute
+            setInterval(updateDateAndTime, 60 * 1000); // 60 * 1000ms = 1 minute
+        });
+    </script>
+
+
+    <!-- Functions -->
+    <script>
+
+        function removeColorStyles(htmlString) {
+            // Create a new DOM parser
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(htmlString, 'text/html');
+
+            // Get all elements with style attributes
+            let styledElements = doc.querySelectorAll('[style]');
+
+            // Iterate through each element and remove color and background styles
+            styledElements.forEach(elem => {
+                let styles = elem.getAttribute('style').split(';').filter(style => {
+                    return !style.trim().startsWith('color:') &&
+                        !style.trim().startsWith('background-color:') &&
+                        !style.trim().startsWith('background:');
+                });
+                elem.setAttribute('style', styles.join(';'));
+            });
+
+            // Convert the modified DOM back to an HTML string
+            return doc.body.innerHTML;
+
+        }
+
+        function getNextMonday(currentISODate) {
+            const currentDate = new Date(currentISODate);
+            const dayOfWeek = currentDate.getDay();
+            const daysUntilMonday = (8 - dayOfWeek) % 7; // Calculate how many days until Monday
+            const nextMonday = new Date(currentDate);
+            nextMonday.setDate(currentDate.getDate() + daysUntilMonday);
+            return nextMonday.toISOString();
+        }
+
+
+        function convertToAMPM(timeString) {
+            // Split the input time string into hours and minutes
+            const [hours, minutes] = timeString.split(':');
+
+            // Convert hours to a number
+            const hour = parseInt(hours, 10);
+
+            // Determine whether it's AM or PM based on the hour
+            const period = hour >= 12 ? 'PM' : 'AM';
+
+            // Convert hours to 12-hour format
+            const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+
+            // Create the formatted time string
+            const formattedTime = `${formattedHour}:${minutes}${period}`;
+
+            return formattedTime;
+        }
+
+        function removeFirstFourCharacters(inputString) {
+            if (inputString.length >= 4) {
+                return inputString.substring(4);
+            } else {
+                // Handle cases where the input string is less than 4 characters
+                return "Input string is too short";
+            }
+        }
+
+        function removeFirstThreeCharacters(inputString) {
+            if (inputString.length >= 3) {
+                return inputString.substring(3);
+            } else {
+                // Handle cases where the input string is less than 4 characters
+                return "Input string is too short";
+            }
+        }
+
+        function extractNumberFromString(text) {
+            // Use a regular expression to match the number inside the text
+            const regex = /(\d+)/;
+
+            // Use the match method to find the first occurrence of the number
+            const match = text.match(regex);
+
+            // Check if a match was found
+            if (match) {
+                // Convert the matched string to a number
+                const number = parseInt(match[0]);
+
+                return number;
+            }
+
+            // If no match was found, return null or an appropriate value
+            return null;
+        }
+
+        function countTotalTasks(data) {
+            let totalTasks = 0;
+
+            const classes = data.d.ResultTasksStudent;
+            for (let i = 0; i < classes.length; i++) {
+                totalTasks += classes[i].Tasks.length;
+            }
+
+            return totalTasks;
+        }
+    </script>
+
+
+    <!-- User Information -->
+    <script>
+        fetch(`/api/getUserInfo?cookie={{cookie}}`)
+            .then(response => response.json())
+            .then(data => {
+                const yourNameText = document.getElementById('yourName');
+                yourNameText.textContent = data.d.name
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+    <!-- Timetable -->
+    <script>
+        function addTimetable(data, weekend) {
+            const dataContainer = document.getElementById('timetable');
+            const timetableDayText = document.getElementById('timetableDay');
+            timetableDayText.textContent = weekend ? 'Weekend' : data.d.Info;
+
+            const periods = data.d.Periods;
+            if (weekend && periods.length == 0) {
+                const timetableDayText = document.getElementById('timetableDay');
+                timetableDayText.textContent = 'Holiday'
+                const classDiv = document.createElement('div');
+                classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+
+                // Create color dot span
+                const colorDotSpan = document.createElement('span');
+                colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                classDiv.appendChild(colorDotSpan);
+
+                // Create class name span
+                const classNameSpan = document.createElement('span');
+                classNameSpan.classList.add('class-name');
+                classNameSpan.textContent = "Weekend";
+                classDiv.appendChild(classNameSpan);
+
+                // Create teacher div
+                const teacherDiv = document.createElement('div');
+                teacherDiv.classList.add('teacher-name');
+                teacherDiv.textContent = `Enjoy your holiday!`;
+                classDiv.appendChild(teacherDiv);
+
+                dataContainer.appendChild(classDiv);
+            } else if (weekend) {
+                const classDiv = document.createElement('div');
+                classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+
+                // Create color dot span
+                const colorDotSpan = document.createElement('span');
+                colorDotSpan.classList.add('color-dot', 'bg-success', 'me-2');
+                classDiv.appendChild(colorDotSpan);
+
+                // Create class name span
+                const classNameSpan = document.createElement('span');
+                classNameSpan.classList.add('class-name');
+                classNameSpan.textContent = "Weekend";
+                classDiv.appendChild(classNameSpan);
+
+                // Create teacher div
+                const teacherDiv = document.createElement('div');
+                teacherDiv.classList.add('teacher-name');
+                teacherDiv.textContent = `Enjoy your weekend! Here are your classes for Monday.`;
+                classDiv.appendChild(teacherDiv);
+
+                dataContainer.appendChild(classDiv);
+            } else if (periods.length == 0) {
+                const timetableDayText = document.getElementById('timetableDay');
+                timetableDayText.textContent = 'Holiday'
+                const classDiv = document.createElement('div');
+                classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+
+                // Create color dot span
+                const colorDotSpan = document.createElement('span');
+                colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                classDiv.appendChild(colorDotSpan);
+
+                // Create class name span
+                const classNameSpan = document.createElement('span');
+                classNameSpan.classList.add('class-name');
+                classNameSpan.textContent = "No Classes";
+                classDiv.appendChild(classNameSpan);
+
+                // Create teacher div
+                const teacherDiv = document.createElement('div');
+                teacherDiv.classList.add('teacher-name');
+                teacherDiv.textContent = `Enjoy your holiday!`;
+                classDiv.appendChild(teacherDiv);
+
+                dataContainer.appendChild(classDiv);
+            }
+
+
+            for (const period of periods) {
+                if (period.IsTeachingPeriod) {
+                    const classDiv = document.createElement('div');
+                    classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+
+                    // Create color dot span
+                    const colorDotSpan = document.createElement('span');
+                    colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                    classDiv.appendChild(colorDotSpan);
+
+                    // Create class name span
+                    const classNameSpan = document.createElement('span');
+                    classNameSpan.classList.add('class-name');
+                    classNameSpan.textContent = period.Classes[0].TimeTableClass;
+
+                    classNameSpan.setAttribute('data-bs-toggle', 'tooltip');
+                    classNameSpan.setAttribute('data-bs-html', 'true');
+                    classNameSpan.setAttribute('title', period.Classes[0].Description);
+
+
+                    classDiv.appendChild(classNameSpan);
+                    new bootstrap.Tooltip(classNameSpan);
+
+
+                    // Create time span
+                    const timeSpan = document.createElement('span');
+                    timeSpan.classList.add('time');
+
+                    timeSpan.textContent = `${convertToAMPM(period.StartTime)} - ${convertToAMPM(period.EndTime)}`;
+                    classDiv.appendChild(timeSpan);
+
+                    // Create teacher div
+                    const teacherDiv = document.createElement('div');
+                    teacherDiv.classList.add('teacher-name');
+
+                    let teacherName = period.Classes[0].TeacherName;
+                    let roomInfo
+                    if ("{{ campus }}" == "Beaconsfield") {
+                        roomInfo = removeFirstThreeCharacters(period.Classes[0].Room);
+                    } else {
+                        roomInfo = removeFirstFourCharacters(period.Classes[0].Room);
+                    }
+
+                    // Check if the teacherName includes "CRT"
+                    if (teacherName.includes("CRT")) {
+                        // If it does, set the text content and change the color to red
+                        teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
+                    } else {
+                        // Otherwise, set the text content without any styling
+                        teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
+                    }
+                    classDiv.appendChild(teacherDiv);
+
+                    // Append the created classDiv to the body or any other parent element
+                    dataContainer.appendChild(classDiv);
+                }
+            }
+
+            const divElement = document.getElementById('timetableLoading');
+            divElement.style.display = 'none';
+
+
+        }
+    </script>
+    <script>
+        currentDate = new Date();
+
+        document.getElementById('prevDay').addEventListener('click', function () {
+            currentDate.setDate(currentDate.getDate() - 1);
+            fetchTimetable(currentDate);
+        });
+
+        document.getElementById('nextDay').addEventListener('click', function () {
+            currentDate.setDate(currentDate.getDate() + 1);
+            fetchTimetable(currentDate);
+        });
+
+        function fetchTimetable(date) {
+
+            document.getElementById('timetable').innerHTML = '';
+
+            const classDiv = document.createElement('div');
+            classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+            classDiv.id = "timetableLoading"
+
+            const colorDotSpan = document.createElement('span');
+            colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+            classDiv.appendChild(colorDotSpan);
+
+            // Create class name span
+            const classNameSpan = document.createElement('span');
+            classNameSpan.classList.add('class-name');
+            classNameSpan.textContent = "Loading";
+
+            classDiv.appendChild(classNameSpan);
+
+
+            const teacherDiv = document.createElement('div');
+            teacherDiv.classList.add('teacher-name');
+            teacherDiv.textContent = "Your classes are loading...";
+
+            classDiv.appendChild(teacherDiv);
+
+            const dataContainer = document.getElementById('timetable');
+            dataContainer.appendChild(classDiv);
+
+            let dateString = date.toISOString();
+            let dayOfWeekNumber = currentDate.getDay();
+            let currentDay = daysOfWeek[dayOfWeekNumber]
+            let currentISOString = currentDate.toISOString();
+
+            if (currentDay == "Saturday" || currentDay == "Sunday") {
+                // Timetable
+                fetch(`/api/getTimetable?cookie={{cookie}}&date=${getNextMonday(currentISOString)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        addTimetable(data, true)
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+
+                fetch(`/api/getTimetable?cookie={{cookie}}&date=${currentISOString}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        addTimetable(data, false)
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+        }
+
+
+        fetchTimetable(currentDate);
 
     </script>
+
+
+
+
+
+
+
+    <!-- Daily Messages -->
+    <script>
+        fetch(`/api/getDailyMessages?cookie={{cookie}}&date=${currentISOString}`)
+            .then(response => response.json())
+            .then(data => {
+                const dataContainer = document.getElementById('dailyMessages');
+
+                const periods = data.d.SchoolMessages;
+
+                for (const message of periods) {
+                    if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
+                        totalDailyMessages += 1
+
+
+                        // Create the <h6> element
+                        const h6Element = document.createElement('h6');
+                        h6Element.textContent = message.MessageTitle;
+
+                        const divElement = document.createElement('div');
+                        divElement.style.fontSize = '75%';
+                        divElement.innerHTML = removeColorStyles(message.MessageContent); // Use innerHTML to render HTML tags
+
+                        const hrElement = document.createElement('hr');
+
+
+                        // Append the elements to their respective parent containers
+                        dataContainer.appendChild(h6Element);
+                        dataContainer.appendChild(divElement);
+                        dataContainer.appendChild(hrElement);
+                    }
+                }
+                const dailyMessageCountText = document.getElementById('totalDailyMessages');
+                dailyMessageCountText.textContent = totalDailyMessages + " Messages"
+
+                const divElement = document.getElementById('dailyMessagesLoading');
+                divElement.style.display = 'none';
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+    <!-- Weather -->
+    <script>
+        fetch(`/api/getWeather`)
+            .then(response => response.json())
+            .then(data => {
+                const currentWeather = document.getElementById('currentWeather');
+                currentWeather.textContent = data.currentTemp + '°'
+
+                const upcomingWeather = document.getElementById('upcomingWeather');
+                upcomingWeather.textContent = data.oneHour + '° | ' + data.twoHour + '° | ' + data.threeHour + '° '
+
+                const weatherInformation = document.getElementById('weatherInformation');
+                weatherInformation.textContent = "☀️ " + convertToAMPM(data.sunrise) + " | 🌑 " + convertToAMPM(data.sunset) + " | 🌧️ " + data.precipitation + "ml"
+
+                const weatherCampus = document.getElementById('weatherCampus');
+                weatherCampus.textContent = data.campus
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+    <!-- Classes (Due, Results, Overdue) -->
+    <script>
+        fetch(`/api/getClasses?cookie={{cookie}}`)
+            .then(response => response.json())
+            .then(data => {
+
+                const dueTasks = document.getElementById('dueTasks');
+                dueTasks.textContent = data.d.DueTasksStudent.length + ' Due'
+
+                const overdueTasks = document.getElementById('overdueTasks');
+                overdueTasks.textContent = data.d.OverDueTasksStudent.length + ' Overdue'
+
+                const resultTasks = document.getElementById('resultTasks');
+                resultTasks.textContent = countTotalTasks(data) + ' Results'
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+    <!-- Today -->
+    <script>
+        fetch(`/api/getToday?cookie={{cookie}}`)
+            .then(response => response.json())
+            .then(data => {
+                const dataContainer = document.getElementById('todayActivities');
+
+                const events = data.d.Events;
+
+                if (events.length == 0) {
+                    const classDiv = document.createElement('div');
+                    classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+
+
+                    // Create class name span
+                    const classNameSpan = document.createElement('span');
+                    classNameSpan.classList.add('class-name');
+                    classNameSpan.textContent = 'Nothing to see here.';
+                    classDiv.appendChild(classNameSpan);
+
+                    const teacherDiv = document.createElement('div');
+                    teacherDiv.classList.add('teacher-name');
+                    teacherDiv.textContent = `You have nothing on today.`;
+                    classDiv.appendChild(teacherDiv);
+
+
+                    // Append the created classDiv to the body or any other parent element
+                    dataContainer.appendChild(classDiv);
+
+
+                }
+
+
+                for (const event of events) {
+
+                    const classDiv = document.createElement('div');
+                    classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+
+
+                    // Create class name span
+                    const classNameSpan = document.createElement('span');
+                    classNameSpan.classList.add('class-name');
+                    classNameSpan.textContent = event.EventTitle;
+                    classDiv.appendChild(classNameSpan);
+
+
+                    // Append the created classDiv to the body or any other parent element
+                    dataContainer.appendChild(classDiv);
+
+                }
+
+                const divElement = document.getElementById('timetableLoading');
+                divElement.style.display = 'none';
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+    <!-- Tooltips -->
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
 </body>
 
 </html>
