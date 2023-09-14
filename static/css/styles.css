@@ -178,6 +178,10 @@ span {
 /* Login Screen */
 .creditTag {
     text-align: center;
+    bottom: 0;
+    position: fixed;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .container-fluid {
