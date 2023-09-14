@@ -176,6 +176,10 @@ span {
 }
 
 /* Login Screen */
+.creditTag {
+    text-align: center;
+}
+
 .container-fluid {
     height: 100%;
 }
