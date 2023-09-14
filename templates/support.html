@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NSimon | Support</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
@@ -32,7 +32,7 @@
                 <!-- This will be hidden on mobile -->
                 <a href="/" style="text-decoration: none; color: inherit;">
                     <div class="d-none d-md-inline greeting">
-                        Good evening, <span id="yourName">Placeholder Jones</span>.
+                        <span>Good evening,</span> <span id="yourName">Placeholder Jones</span>.
                     </div>
                 </a>
 
@@ -121,6 +121,7 @@
 
         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePmxr4KLOilJ-NOY9ojB-j2SvaWqow2rI06hg9SVoU9Y8fsw/viewform?embedded=true" width="640" height="966" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
     </div>
+    
 
 
 
@@ -260,6 +261,28 @@
                 console.error('Error:', error);
             });
     </script>
+    <script>
+        let setDarkMode = localStorage.getItem('dark');
+        if(setDarkMode === 'on') {
+          var element = document.body;
+          document.documentElement.setAttribute('data-theme', 'dark');
+          console.log('Dark mode is on')
+        }
+      </script>
+      <script>
+        function toggleTheme() {
+          setDarkMode = localStorage.getItem('dark');
+          if(setDarkMode !== "on") {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            // Set the value of the itwm to "on" when dark mode is on
+            setDarkMode = localStorage.setItem('dark', 'on');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            // Set the value of the item to  "null" when dark mode if off
+            setDarkMode = localStorage.setItem('dark', null);
+        }
+      }
+      </script>
 
 
 
