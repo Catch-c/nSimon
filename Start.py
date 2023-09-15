@@ -120,6 +120,17 @@ def getCookie():
         return jsonify({'status': 200, 'cookie': cookie}), 200
 
 
+@app.route('/api/getUserProfileInfo', methods=['GET'])
+def getUserProfileInfo():
+    cookie = request.args.get('cookie')
+
+    GUID = Simon.getUserInfo(cookie)['d']['guid']
+
+    profileInfo = Simon.getUserProfileInfo(cookie, GUID)
+    if not profileInfo:
+        return jsonify({'status': 404}), 404
+    else:
+        return jsonify({'status': 200, 'data': profileInfo}), 200
 
 
 @app.route('/login', methods=['POST'])
@@ -165,6 +176,23 @@ def dashboard():
         return redirect(url_for('home'))
 
     return render_template('dashboard.html', cookie=cookie, campus=campus)   
+
+@app.route('/profile')
+def profile():
+    cookie = request.cookies.get('adAuthCookie')
+    campus = request.cookies.get('campus')
+
+    if not cookie:
+        return redirect(url_for('home'))
+
+    if not campus:
+        return redirect(url_for('home'))
+
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for('home'))
+
+
+    return render_template('profile.html', cookie=cookie, campus=campus)   
 
 
 @app.route('/support')
