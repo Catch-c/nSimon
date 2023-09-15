@@ -36,7 +36,6 @@ playwright install
 Run the Application:
 
 ```
-Copy code
 python start.py
 ```
 Access nSimon:
