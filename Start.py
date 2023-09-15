@@ -1,3 +1,4 @@
+# --[[ Imports ]]--
 from flask import (
     Flask,
     request,
@@ -11,10 +12,23 @@ from flask import (
 import Simon as Simon
 import requests
 
+
+
+
+
+
+# --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
+VERSION = "1.0.0"
 
 
+
+
+
+
+# --[[ API Routes ]]--
+#       --[[ getTimetable () ]]--
 @app.route("/api/getTimetable", methods=["GET"])
 def getTimetable():
     cookie = request.args.get("cookie")
@@ -23,6 +37,7 @@ def getTimetable():
     return jsonify(Simon.getTimetable(cookie, date)), 200
 
 
+#       --[[ getDailyMessages () ]]--
 @app.route("/api/getDailyMessages", methods=["GET"])
 def getMessages():
     cookie = request.args.get("cookie")
@@ -31,6 +46,7 @@ def getMessages():
     return jsonify(Simon.getDailyMessages(cookie, date)), 200
 
 
+#       --[[ getUserInfo () ]]--
 @app.route("/api/getUserInfo", methods=["GET"])
 def getUserInfo():
     cookie = request.args.get("cookie")
@@ -38,6 +54,7 @@ def getUserInfo():
     return jsonify(Simon.getUserInfo(cookie)), 200
 
 
+#       --[[ getClasses () ]]--
 @app.route("/api/getClasses", methods=["GET"])
 def getClasses():
     cookie = request.args.get("cookie")
@@ -45,6 +62,7 @@ def getClasses():
     return jsonify(Simon.getClasses(cookie)), 200
 
 
+#       --[[ getToday () ]]--
 @app.route("/api/getToday", methods=["GET"])
 def getToday():
     cookie = request.args.get("cookie")
@@ -52,6 +70,7 @@ def getToday():
     return jsonify(Simon.getToday(cookie)), 200
 
 
+#       --[[ getWeather () ]]--
 @app.route("/api/getWeather", methods=["GET"])
 def getWeather():
     campus = request.cookies.get("campus")
@@ -116,6 +135,7 @@ def getWeather():
         ), 200
 
 
+#       --[[ checkCookie () ]]--
 @app.route("/api/checkCookie", methods=["GET"])
 def checkCookie():
     cookie = request.args.get("cookie")
@@ -126,6 +146,7 @@ def checkCookie():
         return jsonify({"status": True}), 200
 
 
+#       --[[ getCookie () ]]--
 @app.route("/api/getCookie", methods=["GET"])
 def getCookie():
     username = request.args.get("username")
@@ -140,6 +161,7 @@ def getCookie():
         return jsonify({"status": 200, "cookie": cookie}), 200
 
 
+#       --[[ getUserProfileInfo () ]]--
 @app.route("/api/getUserProfileInfo", methods=["GET"])
 def getUserProfileInfo():
     cookie = request.args.get("cookie")
@@ -153,6 +175,7 @@ def getUserProfileInfo():
         return jsonify({"status": 200, "data": profileInfo}), 200
 
 
+#       --[[ login () ]]--
 @app.route("/login", methods=["POST"])
 def login():
     username = request.form.get("username")
@@ -184,15 +207,20 @@ def login():
         return response
 
 
+
+
+
+
+# --[[ Frontend Routes ]]--
+#       --[[ /logout ]]--
 @app.route("/logout")
 def logout():
     response = make_response(redirect(url_for("dashboard")))
-    response.set_cookie("adAuthCookie", "")
-    response.set_cookie("campus", "")
-
+    response.delete_cookie('adAuthCookie')
+    response.delete_cookie('campus')
     return response
 
-
+#       --[[ /dashboard ]]--
 @app.route("/dashboard")
 def dashboard():
     cookie = request.cookies.get("adAuthCookie")
@@ -207,9 +235,9 @@ def dashboard():
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("dashboard.html", cookie=cookie, campus=campus)
+    return render_template("dashboard.html", cookie=cookie, campus=campus, VERSION=VERSION)
 
-
+#       --[[ /profile ]]--
 @app.route("/profile")
 def profile():
     cookie = request.cookies.get("adAuthCookie")
@@ -224,9 +252,9 @@ def profile():
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("profile.html", cookie=cookie, campus=campus)
+    return render_template("profile.html", cookie=cookie, campus=campus, VERSION=VERSION)
 
-
+#       --[[ /support ]]--
 @app.route("/support")
 def support():
     cookie = request.cookies.get("adAuthCookie")
@@ -238,9 +266,9 @@ def support():
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("support.html", cookie=cookie, campus=campus)
+    return render_template("support.html", cookie=cookie, campus=campus, VERSION=VERSION)
 
-
+#       --[[ /settings ]]--
 @app.route("/settings")
 def settings():
     cookie = request.cookies.get("adAuthCookie")
@@ -252,9 +280,9 @@ def settings():
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("settings.html", cookie=cookie, campus=campus)
+    return render_template("settings.html", cookie=cookie, campus=campus, VERSION=VERSION)
 
-
+#       --[[ / ]]--
 @app.route("/")
 def home():
     cookie = request.cookies.get("adAuthCookie")
@@ -263,10 +291,17 @@ def home():
     return render_template("home.html")
 
 
+
+
+
+
+# --[[ Start ]]--
+#       --[[ PRODUCTION ]]--
 if __name__ == "__main__":
     from waitress import serve
     print("STARTED!")
     serve(app, host="0.0.0.0", port=8080)
 
+#       --[[ TESTING ]]--
 # if __name__ == "__main__":
 #     app.run(debug=True, port=8080)
