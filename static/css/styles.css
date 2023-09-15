@@ -28,13 +28,10 @@
     --nav-shadow: rgba(0,0,0);
 }
 
-html {
-    transition: all 0.4s
-}
-
 body {
     background-color: var(--bg-color);
     color: var(--font-color);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 h1 {
