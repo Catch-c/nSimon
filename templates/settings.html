@@ -132,11 +132,10 @@
                 <h4 class="pageSubtitle" style="font-weight: 600;">Settings
                 </h4>
 
-                <form id="settings">
-                    <div class="class rounded p-3 mb-2" id="timetableLoading">
+                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
                         <button class="class-name" onclick="toggleTheme()">Toggle Dark Mode</span><br>
                     </div>
-                    <div class="class rounded p-3 mb-2" id="timetableLoading">
+                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
                         <span class="class-name">Selected Campus</span><br>
                         <select class="settingsSelect" id="campusSelection" name="campusSelection">
                             <option value="Berwick" selected>BERWICK</option>
@@ -145,14 +144,19 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="submitButton rounded p-3 mb-2"> Save Settings </button>
+                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
+                        <span class="class-name">Show Music Lessons on Daily Messages</span><br>
+                        <select class="settingsSelect" id="musicSelection" name="musicSelection">
+                            <option value="Hide">HIDE</option>
+                            <option value="Show" selected>SHOW</option>
+                        </select>
+                    </div>
 
-                    <a href="/" class="submitButton rounded p-3" style="text-decoration: none" role="button"> Home
-                    </a>
+
+                    <a href="/" class="submitButton rounded p-3" style="text-decoration: none" role="button">Home</a>
                 
 
 
-                </form>
 
 
             </div>
@@ -178,25 +182,6 @@
             if (parts.length === 2) return parts.pop().split(";").shift();
         }
 
-        window.onload = function () {
-            // Get the value of the cookie named 'myCookie'
-            var cookieValue = getCookie("campus");
-
-            // If the cookie has a value, set that value as the selected option in the dropdown
-            if (cookieValue) {
-                document.getElementById("campusSelection").value = cookieValue;
-            }
-        }
-
-        document.getElementById("settings").addEventListener("submit", function (event) {
-            event.preventDefault();
-            var value = document.getElementById("campusSelection").value;
-            setCookie("campus", value, 30);
-            var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
-            toastEl.show();
-            
-
-        });
 
         // Function to set a cookie
         function setCookie(name, value, days) {
@@ -342,6 +327,59 @@
                 console.error('Error:', error);
             });
     </script>
+
+    <!-- Music Selection -->
+    <script>
+        let musicLessons = localStorage.getItem('musicLessons');
+
+        if (musicLessons) {
+            document.getElementById("musicSelection").value = musicLessons;
+        }
+    </script>
+    <script>
+
+        document.getElementById("musicSelection").addEventListener("change", function (event) {
+            event.preventDefault();
+
+            var value = document.getElementById("musicSelection").value;
+
+            setMusicSelection = localStorage.setItem('dark', 'on');
+            
+            if (value == "Show") {
+                setMusicSelection = localStorage.setItem('musicLessons', 'Show');
+            } else {
+                setMusicSelection = localStorage.setItem('musicLessons', 'Hide');
+            }
+
+            var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
+            toastEl.show();
+        });
+
+    </script>
+
+    <!-- Campus Selection -->
+    <script>
+        window.onload = function () {
+            // Get the value of the cookie named 'myCookie'
+            var cookieValue = getCookie("campus");
+
+            // If the cookie has a value, set that value as the selected option in the dropdown
+            if (cookieValue) {
+                document.getElementById("campusSelection").value = cookieValue;
+            }
+        }
+    </script>
+    <script>
+        document.getElementById("campusSelection").addEventListener("change", function (event) {
+            event.preventDefault();
+            var value = document.getElementById("campusSelection").value;
+            setCookie("campus", value, 30);
+            var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
+            toastEl.show();
+        });
+    </script>
+
+    <!-- Dark Mode -->
     <script>
         let setDarkMode = localStorage.getItem('dark');
         if(setDarkMode === 'on') {
@@ -349,8 +387,8 @@
           document.documentElement.setAttribute('data-theme', 'dark');
           console.log('Dark mode is on')
         }
-      </script>
-      <script>
+    </script>
+    <script>
         function toggleTheme() {
           setDarkMode = localStorage.getItem('dark');
           if(setDarkMode !== "on") {
@@ -363,7 +401,7 @@
             setDarkMode = localStorage.setItem('dark', null);
         }
       }
-      </script>
+    </script>
 
 
 
