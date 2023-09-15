@@ -303,13 +303,11 @@
                 <div class="big-box rounded p-3 mb-2">
 
                     <h4 class="pageSubtitle" style="font-weight: 600;">Timetable
-                        <button id="prevDay" class="btn btn-sm"><i class="bi bi-arrow-left"
-                                style="color: white"></i></button>
+                        <button id="prevDay" class="btn btn-sm pageSubtitleSub"><i class="bi bi-arrow-left"></i></button>
                         <span style="font-size:medium;" id="timetableDay" class="pageSubtitleSub">
                             LOADING...
                         </span>
-                        <button id="nextDay" class="btn btn-sm"><i class="bi bi-arrow-right"
-                                style="color: white"></i></button>
+                        <button id="nextDay" class="btn btn-sm pageSubtitleSub"><i class="bi bi-arrow-right"></i></button>
                     </h4>
 
                     <div id="timetable">
@@ -640,6 +638,8 @@
 
             const divElement = document.getElementById('timetableLoading');
             divElement.style.display = 'none';
+            document.getElementById('prevDay').disabled = false
+            document.getElementById('nextDay').disabled = false
 
 
         }
@@ -648,11 +648,21 @@
         currentDate = new Date();
 
         document.getElementById('prevDay').addEventListener('click', function () {
+            const timetableDayText = document.getElementById('timetableDay');
+            timetableDayText.textContent = "LOADING"
+
+            document.getElementById('prevDay').disabled = true
+            document.getElementById('nextDay').disabled = true
             currentDate.setDate(currentDate.getDate() - 1);
             fetchTimetable(currentDate);
         });
 
         document.getElementById('nextDay').addEventListener('click', function () {
+            const timetableDayText = document.getElementById('timetableDay');
+            timetableDayText.textContent = "LOADING"
+
+            document.getElementById('prevDay').disabled = true
+            document.getElementById('nextDay').disabled = true
             currentDate.setDate(currentDate.getDate() + 1);
             fetchTimetable(currentDate);
         });
@@ -662,7 +672,7 @@
             document.getElementById('timetable').innerHTML = '';
 
             const classDiv = document.createElement('div');
-            classDiv.classList.add('class', 'rounded', 'p-3', 'mb-2');
+            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
             classDiv.id = "timetableLoading"
 
             const colorDotSpan = document.createElement('span');

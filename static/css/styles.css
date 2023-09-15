@@ -20,6 +20,9 @@
     --small-box-color: #ffffff;
 
     --nav-shadow: rgba(0,0,0);
+    --sidebar-shadow: rgb(124, 124, 124);
+
+    --subtitle-sub-color: #2c2c2c;
 }
 
 [data-theme="dark"] {
@@ -38,6 +41,11 @@
     --small-box-color: #292929;
 
     --nav-shadow: rgba(0,0,0);
+    --sidebar-shadow: rgba(0,0,0);
+
+
+    --subtitle-sub-color: #b9b9b9;
+
 }
 
 body {
@@ -75,7 +83,7 @@ span {
     transition: 0.5s;
     z-index: 1000;
     padding: 20px;
-    box-shadow: -3px 0 5px 0 var(--shadow);
+    box-shadow: -3px 0 5px 0 var(--sidebar-shadow);
 }
 
 .navbar {
@@ -96,9 +104,11 @@ span {
     right: 20px;
     top: 20px;
     /* This will align it with the top padding of the sidebar */
-    font-size: 30px;
     border: none;
+    background: none;
+    font-size: 30px;
     cursor: pointer;
+    color: var(--font-color);
 }
 
 .links-section {
@@ -132,6 +142,10 @@ span {
 
 .sidebarSchoolLink:hover {
     color: rgb(157, 157, 157);
+}
+
+.pageSubtitleSub {
+    color: var(--subtitle-sub-color);
 }
 
 .big-box {
@@ -211,22 +225,28 @@ span {
 /* Settings */
 .settingsSelect {
     padding: 8px 12px;
-    box-shadow: 2px 2px 20px var(--shadow);
+    box-shadow: 0.5px 0.5px 5px var(--nav-shadow);
     border-radius: 4px;
+    border: none;
     text-align: center;
 }
 
-.submitButton {
-    box-shadow: 3px 3px 10px var(--shadow);
+.toggleDarkModeButton {
+    padding: 8px 12px;
+    box-shadow: 0.5px 0.5px 5px var(--nav-shadow);
+    border-radius: 4px;
     border: none;
-    background-color: var(--buttons);
-    color: var(--button-text);
+    text-align: center;
 }
 
-.submitButton:hover {
-    box-shadow: 3px 3px 10px var(--shadow);
+.toggleDarkModeButton:hover {
+    padding: 8px 12px;
+    box-shadow: 0.5px 0.5px 5px var(--nav-shadow);
+    border-radius: 4px;
     border: none;
+    text-align: center;
 }
+
 
 /* Login Screen */
 .creditTag {
