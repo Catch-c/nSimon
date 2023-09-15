@@ -3,23 +3,33 @@
 */
 
 :root {
-    --primary-color: #58068f;
-    --secondary-color: #6596df;
+    --primary-color: #1976d2;
+    --secondary-color: #424242;
+    --banner-color: rgb(0,95,157);
+    --banner-text: white;
     --font-color: black;
     --bg-color: #fff;
     --heading-color: #292922;
     --buttons: #212529;
     --button-text: white;
+    --shadow: #c9c9c9;
+    --nav-shadow: rgba(0,0,0);
 }
 
 [data-theme="dark"] {
-    --primary-color: #9A97F3;
+    --primary-color: #1976d2;
     --secondary-color: #ffffff;
     --font-color: #ffffff;
     --bg-color: #1c1c1c;
     --heading-color: #818cab;
     --buttons: white;
     --button-text: black;
+    --shadow: #2b2b2b;
+    --nav-shadow: rgba(0,0,0);
+}
+
+html {
+    transition: all 0.4s
 }
 
 body {
@@ -28,7 +38,7 @@ body {
 }
 
 h1 {
-    color: var(--secondary-color);
+    color: var(--primary-color);
 }
 
 a {
@@ -56,6 +66,20 @@ span {
     transition: 0.5s;
     z-index: 1000;
     padding: 20px;
+    box-shadow: -3px 0 5px 0 var(--shadow);
+}
+
+.navbar {
+    background-color: var(--banner-color);
+    color: var(--banner-text);
+    font-size: 1.25rem;
+    padding-bottom: 0;
+    font-weight: bold;
+    box-shadow: 0px 1px 20px 0px var(--nav-shadow);
+}
+
+.navbar span {
+    color: white;
 }
 
 .closeBtn {
@@ -104,7 +128,7 @@ span {
 .class {
     padding: 10px;
     margin-bottom: 10px;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 20px 0 var(--shadow);
 }
 
 .class-name {
@@ -131,9 +155,10 @@ span {
 
 .messages-container {
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 10px;
     margin-bottom: 10px;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 20px 0 var(--shadow);
 }
 
 .messages-container::-webkit-scrollbar-thumb {
@@ -155,23 +180,38 @@ span {
         height: auto;
     }
 }
+
+::-webkit-scrollbar {
+    width: 5px;
+  }
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 5px;
+}
+
 /* Settings */
 .settingsSelect {
     padding: 8px 12px;
-    box-shadow: 3px 3px 10px rgba(48, 48, 48, 0.2);
+    box-shadow: 2px 2px 20px var(--shadow);
     border-radius: 4px;
     text-align: center;
 }
 
 .submitButton {
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 10px var(--shadow);
     border: none;
     background-color: var(--buttons);
     color: var(--button-text);
 }
 
 .submitButton:hover {
-    box-shadow: 3px 3px 10px rgba(48, 48, 48, 0.2);
+    box-shadow: 3px 3px 10px var(--shadow);
     border: none;
 }
 
@@ -230,3 +270,4 @@ button.dmt {
     left:0;
     bottom:0;
 }
+

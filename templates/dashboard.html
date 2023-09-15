@@ -34,24 +34,24 @@
     <!-- NavBar & Sidebar -->
     <nav class="navbar">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1" style="font-weight: 700; color: white;">
+            <span class="navbar-brand h4">
 
                 <!-- This will be hidden on mobile -->
                 <a href="/" style="text-decoration: none; color: inherit;">
                     <div class="d-none d-md-inline greeting">
-                        <span>Good evening,</span> <span id="yourName">Placeholder Jones</span>.
+                        Good evening, <span id="yourName">Placeholder Jones</span><span style="margin-right: 10px;">.</span> 
                     </div>
                 </a>
 
                 <!-- This will always be visible -->
-                <span class="greetingTime" style="font-size:medium;">
+                <span class="greetingTime" style="font-size:large;">
                     <span id="currentDate">1/01/2023</span>
                     <span id="currentTime">0:00AM</span>
                 </span>
 
             </span>
 
-            <button class="btn" id="hamburgerBtn">
+            <button class="btn" id="hamburgerBtn" style="color: white;">
                 <i class="bi bi-list hamburgerMenu"></i>
 
             </button>
@@ -64,7 +64,7 @@
         <div class="links-section">
             <a href="/" class="sidebarLink">Home</a>
             <a href="/settings" class="sidebarLink">Settings</a>
-            <a href="https://discord.gg/zUZv7GVEuF" class="sidebarLink">Discord (Support)</a>
+            <a href="https://discord.gg/yDRndGT5G9" class="sidebarLink">Discord (Support)</a>
             <a href="/support" class="sidebarLink">Support</a>
             <a href="/logout" class="sidebarLink">Logout</a>
         </div>
@@ -158,7 +158,7 @@
                 <h4 class="pageSubtitle" style="font-weight: 600;">Daily Messages <span style="font-size:medium;"
                         id="totalDailyMessages" class="pageSubtitleSub">LOADING...</span>
                 </h4>
-                <div class="messages-container rounded p-3" id="dailyMessages">
+                <div class="messages-container rounded p-3" id="dailyMessages" style="overflow-y:scroll;">
                     <div id="dailyMessagesLoading">
                         <h6>LOADING...</h6>
                         <div style="font-size:75%;"> Your daily messages are loading...</div>
