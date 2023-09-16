@@ -26,6 +26,7 @@
     <link color="#5bbad5" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" rel="mask-icon" />
     <meta content="#da532c" name="msapplication-TileColor" />
     <meta content="#3a3a3a" name="theme-color" />
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
 
 </head>
 <style>
@@ -140,9 +141,10 @@
                             id="weatherCampus" class="pageSubtitleSub">Berwick</span>
                     </h4>
                     <div class="small-box rounded p-3 mb-2">
+                        <img id="weatherIcon" src="https://openweathermap.org/img/wn/01d.png" alt="Weather Icon" width="35px" height="35px">
                         <span class="class-name" id="currentWeather">Loading°</span>
-                        <span class="time" id="upcomingWeather">Loading° | Loading° | Loading°</span>
-                        <div class="teacher-name" id="weatherInformation">☀️ Loading | 🌑 Loading | 🌧️ Loading</div>
+                        <span class="time" id="minMax">⬇️ Loading° | ⬆️ Loading° | 🤔 Loading°</span>
+                        <div class="teacher-name" id="weatherInformation">Loading...</div>
                     </div>
                 </div>
 
@@ -836,17 +838,21 @@
         fetch(`/api/getWeather`)
             .then(response => response.json())
             .then(data => {
-                const currentWeather = document.getElementById('currentWeather');
-                currentWeather.textContent = data.currentTemp + '°'
 
-                const upcomingWeather = document.getElementById('upcomingWeather');
-                upcomingWeather.textContent = data.oneHour + '° | ' + data.twoHour + '° | ' + data.threeHour + '° '
+                const weatherIcon = document.getElementById('weatherIcon');
+                weatherIcon.src = data.currentIcon;
+
+                const currentWeather = document.getElementById('currentWeather');
+                currentWeather.textContent = data.currentTemperature.toFixed(1) + '°';
+
+                const upcomingWeather = document.getElementById('minMax');
+                upcomingWeather.textContent = `⬇️ ${data.mininumTemperature.toFixed(1)}° | ⬆️ ${data.maximumTemperature.toFixed(1)}° | 🤔 ${data.currentFeelsLikeTemperature.toFixed(1)}°`;
 
                 const weatherInformation = document.getElementById('weatherInformation');
-                weatherInformation.textContent = "☀️ " + convertToAMPM(data.sunrise) + " | 🌑 " + convertToAMPM(data.sunset) + " | 🌧️ " + data.precipitation + "ml"
+                weatherInformation.textContent = `${data.currentDescription}`;
 
                 const weatherCampus = document.getElementById('weatherCampus');
-                weatherCampus.textContent = data.campus
+                weatherCampus.textContent = data.campus;
             })
             .catch(error => {
                 console.error('Error:', error);

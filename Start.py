@@ -20,7 +20,7 @@ import requests
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 
 
@@ -87,35 +87,31 @@ def getWeather():
             LATITUDE = -38.062630
             LONGITUDE = 145.431780
 
-    requestURL = f"https://api.open-meteo.com/v1/forecast?latitude={LATITUDE}&longitude={LONGITUDE}&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,uv_index_clear_sky_max,precipitation_sum,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_probability_max,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant,shortwave_radiation_sum,et0_fao_evapotranspiration&current_weather=true&timezone=Australia%2FSydney&models=best_match"
+    requestURL = f"https://api.openweathermap.org/data/2.5/weather?lat={LATITUDE}&lon={LONGITUDE}&units=metric&appid=2c6e63b60282458a0d113423de04dc8d"
     response = requests.get(requestURL)
     data = response.json()
 
     if response.status_code == 200:
-        current_temp = data["current_weather"]["temperature"]
-        current_time = data["current_weather"]["time"]
 
-        time_part = current_time.split("T")[1]
-        hour = int(time_part.split(":")[0])
+        currentTemperature = data["main"]["temp"]
+        currentFeelsLikeTemperature = data["main"]["feels_like"]
+        mininumTemperature = data["main"]["temp_min"]
+        maximumTemperature = data["main"]["temp_max"]
 
-        next_hour_temp = data["hourly"]["temperature_2m"][hour + 1]
-        next_2_hour_temp = data["hourly"]["temperature_2m"][hour + 2]
-        next_3_hour_temp = data["hourly"]["temperature_2m"][hour + 3]
+        currentDescription = data['weather'][0]['main']
+        currentIcon = f"http://openweathermap.org/img/wn/{data['weather'][0]['icon']}.png"
 
-        sunrise = data["daily"]["sunrise"][0].split("T")[1]
-        sunset = data["daily"]["sunset"][0].split("T")[1]
 
         return (
             jsonify(
                 {
                     "campus": campus,
-                    "currentTemp": current_temp,
-                    "oneHour": next_hour_temp,
-                    "twoHour": next_2_hour_temp,
-                    "threeHour": next_3_hour_temp,
-                    "sunrise": sunrise,
-                    "sunset": sunset,
-                    "precipitation": data["daily"]["precipitation_sum"][0],
+                    "currentTemperature": currentTemperature,
+                    "currentFeelsLikeTemperature": currentFeelsLikeTemperature,
+                    "mininumTemperature": mininumTemperature,
+                    "maximumTemperature": maximumTemperature,
+                    "currentDescription": currentDescription,
+                    "currentIcon": currentIcon,
                 }
             ),
             200,
@@ -124,13 +120,12 @@ def getWeather():
         jsonify(
             {
                 "campus": campus,
-                "currentTemp": "??",
-                "oneHour": "??",
-                "twoHour": "??",
-                "threeHour": "??",
-                "sunrise": "?:??",
-                "sunset": "?:??",
-                "precipitation": "???",
+                "currentTemperature": "??",
+                "currentFeelsLikeTemperature": "??",
+                "mininumTemperature": "??",
+                "maximumTemperature": "??",
+                "currentDescription": "??",
+                "currentIcon": "https://openweathermap.org/img/wn/01d.png",
             }
         ), 200
 
