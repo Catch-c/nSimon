@@ -211,8 +211,8 @@ def login():
 @app.route("/logout")
 def logout():
     response = make_response(redirect(url_for("dashboard")))
-    response.delete_cookie('adAuthCookie')
-    response.delete_cookie('campus')
+    response.set_cookie("adAuthCookie", "")
+    response.set_cookie("campus", "")
     return response
 
 #       --[[ /dashboard ]]--
