@@ -207,7 +207,7 @@ span {
 
 @media (min-width: 768px) {
     .messages-container {
-        height: 525px;
+        height: 480px;
     }
 }
 

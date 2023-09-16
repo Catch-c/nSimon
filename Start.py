@@ -20,7 +20,7 @@ import requests
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
-VERSION = "1.0.2"
+VERSION = "1.1.0"
 
 
 
@@ -35,6 +35,15 @@ def getTimetable():
     date = request.args.get("date")
 
     return jsonify(Simon.getTimetable(cookie, date)), 200
+
+#       --[[ getCalendar () ]]--
+@app.route("/api/getCalendar", methods=["GET"])
+def getCalendar():
+    cookie = request.args.get("cookie")
+    date = request.args.get("date")
+
+
+    return jsonify(Simon.getCalendar(cookie, f"{date}T14:00:00.000Z")), 200
 
 
 #       --[[ getDailyMessages () ]]--
@@ -285,6 +294,22 @@ def home():
         return redirect(url_for("dashboard"))
     return render_template("home.html")
 
+#       --[[ /calendar ]]--
+@app.route("/calendar")
+def calendar():
+    cookie = request.cookies.get("adAuthCookie")
+    campus = request.cookies.get("campus")
+
+    if not cookie:
+        return redirect(url_for("home"))
+
+    if not campus:
+        return redirect(url_for("home"))
+
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for("home"))
+
+    return render_template("calendar.html", cookie=cookie, campus=campus, VERSION=VERSION)
 
 
 

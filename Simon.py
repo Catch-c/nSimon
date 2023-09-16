@@ -243,4 +243,19 @@ def getUserProfileInfo(cookieRaw, uuid):
 
     return profileInformation
     
-        
+def getCalendar(cookie, date):
+    url = "https://simon.sfx.vic.edu.au/Default.asmx/GetWorkdeskCalendar"
+    headers = {
+        "Content-Type": "application/json",
+        "Cookie": f"adAuthCookie={cookie}"
+    }
+
+    data = {
+        "startOfWeek": date,
+    }
+    print(date)
+
+
+    response = requests.post(url, headers=headers, json=data)
+
+    return response.json()
