@@ -54,15 +54,15 @@
           <b>NSimon</b> is a custom version of SIMON for SFX that utilises their API to get your information.<br />
           <b>Logging In</b><br />
           You can login to NSimon using the same username (EG: JDoe21), and the same password that you would usually log
-          into SIMON or your Laptop using. You can then select your Campus. Campus selection can be edited within
-          settings once you are logged in and is used for getting relevent weather information and timetable rooms.
+          into SIMON or your Laptop using.
+          <br>
           <b>Support/Suggestions</b><br />
           If you have any suggestions, or need any support feel free to contact us on our Discord by clicking the button
           below. You can also choose to contact us via a form found in the side bar once you are logged in. <b>It is
             highly recommended to join our Discord to stay up to date, and get new information.</b>
         </div>
         <div class="modal-footer">
-          <a class="btn btn-primary" href="https://discord.gg/yDRndGT5G9" role="button">Join Discord</a>
+          <a class="btn btn-primary" href="https://discord.gg/fh2ZbUe3hK" role="button">Join Discord</a>
           <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
         </div>
       </div>
@@ -84,6 +84,9 @@
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
+    <script>
+      console.log("{{message}}")
+    </script>
     <div aria-atomic="true" aria-live="assertive" class="toast align-items-center text-white bg-danger border-0"
       role="alert">
       <div class="d-flex">
@@ -134,12 +137,15 @@
           <button class="btn btn-dark" id="loginButton" type="submit">Login</button>
           
         </form>
+        <br>
+        <span>{{VERSION}}</span>
+        
       </main>
 
 
 
   </div>
-  <h5 class="creditTag">Made by Catch & Kavenci</h1>
+  <h5 class="creditTag">Made by Catch & Kavenci</h5>
   <div id="dmt-button">
     <button class="dmt" onclick="toggleTheme()"> Toggle Light Mode
   </div>

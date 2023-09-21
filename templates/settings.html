@@ -70,6 +70,54 @@
             <a href="/" class="sidebarLink">Home</a>
             <a href="/profile" class="sidebarLink">Profile</a>
             <a href="/settings" class="sidebarLink">Settings</a>
+            <a href="/calendar" class="sidebarLink">Calendar</a>
+            <a href="/classes" class="sidebarLink">Classes</a>
+            <a href="https://discord.gg/fh2ZbUe3hK" class="sidebarLink">Discord (Support)</a>
+            <a href="/support" class="sidebarLink">Support</a>
+            <a href="/logout" class="sidebarLink">Logout</a>
+        </div>
+
+        <div class="school-links-section">
+            <br>
+            <span class="sidebarTitle">School Links</span><br>
+
+            <span class="sidebarSubtitle">General Resources</span><br>
+            <a href="https://simon.sfx.vic.edu.au/" class="sidebarSchoolLink">• SIMON</a><br>
+            <a href="https://www.sfxcareers.com.au/" class="sidebarSchoolLink">• Careers</a><br>
+            <a href="https://shop.sfx.vic.edu.au/mymonitor/" class="sidebarSchoolLink">• CDF Pay</a><br>
+            <a href="http://bea-v-print-01:9191/app" class="sidebarSchoolLink">• WebPrint</a><br><br>
+
+            <span class="sidebarSubtitle">College Links</span><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=19761&KBankID=11"
+                class="sidebarSchoolLink">• 2022 Yearbook</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=14283&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• College Awards/Colours</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=21040&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• 2024 Beaconsfield Leadership</a><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=18795&KBankID=25&UserID=25"
+                class="sidebarSchoolLink">• 2024 Berwick/Officer Leadership</a><br>
+            <a href="https://saml-in3.clickview.com.au/Shibboleth.sso/STF1792" class="sidebarSchoolLink">•
+                Clickview</a><br>
+
+        </div>
+
+        <div class="school-links-section">
+            <br>
+            <span class="sidebarTitle">Version</span><br>
+
+            <span class="sidebarSubtitle">{{ VERSION }}</span><br>
+
+
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <button class="closeBtn">&times;</button>
+
+        <div class="links-section">
+            <a href="/" class="sidebarLink">Home</a>
+            <a href="/profile" class="sidebarLink">Profile</a>
+            <a href="/settings" class="sidebarLink">Settings</a>
             <a href="https://discord.gg/yDRndGT5G9" class="sidebarLink">Discord (Support)</a>
             <a href="/support" class="sidebarLink">Support</a>
             <a href="/logout" class="sidebarLink">Logout</a>
@@ -171,20 +219,38 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    
+    <!-- Get Cookie/Campus -->
+    <script>
+        function getCookie(cookieName) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(cookieName + '=')) {
+                    return cookie.substring(cookieName.length + 1);
+                }
+            }
+            return null;
+        }
+
+        const authCookie = getCookie('adAuthCookie');
+        const campus = getCookie('campus');
+
+        if (authCookie == null) {
+            window.location.href = '/logout';
+        }
+
+        if (campus == null) {
+            window.location.href = '/logout';
+        }
+
+    </script>
 
     <!-- Variables -->
     <script>
 
 
-        
-
-        
-
-        function getCookie(name) {
-            var value = "; " + document.cookie;
-            var parts = value.split("; " + name + "=");
-            if (parts.length === 2) return parts.pop().split(";").shift();
-        }
+    
 
 
         // Function to set a cookie
@@ -320,7 +386,7 @@
 
     <!-- User Information -->
     <script>
-        fetch(`/api/getUserInfo?cookie={{cookie}}`)
+        fetch(`/api/getUserInfo?cookie=${authCookie}`)
             .then(response => response.json())
             .then(data => {
                 const yourNameText = document.getElementById('yourName');
@@ -346,8 +412,6 @@
             event.preventDefault();
 
             var value = document.getElementById("musicSelection").value;
-
-            setMusicSelection = localStorage.setItem('dark', 'on');
             
             if (value == "Show") {
                 setMusicSelection = localStorage.setItem('musicLessons', 'Show');

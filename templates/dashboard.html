@@ -72,7 +72,9 @@
             <a href="/" class="sidebarLink">Home</a>
             <a href="/profile" class="sidebarLink">Profile</a>
             <a href="/settings" class="sidebarLink">Settings</a>
-            <a href="https://discord.gg/yDRndGT5G9" class="sidebarLink">Discord (Support)</a>
+            <a href="/calendar" class="sidebarLink">Calendar</a>
+            <a href="/classes" class="sidebarLink">Classes</a>
+            <a href="https://discord.gg/fh2ZbUe3hK" class="sidebarLink">Discord (Support)</a>
             <a href="/support" class="sidebarLink">Support</a>
             <a href="/logout" class="sidebarLink">Logout</a>
         </div>
@@ -287,6 +289,9 @@
                     <div class="small-box rounded p-3 mb-2">
                         <a href="/profile" style="text-decoration: none"><span class="class-name">Profile <i class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>                        
                     </div>
+                    <div class="small-box rounded p-3 mb-2">
+                        <a href="/classes" style="text-decoration: none"><span class="class-name">Classes <i class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>                        
+                    </div>
                 </div>
 
             </div>
@@ -350,6 +355,33 @@
 
 
     <!-- Variables -->
+    
+    <!-- Get Cookie/Campus -->
+    <script>
+        function getCookie(cookieName) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(cookieName + '=')) {
+                    return cookie.substring(cookieName.length + 1);
+                }
+            }
+            return null;
+        }
+
+        const authCookie = getCookie('adAuthCookie');
+        const campus = getCookie('campus');
+
+        if (authCookie == null) {
+            window.location.href = '/logout';
+        }
+
+        if (campus == null) {
+            window.location.href = '/logout';
+        }
+
+    </script>
+
     <script>
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Days of the Week
         let currentDate = new Date(); // Current Date
@@ -503,7 +535,7 @@
 
     <!-- User Information -->
     <script>
-        fetch(`/api/getUserInfo?cookie={{cookie}}`)
+        fetch(`/api/getUserInfo?cookie=${authCookie}`)
             .then(response => response.json())
             .then(data => {
                 const yourNameText = document.getElementById('yourName');
@@ -722,7 +754,7 @@
 
             if (currentDay == "Saturday" || currentDay == "Sunday") {
                 // Timetable
-                fetch(`/api/getTimetable?cookie={{cookie}}&date=${getNextMonday(currentISOString)}`)
+                fetch(`/api/getTimetable?cookie=${authCookie}&date=${getNextMonday(currentISOString)}`)
                     .then(response => response.json())
                     .then(data => {
                         addTimetable(data, true)
@@ -732,7 +764,7 @@
                     });
             } else {
 
-                fetch(`/api/getTimetable?cookie={{cookie}}&date=${currentISOString}`)
+                fetch(`/api/getTimetable?cookie=${authCookie}&date=${currentISOString}`)
                     .then(response => response.json())
                     .then(data => {
                         addTimetable(data, false)
@@ -784,7 +816,7 @@
     </script>
     <!-- Daily Messages -->
     <script>
-        fetch(`/api/getDailyMessages?cookie={{cookie}}&date=${currentISOString}`)
+        fetch(`/api/getDailyMessages?cookie=${authCookie}&date=${currentISOString}`)
             .then(response => response.json())
             .then(data => {
                 const dataContainer = document.getElementById('dailyMessages');
@@ -879,7 +911,7 @@
 
     <!-- Classes (Due, Results, Overdue) -->
     <script>
-        fetch(`/api/getClasses?cookie={{cookie}}`)
+        fetch(`/api/getClasses?cookie=${authCookie}`)
             .then(response => response.json())
             .then(data => {
 
@@ -958,7 +990,7 @@
 
     <!-- Today -->
     <script>
-        fetch(`/api/getToday?cookie={{cookie}}`)
+        fetch(`/api/getToday?cookie=${authCookie}`)
             .then(response => response.json())
             .then(data => {
                 const dataContainer = document.getElementById('todayActivities');

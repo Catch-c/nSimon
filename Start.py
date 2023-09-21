@@ -20,7 +20,7 @@ import requests
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 
 
@@ -69,6 +69,15 @@ def getClasses():
     cookie = request.args.get("cookie")
 
     return jsonify(Simon.getClasses(cookie)), 200
+
+
+#       --[[ getClassTasks () ]]--
+@app.route("/api/getClassTasks", methods=["GET"])
+def getClassTasks():
+    cookie = request.args.get("cookie")
+    classID = request.args.get("classID")
+
+    return jsonify(Simon.getClassTasks(cookie, classID)), 200
 
 
 #       --[[ getToday () ]]--
@@ -187,8 +196,8 @@ def login():
 
     status, cookie = Simon.login(username, password)
 
-    if status == 404:
-        flash("This is a message from the backend.")
+    if status != 200:
+        flash(status)
         return redirect(url_for("home"))
     else:
 
@@ -228,41 +237,32 @@ def logout():
 @app.route("/dashboard")
 def dashboard():
     cookie = request.cookies.get("adAuthCookie")
-    campus = request.cookies.get("campus")
 
     if not cookie:
-        return redirect(url_for("home"))
-
-    if not campus:
         return redirect(url_for("home"))
 
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("dashboard.html", cookie=cookie, campus=campus, VERSION=VERSION)
+    return render_template("dashboard.html", VERSION=VERSION)
 
 #       --[[ /profile ]]--
 @app.route("/profile")
 def profile():
     cookie = request.cookies.get("adAuthCookie")
-    campus = request.cookies.get("campus")
 
     if not cookie:
-        return redirect(url_for("home"))
-
-    if not campus:
         return redirect(url_for("home"))
 
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("profile.html", cookie=cookie, campus=campus, VERSION=VERSION)
+    return render_template("profile.html", VERSION=VERSION)
 
 #       --[[ /support ]]--
 @app.route("/support")
 def support():
     cookie = request.cookies.get("adAuthCookie")
-    campus = request.cookies.get("campus")
 
     if not cookie:
         return redirect(url_for("home"))
@@ -270,13 +270,12 @@ def support():
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("support.html", cookie=cookie, campus=campus, VERSION=VERSION)
+    return render_template("support.html", VERSION=VERSION)
 
 #       --[[ /settings ]]--
 @app.route("/settings")
 def settings():
     cookie = request.cookies.get("adAuthCookie")
-    campus = request.cookies.get("campus")
 
     if not cookie:
         return redirect(url_for("home"))
@@ -284,7 +283,7 @@ def settings():
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("settings.html", cookie=cookie, campus=campus, VERSION=VERSION)
+    return render_template("settings.html", VERSION=VERSION)
 
 #       --[[ / ]]--
 @app.route("/")
@@ -292,24 +291,46 @@ def home():
     cookie = request.cookies.get("adAuthCookie")
     if cookie:
         return redirect(url_for("dashboard"))
-    return render_template("home.html")
+    return render_template("home.html", VERSION=VERSION)
 
 #       --[[ /calendar ]]--
 @app.route("/calendar")
 def calendar():
     cookie = request.cookies.get("adAuthCookie")
-    campus = request.cookies.get("campus")
 
     if not cookie:
-        return redirect(url_for("home"))
-
-    if not campus:
         return redirect(url_for("home"))
 
     if not Simon.checkCookie(cookie):
         return redirect(url_for("home"))
 
-    return render_template("calendar.html", cookie=cookie, campus=campus, VERSION=VERSION)
+    return render_template("calendar.html", VERSION=VERSION)
+
+#       --[[ /classes ]]--
+@app.route("/classes")
+def classes():
+    cookie = request.cookies.get("adAuthCookie")
+
+    if not cookie:
+        return redirect(url_for("home"))
+
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for("home"))
+
+    return render_template("classes.html", VERSION=VERSION)
+@app.route('/classes/<classID>', methods=['GET'])
+def classesShow(classID):
+    cookie = request.cookies.get("adAuthCookie")
+
+    if not cookie:
+        return redirect(url_for("home"))
+
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for("home"))
+
+    return render_template("classesShow.html", VERSION=VERSION, classID=classID)
+
+
 
 
 

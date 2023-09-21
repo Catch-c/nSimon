@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>NSimon | Student Profile</title>
+    <title>NSimon | Student Classes</title>
     <!-- Bootstrap & CSS -->
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet" />
@@ -135,112 +135,152 @@
     <div class="mainBody container-fluid h-100">
         <div class="row h-100 pt-3">
             <!-- General Information -->
-            <div class="col-md-12 col-12p-3 order-2 order-md-1">
 
+            <!-- Monday -->
+            <div class="col-md-2 col-12p-3 order-2 order-md-1">
                 <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">General Information</h4>
-                    <div class="small-box rounded p-3 mb-2" style="position: relative;">
-                        <img src="https://i.imgur.com/F6nyzKj.png"
-                            style="border-radius: 10%; min-width: 90px; width: 90px; " alt="Cinque Terre">
+                    <h4 class="pageSubtitle" style="font-weight: 600;">Classes</h4>
 
-                        <span class="class-name ps-3" id="studentName" style="position: absolute;">LOADING</span>
-                        <span class="class-teacher ps-3" id="studentID" style="position: absolute; top: 35px;">Student
-                            ID: LOADING</span>
-                        <span class="class-teacher ps-3" id="studentYearLevel"
-                            style="position: absolute; top: 75px;">Year Level: LOADING</span>
-                        <span class="class-teacher ps-3" id="studentHouse" style="position: absolute; top: 95px;">House:
-                            LOADING</span>
+                    <!-- Events  -->
+                    <div id="classList">
+                        <div class="small-box rounded p-3 mb-2" id="classesLOADING">
+                            <span class="class-name">Classes Loading...</span>
+                        </div>
+
+
                     </div>
+
                 </div>
-
-
             </div>
 
-            <!-- Attendence -->
-            <div class="col-md-3 col-12p-3 order-2 order-md-1">
-
+            <div class="col-md-10 col-12p-3 order-2 order-md-1">
                 <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Attendence</h4>
+                    <h4 class="pageSubtitle" style="font-weight: 600;">Class Information</h4>
+                    <div class="small-box rounded p-3 mb-2">
+                        <span class="class-name">Class: <span style="font-weight: normal" id="className">LOADING</span>
+                    </div>
+                    <div class="small-box rounded p-3 mb-2">
+                        <span class="class-name">Teacher: <span style="font-weight: normal"
+                                id="classTeacher">LOADING</span>
+                    </div>
 
-                    <!-- Progress Bar -->
-                    <div class="small-box rounded p-3 mb-2" style="position: relative;">
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
-                                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="attendenceProgress">LOADING
-                            </div>
+                    <!-- Due -->
+                    <div class="small-box rounded p-3 mb-2" id="dueTasksBox" style="position: relative;">
+                        <span class="color-dot bg-primary me-2"></span>
+                        <span class="class-name" id="dueTasks">0 Due</span>
+                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
+                        <div style="display: none" id="dueTasksExpand">
                         </div>
                     </div>
+                    <script>
+                        $(document).ready(function () {
+                            $('#dueTasksBox').on('click', function () {
+                                var dueTasksExpand = $('#dueTasksExpand');
+                                var arrow = $(this).find('.arrow');
 
-                    <!-- Parent Notified Absences -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Parent Notified Absences: </span><span class="class-name-sub"
-                            id="absencesParentNotified">LOADING</span>
-                    </div>
+                                if (dueTasksExpand.css('display') === 'none') {
+                                    dueTasksExpand.css('display', 'block');
 
-                    <!-- Late to School -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Late to School: </span><span class="class-name-sub"
-                            id="absencesLateToSchool">LOADING</span>
-                    </div>
+                                    arrow.removeClass('bi-arrow-down-circle');
+                                    arrow.addClass('bi-arrow-up-circle');
 
-                    <!-- Leave Passes -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Leave Passes: </span><span class="class-name-sub"
-                            id="absencesLeavePasses">LOADING</span>
-                    </div>
+                                    setTimeout(() => {
+                                        dueTasksExpand.addClass('visible');
+                                    }, 1); // small delay to allow for display:block to take effect
+                                } else {
+                                    dueTasksExpand.removeClass('visible');
+                                    arrow.removeClass('bi-arrow-up-circle');
+                                    arrow.addClass('bi-arrow-down-circle');
+                                    setTimeout(() => {
+                                        dueTasksExpand.css('display', 'none');
+                                    }, 300); // delay to allow for the fade out transition to complete
+                                }
+                            });
+                        });
 
-                    <!-- Sick Passes -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Sick Passes: </span><span class="class-name-sub"
-                            id="absencesSickPasses">LOADING</span>
+
+                    </script>
+
+                    <!-- Overdue -->
+                    <div class="small-box rounded p-3 mb-2" id="overdueTasksBox" style="position: relative;">
+                        <span class="color-dot bg-danger me-2"></span>
+                        <span class="class-name" id="overdueTasks">0 Overdue</span>
+                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
+                        <div style="display: none" id="overdueTasksExpand">
+                        </div>
                     </div>
+                    <script>
+                        $(document).ready(function () {
+                            $('#overdueTasksBox').on('click', function () {
+                                var dueTasksExpand = $('#overdueTasksExpand');
+                                var arrow = $(this).find('.arrow');
+
+                                if (dueTasksExpand.css('display') === 'none') {
+                                    dueTasksExpand.css('display', 'block');
+
+                                    arrow.removeClass('bi-arrow-down-circle');
+                                    arrow.addClass('bi-arrow-up-circle');
+
+                                    setTimeout(() => {
+                                        dueTasksExpand.addClass('visible');
+                                    }, 1); // small delay to allow for display:block to take effect
+                                } else {
+                                    dueTasksExpand.removeClass('visible');
+                                    arrow.removeClass('bi-arrow-up-circle');
+                                    arrow.addClass('bi-arrow-down-circle');
+                                    setTimeout(() => {
+                                        dueTasksExpand.css('display', 'none');
+                                    }, 300); // delay to allow for the fade out transition to complete
+                                }
+                            });
+                        });
+
+
+                    </script>
+
+                    <!-- Results -->
+                    <div class="small-box rounded p-3 mb-2" id="resultTasksBox" style="position: relative;">
+                        <span class="color-dot bg-success me-2"></span>
+                        <span class="class-name" id="resultTasks">Results are coming soon...</span>
+                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
+                        <div style="display: none" id="resultTasksExpand">
+                            <
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            $('#resultTasksBox').on('click', function () {
+                                var dueTasksExpand = $('#resultTasksExpand');
+                                var arrow = $(this).find('.arrow');
+
+                                if (dueTasksExpand.css('display') === 'none') {
+                                    dueTasksExpand.css('display', 'block');
+
+                                    arrow.removeClass('bi-arrow-down-circle');
+                                    arrow.addClass('bi-arrow-up-circle');
+
+                                    setTimeout(() => {
+                                        dueTasksExpand.addClass('visible');
+                                    }, 1); // small delay to allow for display:block to take effect
+                                } else {
+                                    dueTasksExpand.removeClass('visible');
+                                    arrow.removeClass('bi-arrow-up-circle');
+                                    arrow.addClass('bi-arrow-down-circle');
+                                    setTimeout(() => {
+                                        dueTasksExpand.css('display', 'none');
+                                    }, 300); // delay to allow for the fade out transition to complete
+                                }
+                            });
+                        });
+
+
+                    </script>
 
                 </div>
-
-
             </div>
 
-            <!-- Courage & Contributions -->
-            <div class="col-md-3 col-12p-3 order-2 order-md-1">
-
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Courage & Contributions</h4>
 
 
-                    <!-- Total  -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Total: </span><span class="class-name-sub"
-                            id="courageTotal">LOADING</span>
-                    </div>
-
-                    <!-- Leadership in Community and Culture  -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Community and Culture: </span><span class="class-name-sub"
-                            id="courageCommunity">LOADING</span>
-                    </div>
-
-                    <!-- Leadership in Faith and Service -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Faith and Service: </span><span class="class-name-sub"
-                            id="courageFaith">LOADING</span>
-                    </div>
-
-                    <!-- Leadership in Learning -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Learning: </span><span class="class-name-sub"
-                            id="courageLearning">LOADING</span>
-                    </div>
-
-                    <!-- Leadership in Positive Learning Partnerships -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Positive Learning Partnerships: </span><span
-                            class="class-name-sub" id="couragePositive">LOADING</span>
-                    </div>
-
-                </div>
-
-
-            </div>
 
 
         </div>
@@ -301,7 +341,7 @@
 
 
     <!-- Functions -->
-    
+
     <!-- Get Cookie/Campus -->
     <script>
         function getCookie(cookieName) {
@@ -342,131 +382,103 @@
             });
     </script>
 
-    <!-- User Information -->
+    <!-- Classes -->
     <script>
-        fetch(`/api/getUserProfileInfo?cookie=${authCookie}`)
+        fetch(`/api/getClasses?cookie=${authCookie}`)
             .then(response => response.json())
             .then(data => {
-                if (data['status'] == 404) {
-
-                    // GENERAL INFO
-                    let element = document.getElementById('studentName');
-                    element.innerText = "There was an issue while fetching user profile data."
-
-                    element = document.getElementById('studentID');
-                    element.innerText = "Student ID: ???"
-
-                    element = document.getElementById('studentCampus');
-                    element.innerText = "Campus: ???"
-
-                    element = document.getElementById('studentYearLevel');
-                    element.innerText = "Year Level: ???"
-
-                    element = document.getElementById('studentHouse');
-                    element.innerText = "House: ???"
-
-                    // ABSENSES
-                    element = document.getElementById('absencesParentNotified');
-                    element.innerText = "???"
-
-                    element = document.getElementById('absencesLateToSchool');
-                    element.innerText = "???"
-
-                    element = document.getElementById('absencesLeavePasses');
-                    element.innerText = "???"
-
-                    element = document.getElementById('absencesSickPasses');
-                    element.innerText = "???"
-
-                    element = document.getElementById('attendenceProgress');
-                    element.style.width = "100%";
-                    element.setAttribute("aria-valuenow", "100");
-                    element.classList.remove("bg-success");
-                    element.classList.add("bg-danger");
 
 
-                    element.innerText = "??%"
+                // GETTING CLASSES
+                const classContainer = document.getElementById('classList');
+                for (const classS of data.d.Types[0].TimetabledClasses) {
 
-                    // COURAGE
-                    element = document.getElementById('courageTotal');
-                    element.innerText = "???"
+                    const smallBox = document.createElement('div');
+                    smallBox.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
-                    element = document.getElementById('courageFaith');
-                    element.innerText = "???"
+                    const spanElement = document.createElement('span');
+                    spanElement.classList.add('class-name');
 
-                    element = document.getElementById('courageCommunity');
-                    element.innerText = "???"
+                    spanElement.textContent = classS['ClassCode'];
 
-                    element = document.getElementById('courageLearning');
-                    element.innerText = "???"
+                    smallBox.appendChild(spanElement);
 
-                    element = document.getElementById('couragePositive');
-                    element.innerText = "???"
-
-
-
-                } else {
+                    smallBox.addEventListener('click', function () {
+                        window.location.href = `/classes/${classS['ClassID']}`;
+                    });
 
 
-                    // GENERAL INFO
-                    let element = document.getElementById('studentName');
-                    element.innerText = data['data']['name']
+                    classContainer.appendChild(smallBox)
 
-                    element = document.getElementById('studentID');
-                    element.innerText = `Student ID: ${data['data']['studentID']}`
-
-                    element = document.getElementById('studentYearLevel');
-                    element.innerText = `Year Level: ${data['data']['yearLevel']}`
-
-                    element = document.getElementById('studentHouse');
-                    element.innerText = `House: ${data['data']['house']}`
-
-                    // ABSENSES
-                    element = document.getElementById('absencesParentNotified');
-                    element.innerText = data['data']['attendence']['pna']
-
-                    element = document.getElementById('absencesLateToSchool');
-                    element.innerText = data['data']['attendence']['late']
-
-                    element = document.getElementById('absencesLeavePasses');
-                    element.innerText = data['data']['attendence']['leave']
-
-                    element = document.getElementById('absencesSickPasses');
-                    element.innerText = data['data']['attendence']['sick']
-
-                    element = document.getElementById('attendenceProgress');
-                    element.style.width = `${data['data']['attendence']['percent']}%`;
-                    element.setAttribute("aria-valuenow", data['data']['attendence']['percent']);
-                    element.classList.remove("bg-success");
-                    element.classList.add("bg-danger");
-
-                    if (data['data']['attendence']['percent'] > 79.9) {
-                        element.classList.remove("bg-danger");
-                        element.classList.add("bg-warning");
-                    } else if (data['data']['attendence']['percent'] > 89.9) {
-                        element.classList.remove("bg-danger");
-                        element.classList.add("bg-success");
-                    }
-
-
-                    element.innerText = `${data['data']['attendence']['percent']}%`
-
-                    // COURAGE
-                    element = document.getElementById('courageTotal');
-                    element.innerText = data['data']['courage']['total']
-
-                    element = document.getElementById('courageFaith');
-                    element.innerText = data['data']['courage']['faith']
-
-                    element = document.getElementById('courageCommunity');
-                    element.innerText = data['data']['courage']['community']
-
-                    element = document.getElementById('courageLearning');
-                    element.innerText = data['data']['courage']['learning']
-
-                    element = document.getElementById('couragePositive');
-                    element.innerText = data['data']['courage']['positive']
                 }
+
+                const divElement = document.getElementById('classesLOADING');
+                divElement.style.display = 'none';
+
+
+                // GETTING CLASS INFORMATION
+                document.title = "New Title";
+                for (const classS of data.d.Types[0].TimetabledClasses) {
+                    if (classS['ClassID'] == "{{classID}}") {
+                        document.title = `NSimon | ${classS['ClassCode']}`;
+
+                        let editElement = document.getElementById('className');
+                        editElement.textContent = `${classS['SubjectDescription']} (${classS['ClassCode']})`;
+
+                        editElement = document.getElementById('classTeacher');
+                        editElement.textContent = classS['Teachers'];
+
+                        // Due
+                        const dueTasks = document.getElementById('dueTasks');
+                        const dueContainer = document.getElementById('dueTasksExpand');
+                        let dueAmount = 0
+                        for (const task of data.d.DueTasksStudent) {
+                            if (task['ClassCode'] == classS['ClassCode']) {
+                                dueAmount += 1
+                                var spanElement = document.createElement('span');
+                                spanElement.className = 'ms-2';
+
+                                var boldElement = document.createElement('b');
+                                boldElement.textContent = task['TaskTitle'];
+                                spanElement.appendChild(boldElement);
+
+
+                                var brElement = document.createElement('br');
+                                spanElement.append(brElement);
+
+                                dueContainer.appendChild(spanElement);
+                            }
+
+                        }
+                        dueTasks.textContent = dueAmount + ' Due'
+
+                        // Overdue
+                        const overdueTasks = document.getElementById('overdueTasks');
+                        const overdueContainer = document.getElementById('overdueTasksExpand');
+                        let overdueAmount = 0
+                        for (const task of data.d.OverDueTasksStudent) {
+                            if (task['ClassCode'] == classS['ClassCode']) {
+                                overdueAmount += 1
+                                var spanElement = document.createElement('span');
+                                spanElement.className = 'ms-2';
+
+                                var boldElement = document.createElement('b');
+                                boldElement.textContent = task['TaskTitle'];
+                                spanElement.appendChild(boldElement);
+
+
+                                var brElement = document.createElement('br');
+                                spanElement.append(brElement);
+
+                                overdueContainer.appendChild(spanElement);
+                            }
+                        }
+
+                        overdueTasks.textContent = overdueAmount + ' Overdue'
+
+                    }
+                }
+
 
             })
             .catch(error => {

@@ -69,7 +69,9 @@
             <a href="/" class="sidebarLink">Home</a>
             <a href="/profile" class="sidebarLink">Profile</a>
             <a href="/settings" class="sidebarLink">Settings</a>
-            <a href="https://discord.gg/yDRndGT5G9" class="sidebarLink">Discord (Support)</a>
+            <a href="/calendar" class="sidebarLink">Calendar</a>
+            <a href="/classes" class="sidebarLink">Classes</a>
+            <a href="https://discord.gg/fh2ZbUe3hK" class="sidebarLink">Discord (Support)</a>
             <a href="/support" class="sidebarLink">Support</a>
             <a href="/logout" class="sidebarLink">Logout</a>
         </div>
@@ -136,7 +138,8 @@
             <div class="col-md-12 col-12p-3 order-2 order-md-1">
 
                 <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Calendar <span style="font-size:medium;" id="calendarWeek" class="pageSubtitleSub">( LOADING )</span></h4>
+                    <h4 class="pageSubtitle" style="font-weight: 600;">Calendar <span style="font-size:medium;"
+                            id="calendarWeek" class="pageSubtitleSub">( LOADING )</span></h4>
                     <button id="prevDay" class="btn btn-sm pageSubtitleSub"><i class="bi bi-arrow-left"></i></button>
                     <button id="nextDay" class="btn btn-sm pageSubtitleSub"><i class="bi bi-arrow-right"></i></button>
                 </div>
@@ -268,10 +271,36 @@
 
     <!-- Functions -->
 
+    <!-- Get Cookie/Campus -->
+    <script>
+        function getCookie(cookieName) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(cookieName + '=')) {
+                    return cookie.substring(cookieName.length + 1);
+                }
+            }
+            return null;
+        }
+
+        const authCookie = getCookie('adAuthCookie');
+        const campus = getCookie('campus');
+
+        if (authCookie == null) {
+            window.location.href = '/logout';
+        }
+
+        if (campus == null) {
+            window.location.href = '/logout';
+        }
+
+    </script>
+
 
     <!-- User Information -->
     <script>
-        fetch(`/api/getUserInfo?cookie={{cookie}}`)
+        fetch(`/api/getUserInfo?cookie=${authCookie}`)
             .then(response => response.json())
             .then(data => {
                 const yourNameText = document.getElementById('yourName');
@@ -288,75 +317,74 @@
         function getLastSaturday() {
             const today = new Date();
             const dayOfWeek = today.getDay();
-        
+
             let daysToSubtract;
-            if (dayOfWeek === 6) {  // If today is Saturday
+            if (dayOfWeek === 6) { 
                 daysToSubtract = 7;
             } else {
-                daysToSubtract = dayOfWeek + 1;  // Add 1 because we're counting from Sunday being 0
+                daysToSubtract = dayOfWeek + 1; 
             }
-        
+
             today.setDate(today.getDate() - daysToSubtract);
-        
+
             const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');  // Month is 0-indexed
+            const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
-        
+
             return `${year}-${month}-${day}`;
-        }        
+        }
 
         function addSevenDays() {
             const [year, month, day] = dateToGet.split('-').map(Number);
-            const dateObj = new Date(year, month - 1, day);  // Remember, months are 0-indexed in JavaScript Date objects
+            const dateObj = new Date(year, month - 1, day);
             dateObj.setDate(dateObj.getDate() + 7);
-            
+
             const newYear = dateObj.getFullYear();
             const newMonth = String(dateObj.getMonth() + 1).padStart(2, '0');
             const newDay = String(dateObj.getDate()).padStart(2, '0');
-        
+
             return `${newYear}-${newMonth}-${newDay}`;
         }
 
         function removeSevenDays() {
             const [year, month, day] = dateToGet.split('-').map(Number);
-            const dateObj = new Date(year, month - 1, day);  // Remember, months are 0-indexed in JavaScript Date objects
+            const dateObj = new Date(year, month - 1, day); 
             dateObj.setDate(dateObj.getDate() - 7);
-            
+
             const newYear = dateObj.getFullYear();
             const newMonth = String(dateObj.getMonth() + 1).padStart(2, '0');
             const newDay = String(dateObj.getDate()).padStart(2, '0');
-        
+
             return `${newYear}-${newMonth}-${newDay}`;
         }
 
         function getClosestMonday() {
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        
+
             const [year, month, day] = dateToGet.split('-').map(Number);
-            const dateObj = new Date(year, month - 1, day);  // Remember, months are 0-indexed in JavaScript Date objects
-        
+            const dateObj = new Date(year, month - 1, day); 
+
             const dayOfWeek = dateObj.getDay();
-        
-            // Calculate days to adjust to get the closest Monday
+
             let daysToAdjust;
-            if (dayOfWeek === 0) { // Sunday
+            if (dayOfWeek === 0) { 
                 daysToAdjust = 1;
-            } else if (dayOfWeek === 1) { // Monday
+            } else if (dayOfWeek === 1) {
                 daysToAdjust = 0;
             } else {
                 daysToAdjust = dayOfWeek <= 4 ? - (dayOfWeek - 1) : 8 - dayOfWeek;
             }
-            
+
             dateObj.setDate(dateObj.getDate() + daysToAdjust);
-            
+
             const newYear = dateObj.getFullYear();
             const newMonth = monthNames[dateObj.getMonth()];
             const newDay = dateObj.getDate();
-        
+
             return `${newDay} ${newMonth} ${newYear}`;
         }
-        
-        
+
+
 
     </script>
     <script>
@@ -367,7 +395,7 @@
             document.getElementById('ThursdayEvents').innerHTML = '';
             document.getElementById('FridayEvents').innerHTML = '';
 
-            fetch(`/api/getCalendar?cookie={{cookie}}&date=${dateA}`)
+            fetch(`/api/getCalendar?cookie=${authCookie}&date=${dateA}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('calendarWeek').textContent = `( ${getClosestMonday(dateA)} Week )`
@@ -379,9 +407,9 @@
                             const startHour = String(date.getHours()).padStart(2, '0');
                             const startMinute = String(date.getMinutes()).padStart(2, '0');
 
-        
+
                             const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        
+
                             const dayName = days[date.getDay()];
 
                             if (dayName != "Saturday" && dayName != "Sunday") {
@@ -391,8 +419,8 @@
                                 const endHour = String(dateEnd.getHours()).padStart(2, '0');
                                 const endMinute = String(dateEnd.getMinutes()).padStart(2, '0');
 
-                                const eventHolder = document.getElementById(`${dayName}Events`);    
-                            
+                                const eventHolder = document.getElementById(`${dayName}Events`);
+
                                 const classDiv = document.createElement('div');
                                 classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
@@ -403,21 +431,21 @@
                                 } else if (dayName == "Tuesday") {
                                     const colorDotSpan = document.createElement('span');
                                     colorDotSpan.classList.add('color-dot', 'bg-info', 'me-2');
-                                    classDiv.appendChild(colorDotSpan);                                
+                                    classDiv.appendChild(colorDotSpan);
                                 } else if (dayName == "Wednesday") {
                                     const colorDotSpan = document.createElement('span');
                                     colorDotSpan.classList.add('color-dot', 'bg-success', 'me-2');
-                                    classDiv.appendChild(colorDotSpan);                                
+                                    classDiv.appendChild(colorDotSpan);
                                 } else if (dayName == "Thursday") {
                                     const colorDotSpan = document.createElement('span');
                                     colorDotSpan.classList.add('color-dot', 'bg-warning', 'me-2');
-                                    classDiv.appendChild(colorDotSpan);                                
+                                    classDiv.appendChild(colorDotSpan);
                                 } else if (dayName == "Friday") {
                                     const colorDotSpan = document.createElement('span');
                                     colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
-                                    classDiv.appendChild(colorDotSpan);                                
+                                    classDiv.appendChild(colorDotSpan);
                                 }
-        
+
                                 const classNameSpan = document.createElement('span');
                                 classNameSpan.classList.add('class-name');
                                 classNameSpan.textContent = event['EventTitle'];
@@ -428,85 +456,85 @@
                                 teacherDiv.classList.add('teacher-name');
                                 teacherDiv.innerHTML = `${startHour}:${startMinute} - ${endHour}:${endMinute}`;
                                 classDiv.appendChild(teacherDiv);
-        
+
                                 const timeSpan = document.createElement('span');
                                 timeSpan.classList.add('time');
                                 timeSpan.textContent = ``;
                                 classDiv.appendChild(timeSpan);
 
 
-        
-        
-                                eventHolder.appendChild(classDiv);  
-                                
-                                
+
+
+                                eventHolder.appendChild(classDiv);
+
+
                             }
 
-                            
-        
+
+
                         }
                     }
                     document.getElementById('prevDay').disabled = false
                     document.getElementById('nextDay').disabled = false
-        
+
                     if (document.getElementById('MondayEvents').innerHTML == '') {
                         const classDiv = document.createElement('div');
                         classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-        
+
                         const classNameSpan = document.createElement('span');
                         classNameSpan.classList.add('class-name');
                         classNameSpan.textContent = "No Events";
                         classDiv.appendChild(classNameSpan);
-        
-                        document.getElementById('MondayEvents').appendChild(classDiv);    
+
+                        document.getElementById('MondayEvents').appendChild(classDiv);
                     }
-        
+
                     if (document.getElementById('TuesdayEvents').innerHTML == '') {
                         const classDiv = document.createElement('div');
                         classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-        
+
                         const classNameSpan = document.createElement('span');
                         classNameSpan.classList.add('class-name');
                         classNameSpan.textContent = "No Events";
                         classDiv.appendChild(classNameSpan);
-        
-                        document.getElementById('TuesdayEvents').appendChild(classDiv);    
+
+                        document.getElementById('TuesdayEvents').appendChild(classDiv);
                     }
-        
+
                     if (document.getElementById('WednesdayEvents').innerHTML == '') {
                         const classDiv = document.createElement('div');
                         classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-        
+
                         const classNameSpan = document.createElement('span');
                         classNameSpan.classList.add('class-name');
                         classNameSpan.textContent = "No Events";
                         classDiv.appendChild(classNameSpan);
-        
-                        document.getElementById('WednesdayEvents').appendChild(classDiv);    
+
+                        document.getElementById('WednesdayEvents').appendChild(classDiv);
                     }
-        
+
                     if (document.getElementById('ThursdayEvents').innerHTML == '') {
                         const classDiv = document.createElement('div');
                         classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-        
+
                         const classNameSpan = document.createElement('span');
                         classNameSpan.classList.add('class-name');
                         classNameSpan.textContent = "No Events";
                         classDiv.appendChild(classNameSpan);
-        
-                        document.getElementById('ThursdayEvents').appendChild(classDiv);    
+
+                        document.getElementById('ThursdayEvents').appendChild(classDiv);
                     }
-        
+
                     if (document.getElementById('FridayEvents').innerHTML == '') {
                         const classDiv = document.createElement('div');
                         classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-        
+
                         const classNameSpan = document.createElement('span');
                         classNameSpan.classList.add('class-name');
                         classNameSpan.textContent = "No Events";
                         classDiv.appendChild(classNameSpan);
-        
-                        document.getElementById('FridayEvents').appendChild(classDiv);    
+
+                        document.getElementById('FridayEvents').appendChild(classDiv);
                     }
 
                 })

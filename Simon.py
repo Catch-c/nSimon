@@ -18,7 +18,7 @@ def login(username, password):
         login_button.click()
         xpath_to_wait_for = '//*[@id="app"]/div[1]/main/div/div[2]/div/div/div[1]/div/div[1]'
         try:
-            page.wait_for_selector(f'xpath={xpath_to_wait_for}', timeout=1000)
+            page.wait_for_selector(f'xpath={xpath_to_wait_for}', timeout=5000)
             detected = 200
         except TimeoutError:
             detected = 404
