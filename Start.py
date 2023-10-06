@@ -20,7 +20,7 @@ import requests
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 
 
 
@@ -215,8 +215,8 @@ def login():
             campus = "Beaconsfield"
 
         response = make_response(redirect(url_for("dashboard")))
-        response.set_cookie("adAuthCookie", cookie)
-        response.set_cookie("campus", campus)
+        response.set_cookie("adAuthCookie", cookie, max_age=7776000)
+        response.set_cookie("campus", campus, max_age=7776000)
         return response
 
 
@@ -229,8 +229,8 @@ def login():
 @app.route("/logout")
 def logout():
     response = make_response(redirect(url_for("dashboard")))
-    response.set_cookie("adAuthCookie", "")
-    response.set_cookie("campus", "")
+    response.set_cookie("adAuthCookie", "", max_age=7776000)
+    response.set_cookie("campus", "", max_age=7776000)
     return response
 
 #       --[[ /dashboard ]]--
