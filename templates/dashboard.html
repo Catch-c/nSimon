@@ -483,22 +483,16 @@
             return formattedTime;
         }
 
-        function removeFirstFourCharacters(inputString) {
-            if (inputString.length >= 4) {
-                return inputString.substring(4);
-            } else {
-                // Handle cases where the input string is less than 4 characters
-                return "Input string is too short";
+        function filterTimetable(str) {
+            const patterns = ["_", "BEA", "BER", "OFF"];
+            let result = str;
+        
+            for (let pattern of patterns) {
+                const regex = new RegExp(pattern, 'g');
+                result = result.replace(regex, '');
             }
-        }
-
-        function removeFirstThreeCharacters(inputString) {
-            if (inputString.length >= 3) {
-                return inputString.substring(3);
-            } else {
-                // Handle cases where the input string is less than 4 characters
-                return "Input string is too short";
-            }
+        
+            return result;
         }
 
         function extractNumberFromString(text) {
@@ -666,11 +660,7 @@
 
                     let teacherName = period.Classes[0].TeacherName;
                     let roomInfo
-                    if ("{{ campus }}" == "Beaconsfield") {
-                        roomInfo = removeFirstThreeCharacters(period.Classes[0].Room);
-                    } else {
-                        roomInfo = removeFirstFourCharacters(period.Classes[0].Room);
-                    }
+                    roomInfo = filterTimetable(period.Classes[0].Room);
 
                     // Check if the teacherName includes "CRT"
                     if (teacherName.includes("CRT")) {
