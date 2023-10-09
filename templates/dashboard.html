@@ -37,6 +37,36 @@
 </style>
 
 <body id="MainBody">
+
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="firstTimeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">For students using laptops:</h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body">
+                    For the best experience it is <b>highly recommended to set your zoom for this web page to 75%-85%.</b> This will give you the best viewing experience and will remove the need to scroll.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var myModal = new bootstrap.Modal(document.getElementById('firstTimeModal'), {});
+            
+            if (!localStorage.getItem("shownSizeModal")) {
+                myModal.show();
+                localStorage.setItem("shownSizeModal", "true");
+            }
+
+        });
+    </script>
+
     <!-- NavBar & Sidebar -->
     <nav class="navbar" style="border-bottom: 2px solid red;">
         <div class="container-fluid">
@@ -284,13 +314,16 @@
                 <div class="big-box rounded p-3 mb-2">
                     <h4 class="pageSubtitle" style="font-weight: 600;">Other Links</h4>
                     <div class="small-box rounded p-3 mb-2">
-                        <a href="/calendar" style="text-decoration: none"><span class="class-name">Calendar <i class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>                
+                        <a href="/calendar" style="text-decoration: none"><span class="class-name">Calendar <i
+                                    class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>
                     </div>
                     <div class="small-box rounded p-3 mb-2">
-                        <a href="/profile" style="text-decoration: none"><span class="class-name">Profile <i class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>                        
+                        <a href="/profile" style="text-decoration: none"><span class="class-name">Profile <i
+                                    class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>
                     </div>
                     <div class="small-box rounded p-3 mb-2">
-                        <a href="/classes" style="text-decoration: none"><span class="class-name">Classes <i class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>                        
+                        <a href="/classes" style="text-decoration: none"><span class="class-name">Classes <i
+                                    class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>
                     </div>
                 </div>
 
@@ -355,7 +388,7 @@
 
 
     <!-- Variables -->
-    
+
     <!-- Get Cookie/Campus -->
     <script>
         function getCookie(cookieName) {
@@ -486,12 +519,12 @@
         function filterTimetable(str) {
             const patterns = ["_", "BEA", "BER", "OFF"];
             let result = str;
-        
+
             for (let pattern of patterns) {
                 const regex = new RegExp(pattern, 'g');
                 result = result.replace(regex, '');
             }
-        
+
             return result;
         }
 
