@@ -193,6 +193,8 @@ def getUserProfileInfo():
 def login():
     username = request.form.get("username")
     password = request.form.get("password")
+    rememberme = request.form.get("rememberme")
+    print(rememberme)
 
     status, cookie = Simon.login(username, password)
 
@@ -215,8 +217,14 @@ def login():
             campus = "Beaconsfield"
 
         response = make_response(redirect(url_for("dashboard")))
-        response.set_cookie("adAuthCookie", cookie, max_age=7776000)
-        response.set_cookie("campus", campus, max_age=7776000)
+
+        if rememberme == "on":
+            response.set_cookie("adAuthCookie", cookie, max_age=7776000)
+            response.set_cookie("campus", campus, max_age=7776000)
+        else:
+            response.set_cookie("adAuthCookie", cookie)
+            response.set_cookie("campus", campus)
+
         return response
 
 

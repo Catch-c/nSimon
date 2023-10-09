@@ -13,6 +13,7 @@
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
   <!--<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet"> -->
   <link href="../static/css/styles.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet"/>
   <!-- FavIcon -->
   <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
     sizes="180x180" />
@@ -29,12 +30,17 @@
   <script>
     function togglePassword() {
       var x = document.getElementById("floatingPassword");
+      var icon = document.getElementById('togglePasswordIcon');
       if (x.type === "password") {
           x.type = "text";
+          icon.classList.add('fa-eye'); // Add open eye icon class
+          icon.classList.remove('fa-eye-slash'); // Remove closed eye icon class
       } else {
           x.type = "password";
+          icon.classList.add('fa-eye-slash'); // Add closed eye icon class
+          icon.classList.remove('fa-eye'); // Remove open eye icon class
       }
-  }
+    }
   </script>
 
 </head>
@@ -121,15 +127,15 @@
             <input type="text" class="form-control textInput" id="floatingInput" placeholder="SIMON Username" name="username">
             <label for="floatingInput">Username</label>
           </div>
-          <div class="form-floating">
+          <div class="form-floating password-container">
             <input type="password" class="form-control passwordInput" id="floatingPassword" placeholder="Password" name="password">
             <label for="floatingPassword">Password</label>
+            <span class="password-toggle" onclick="togglePassword()">
+                <i class="fa fa-eye-slash" id="togglePasswordIcon"></i>
+            </span>
           </div>
-
           <div class="checkbox mb-3">
-            <label>
-              <input type="checkbox" class="greeting" onclick="togglePassword()"> <span>Show Password</span>
-            </label>
+            <input type="checkbox" class="greeting" id="floatingrememberme" name="rememberme"> <span>Remember Me</span>
           </div>
 
           <br>
