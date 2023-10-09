@@ -75,7 +75,7 @@
                 <!-- This will be hidden on mobile -->
                 <a href="/" style="text-decoration: none; color: inherit;">
                     <div class="d-none d-md-inline greeting">
-                        Good evening, <span id="yourName">Placeholder Jones</span><span
+                        Good evening, <span id="yourName">Guest</span><span
                             style="margin-right: 10px;">.</span>
                     </div>
                 </a>
@@ -1100,6 +1100,12 @@
                 setDarkMode = localStorage.setItem('dark', null);
             }
         }
+        document.addEventListener('keydown', function(event) {
+        // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
+            if (event.ctrlKey && event.altKey && event.key === 'd') {
+                toggleTheme(); // Toggle dark mode when the shortcut is triggered
+            }
+        });
     </script>
 
 </body>

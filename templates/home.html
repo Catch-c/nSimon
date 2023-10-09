@@ -180,8 +180,14 @@
         document.documentElement.setAttribute('data-theme', 'light');
         // Set the value of the item to  "null" when dark mode if off
         setDarkMode = localStorage.setItem('dark', null);
+      }
     }
-  }
+    document.addEventListener('keydown', function(event) {
+        // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
+            if (event.ctrlKey && event.altKey && event.key === 'd') {
+                toggleTheme(); // Toggle dark mode when the shortcut is triggered
+            }
+        });
   </script>
 </body>
 

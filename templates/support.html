@@ -32,7 +32,8 @@
                 <!-- This will be hidden on mobile -->
                 <a href="/" style="text-decoration: none; color: inherit;">
                     <div class="d-none d-md-inline greeting">
-                        Good evening, <span id="yourName">Guest</span><span style="margin-right: 10px;">.</span> 
+                        Good evening, <span id="yourName">Guest</span><span
+                            style="margin-right: 10px;">.</span>
                     </div>
                 </a>
 
@@ -141,7 +142,25 @@
 
 
     <!-- Variables -->
+    <script>
+        function getCookie(cookieName) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(cookieName + '=')) {
+                    return cookie.substring(cookieName.length + 1);
+                }
+            }
+            return null;
+        }
 
+        const authCookie = getCookie('adAuthCookie');
+
+        if (authCookie == null) {
+            window.location.href = '/logout';
+        }
+
+    </script>
 
 
     <!-- Time/Data Updated -->
@@ -262,7 +281,7 @@
 
     <!-- User Information -->
     <script>
-        fetch(`/api/getUserInfo?cookie={{cookie}}`)
+        fetch(`/api/getUserInfo?cookie=${authCookie}`)
             .then(response => response.json())
             .then(data => {
                 const yourNameText = document.getElementById('yourName');
@@ -294,6 +313,12 @@
             setDarkMode = localStorage.setItem('dark', null);
         }
       }
+      document.addEventListener('keydown', function(event) {
+        // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
+            if (event.ctrlKey && event.altKey && event.key === 'd') {
+                toggleTheme(); // Toggle dark mode when the shortcut is triggered
+            }
+        });
       </script>
 
 
