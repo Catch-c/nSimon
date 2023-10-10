@@ -20,7 +20,7 @@ import requests
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
-VERSION = "1.2.5"
+VERSION = "1.2.7"
 
 
 
@@ -194,7 +194,6 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password")
     rememberme = request.form.get("rememberme")
-    print(rememberme)
 
     status, cookie = Simon.login(username, password)
 

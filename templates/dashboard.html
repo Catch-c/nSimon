@@ -577,6 +577,11 @@
 
     <!-- Timetable -->
     <script>
+        function timeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
         function addTimetable(data, weekend) {
             const dataContainer = document.getElementById('timetable');
             const timetableDayText = document.getElementById('timetableDay');
@@ -655,9 +660,39 @@
                 dataContainer.appendChild(classDiv);
             }
 
-
+            let lastEndTime = null;
             for (const period of periods) {
                 if (period.IsTeachingPeriod) {
+                    if (lastEndTime !== null) {
+                        const startTimeNextPeriod = period.StartTime;
+                        const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
+                        console.log(timeGap);
+                        //Create Reccess/Lunch Divider if needed.
+                        if (timeGap === 20 || timeGap === 40) {
+                        // Create a divider
+                            const divider = document.createElement('div');
+                            divider.classList.add('gap-divider', 'mb-2');
+                            const lunchText = document.createElement('span');
+                            lunchText.classList.add('lunch-text'); // Add your CSS class for styling the text here
+                            lunchText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
+                            lunchText.style.marginRight = '5px';
+                            divider.style.display = 'flex';
+                            divider.style.alignItems = 'center';
+                            // Create a div for the horizontal line
+                            const line = document.createElement('div');
+                            line.classList.add('break-line'); // Add your CSS class for styling the line here
+                            line.style.flexGrow = '1'; // Allow the line to grow and fill available space
+                            line.style.height = '2px'; // Set the height of the line
+                            divider.appendChild(lunchText);
+                            divider.appendChild(line);
+                            dataContainer.appendChild(divider);
+                            console.log('Made Divider');
+                            
+                        }
+                    }   
+                    lastEndTime = period.EndTime;
+                
+                    // Create Box for Timetable
                     const classDiv = document.createElement('div');
                     classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
@@ -709,13 +744,12 @@
                     dataContainer.appendChild(classDiv);
                 }
             }
+        
 
             const divElement = document.getElementById('timetableLoading');
             divElement.style.display = 'none';
             document.getElementById('prevDay').disabled = false
             document.getElementById('nextDay').disabled = false
-
-
         }
     </script>
     <script>
@@ -1106,6 +1140,7 @@
                 toggleTheme(); // Toggle dark mode when the shortcut is triggered
             }
         });
+
     </script>
 
 </body>

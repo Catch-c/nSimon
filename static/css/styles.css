@@ -99,6 +99,16 @@ span {
     color: white;
 }
 
+.blue-text {
+    color: var(--primary-color); /* Set the text color to blue */
+  }
+  
+.break-line {
+    background-color: var(--primary-color); /* Set the line color to blue */
+    vertical-align: middle;
+    height: 1em;
+}
+
 .closeBtn {
     position: absolute;
     right: 20px;
