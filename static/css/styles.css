@@ -190,10 +190,18 @@ span {
     font-weight: bold;
 }
 
+.specialbox {
+    display: flex;
+}
+
 .time {
     font-size: 80%;
     float: right;
     font-weight: bold;
+    display: block;
+    text-align: right;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .teacher-name {

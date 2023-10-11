@@ -26,6 +26,12 @@ Copy code
 ```
 git clone https://github.com/yourusername/nSimon.git
 ```
+Make a config.ini file as followed and set a secure flask secret
+```
+[Flask]
+flask.secret = setthis
+```
+
 Install Dependencies:
 
 ```

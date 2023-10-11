@@ -667,20 +667,20 @@
                         const startTimeNextPeriod = period.StartTime;
                         const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
                         console.log(timeGap);
-                        //Create Reccess/Lunch Divider if needed.
+                        // Create Recess/Lunch Divider if needed.
                         if (timeGap === 20 || timeGap === 40) {
                         // Create a divider
                             const divider = document.createElement('div');
                             divider.classList.add('gap-divider', 'mb-2');
                             const lunchText = document.createElement('span');
-                            lunchText.classList.add('lunch-text'); // Add your CSS class for styling the text here
+                            lunchText.classList.add('lunch-text');
                             lunchText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
                             lunchText.style.marginRight = '5px';
                             divider.style.display = 'flex';
                             divider.style.alignItems = 'center';
                             // Create a div for the horizontal line
                             const line = document.createElement('div');
-                            line.classList.add('break-line'); // Add your CSS class for styling the line here
+                            line.classList.add('break-line');
                             line.style.flexGrow = '1'; // Allow the line to grow and fill available space
                             line.style.height = '2px'; // Set the height of the line
                             divider.appendChild(lunchText);
@@ -742,8 +742,63 @@
 
                     // Append the created classDiv to the body or any other parent element
                     dataContainer.appendChild(classDiv);
+                } else if (period.IsTeachingPeriod === false &&
+                    period.Description !== "Recess Duty" &&
+                    period.Description !== "Lunch Duty 1" &&
+                    period.Description !== "Lunch Duty 2") {
+                        if (lastEndTime !== null) {
+                            const startTimeNextPeriod = period.StartTime;
+                            const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
+                            console.log(timeGap);
+                            //Create Reccess/Lunch Divider if needed.
+                            if (timeGap === 20 || timeGap === 40) {
+                            // Create a divider
+                                const divider = document.createElement('div');
+                                divider.classList.add('gap-divider', 'mb-2');
+                                const lunchText = document.createElement('span');
+                                lunchText.classList.add('lunch-text'); // Add your CSS class for styling the text here
+                                lunchText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
+                                lunchText.style.marginRight = '5px';
+                                divider.style.display = 'flex';
+                                divider.style.alignItems = 'center';
+                                // Create a div for the horizontal line
+                                const line = document.createElement('div');
+                                line.classList.add('break-line'); // Add your CSS class for styling the line here
+                                line.style.flexGrow = '1'; // Allow the line to grow and fill available space
+                                line.style.height = '2px'; // Set the height of the line
+                                divider.appendChild(lunchText);
+                                divider.appendChild(line);
+                                dataContainer.appendChild(divider);
+                                console.log('Made Divider');  
+                        }  
+                        // Sets last end time for recess and lunch calculator
+                        lastEndTime = period.EndTime;
+                
+                        // Create Box for Timetable
+                        const classDiv = document.createElement('div');
+                        classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'specialbox');
+
+                        // Create class name span
+                        const classNameSpan = document.createElement('span');
+                        classNameSpan.classList.add('class-name');
+                        classNameSpan.setAttribute('data-bs-toggle', 'tooltip');
+                        classNameSpan.setAttribute('data-bs-html', 'true');
+                        classNameSpan.setAttribute('title', period.Description);
+                        classNameSpan.textContent = period.Description;
+
+                        // Create time span
+                        const timeSpan = document.createElement('span');
+                        timeSpan.classList.add('time');
+                        timeSpan.textContent = `${convertToAMPM(period.StartTime)} - ${convertToAMPM(period.EndTime)}`;
+
+                        // Append elements
+                        classDiv.appendChild(classNameSpan)
+                        classDiv.appendChild(timeSpan);
+                        dataContainer.appendChild(classDiv);
+                        }    
+                    }
+
                 }
-            }
         
 
             const divElement = document.getElementById('timetableLoading');

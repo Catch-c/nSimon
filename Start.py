@@ -11,16 +11,17 @@ from flask import (
 )
 import Simon as Simon
 import requests
+import configparser
 
-
-
-
-
+# --[[Import Config Values]]--
+config = configparser.ConfigParser()
+config.read('config.ini')
+flask_secret = config.get('Flask', 'flask.secret')
 
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"
-VERSION = "1.2.7"
+app.secret_key = flask_secret
+VERSION = "1.2.8"
 
 
 
