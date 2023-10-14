@@ -34,103 +34,8 @@
 </style>
 
 <body id="MainBody">
-    <!-- NavBar & Sidebar -->
-    <nav class="navbar" style="border-bottom: 2px solid red;">
-        <div class="container-fluid">
-            <span class="navbar-brand h4">
+    {% include "partials/navbar.html" %}
 
-                <!-- This will be hidden on mobile -->
-                <a href="/" style="text-decoration: none; color: inherit;">
-                    <div class="d-none d-md-inline greeting">
-                        Good evening, <span id="yourName">Guest</span><span
-                            style="margin-right: 10px;">.</span>
-                    </div>
-                </a>
-
-                <!-- This will always be visible -->
-                <span class="greetingTime" style="font-size:large;">
-                    <span id="currentDate">1/01/2023</span>
-                    <span id="currentTime">0:00AM</span>
-                </span>
-
-            </span>
-
-            <button class="btn" id="hamburgerBtn" style="color: white;">
-                <i class="bi bi-list hamburgerMenu"></i>
-
-            </button>
-        </div>
-    </nav>
-
-    <div class="sidebar">
-        <button class="closeBtn">&times;</button>
-
-        <div class="links-section">
-            <a href="/" class="sidebarLink">Home</a>
-            <a href="/profile" class="sidebarLink">Profile</a>
-            <a href="/settings" class="sidebarLink">Settings</a>
-            <a href="/calendar" class="sidebarLink">Calendar</a>
-            <a href="/classes" class="sidebarLink">Classes</a>
-            <a href="https://discord.gg/fh2ZbUe3hK" class="sidebarLink">Discord (Support)</a>
-            <a href="/support" class="sidebarLink">Support</a>
-            <a href="/logout" class="sidebarLink">Logout</a>
-        </div>
-
-        <div class="school-links-section">
-            <br>
-            <span class="sidebarTitle">School Links</span><br>
-
-            <span class="sidebarSubtitle">General Resources</span><br>
-            <a href="https://simon.sfx.vic.edu.au/" class="sidebarSchoolLink">• SIMON</a><br>
-            <a href="https://www.sfxcareers.com.au/" class="sidebarSchoolLink">• Careers</a><br>
-            <a href="https://shop.sfx.vic.edu.au/mymonitor/" class="sidebarSchoolLink">• CDF Pay</a><br>
-            <a href="http://bea-v-print-01:9191/app" class="sidebarSchoolLink">• WebPrint</a><br><br>
-
-            <span class="sidebarSubtitle">College Links</span><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=19761&KBankID=11"
-                class="sidebarSchoolLink">• 2022 Yearbook</a><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=14283&KBankID=25&UserID=25"
-                class="sidebarSchoolLink">• College Awards/Colours</a><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=21040&KBankID=25&UserID=25"
-                class="sidebarSchoolLink">• 2024 Beaconsfield Leadership</a><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=18795&KBankID=25&UserID=25"
-                class="sidebarSchoolLink">• 2024 Berwick/Officer Leadership</a><br>
-            <a href="https://saml-in3.clickview.com.au/Shibboleth.sso/STF1792" class="sidebarSchoolLink">•
-                Clickview</a><br>
-
-        </div>
-
-        <div class="school-links-section">
-            <br>
-            <span class="sidebarTitle">Version</span><br>
-
-            <span class="sidebarSubtitle">{{ VERSION }}</span><br>
-
-
-        </div>
-    </div>
-
-    <script>
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const sidebar = document.querySelector('.sidebar');
-        const closeBtn = document.querySelector('.closeBtn');
-
-        hamburgerBtn.addEventListener('click', function () {
-            sidebar.style.right = "0";
-        });
-
-        closeBtn.addEventListener('click', function () {
-            sidebar.style.right = "-300px";
-        });
-
-        // If clicking outside the sidebar
-        document.addEventListener('click', function (event) {
-            if (!sidebar.contains(event.target) && !hamburgerBtn.contains(event.target)) {
-                sidebar.style.right = "-300px";
-            }
-        });
-
-    </script>
 
     <div class="mainBody container-fluid h-100">
         <div class="row h-100 pt-3">
@@ -368,23 +273,16 @@
 
     </script>
 
-    <!-- User Information -->
-    <script>
-        fetch(`/api/getUserInfo?cookie=${authCookie}`)
-            .then(response => response.json())
-            .then(data => {
-                const yourNameText = document.getElementById('yourName');
-                yourNameText.textContent = data.d.name
 
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
 
     <!-- Classes -->
     <script>
-        fetch(`/api/getClasses?cookie=${authCookie}`)
+        fetch(`/api/getClasses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
             .then(response => response.json())
             .then(data => {
 

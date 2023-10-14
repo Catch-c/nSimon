@@ -46,7 +46,8 @@
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
-                    For the best experience it is <b>highly recommended to set your zoom for this web page to 75%-85%.</b> This will give you the best viewing experience and will remove the need to scroll.
+                    For the best experience it is <b>highly recommended to set your zoom for this web page to
+                        75%-85%.</b> This will give you the best viewing experience and will remove the need to scroll.
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
@@ -58,7 +59,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var myModal = new bootstrap.Modal(document.getElementById('firstTimeModal'), {});
-            
+
             if (!localStorage.getItem("shownSizeModal")) {
                 myModal.show();
                 localStorage.setItem("shownSizeModal", "true");
@@ -67,103 +68,8 @@
         });
     </script>
 
-    <!-- NavBar & Sidebar -->
-    <nav class="navbar" style="border-bottom: 2px solid red;">
-        <div class="container-fluid">
-            <span class="navbar-brand h4">
+    {% include "partials/navbar.html" %}
 
-                <!-- This will be hidden on mobile -->
-                <a href="/" style="text-decoration: none; color: inherit;">
-                    <div class="d-none d-md-inline greeting">
-                        Good evening, <span id="yourName">Guest</span><span
-                            style="margin-right: 10px;">.</span>
-                    </div>
-                </a>
-
-                <!-- This will always be visible -->
-                <span class="greetingTime" style="font-size:large;">
-                    <span id="currentDate">1/01/2023</span>
-                    <span id="currentTime">0:00AM</span>
-                </span>
-
-            </span>
-
-            <button class="btn" id="hamburgerBtn" style="color: white;">
-                <i class="bi bi-list hamburgerMenu"></i>
-
-            </button>
-        </div>
-    </nav>
-
-    <div class="sidebar">
-        <button class="closeBtn">&times;</button>
-
-        <div class="links-section">
-            <a href="/" class="sidebarLink">Home</a>
-            <a href="/profile" class="sidebarLink">Profile</a>
-            <a href="/settings" class="sidebarLink">Settings</a>
-            <a href="/calendar" class="sidebarLink">Calendar</a>
-            <a href="/classes" class="sidebarLink">Classes</a>
-            <a href="https://discord.gg/fh2ZbUe3hK" class="sidebarLink">Discord (Support)</a>
-            <a href="/support" class="sidebarLink">Support</a>
-            <a href="/logout" class="sidebarLink">Logout</a>
-        </div>
-
-        <div class="school-links-section">
-            <br>
-            <span class="sidebarTitle">School Links</span><br>
-
-            <span class="sidebarSubtitle">General Resources</span><br>
-            <a href="https://simon.sfx.vic.edu.au/" class="sidebarSchoolLink">• SIMON</a><br>
-            <a href="https://www.sfxcareers.com.au/" class="sidebarSchoolLink">• Careers</a><br>
-            <a href="https://shop.sfx.vic.edu.au/mymonitor/" class="sidebarSchoolLink">• CDF Pay</a><br>
-            <a href="http://bea-v-print-01:9191/app" class="sidebarSchoolLink">• WebPrint</a><br><br>
-
-            <span class="sidebarSubtitle">College Links</span><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=19761&KBankID=11"
-                class="sidebarSchoolLink">• 2022 Yearbook</a><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=14283&KBankID=25&UserID=25"
-                class="sidebarSchoolLink">• College Awards/Colours</a><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=21040&KBankID=25&UserID=25"
-                class="sidebarSchoolLink">• 2024 Beaconsfield Leadership</a><br>
-            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=18795&KBankID=25&UserID=25"
-                class="sidebarSchoolLink">• 2024 Berwick/Officer Leadership</a><br>
-            <a href="https://saml-in3.clickview.com.au/Shibboleth.sso/STF1792" class="sidebarSchoolLink">•
-                Clickview</a><br>
-
-        </div>
-
-        <div class="school-links-section">
-            <br>
-            <span class="sidebarTitle">Version</span><br>
-
-            <span class="sidebarSubtitle">{{ VERSION }}</span><br>
-
-
-        </div>
-    </div>
-
-    <script>
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const sidebar = document.querySelector('.sidebar');
-        const closeBtn = document.querySelector('.closeBtn');
-
-        hamburgerBtn.addEventListener('click', function () {
-            sidebar.style.right = "0";
-        });
-
-        closeBtn.addEventListener('click', function () {
-            sidebar.style.right = "-300px";
-        });
-
-        // If clicking outside the sidebar
-        document.addEventListener('click', function (event) {
-            if (!sidebar.contains(event.target) && !hamburgerBtn.contains(event.target)) {
-                sidebar.style.right = "-300px";
-            }
-        });
-
-    </script>
 
     <div class="mainBody container-fluid h-100">
         <div class="row h-100 pt-3">
@@ -560,19 +466,7 @@
     </script>
 
 
-    <!-- User Information -->
-    <script>
-        fetch(`/api/getUserInfo?cookie=${authCookie}`)
-            .then(response => response.json())
-            .then(data => {
-                const yourNameText = document.getElementById('yourName');
-                yourNameText.textContent = data.d.name
 
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
 
 
     <!-- Timetable -->
@@ -582,7 +476,13 @@
             return hours * 60 + minutes;
         }
 
+
+
         function addTimetable(data, weekend) {
+
+            let currentUnixTimestamp = Math.floor(Date.now() / 1000);
+
+
             const dataContainer = document.getElementById('timetable');
             const timetableDayText = document.getElementById('timetableDay');
             timetableDayText.textContent = weekend ? 'Weekend' : data.d.Info;
@@ -666,10 +566,9 @@
                     if (lastEndTime !== null) {
                         const startTimeNextPeriod = period.StartTime;
                         const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
-                        console.log(timeGap);
-                        // Create Recess/Lunch Divider if needed.
+
                         if (timeGap === 20 || timeGap === 40) {
-                        // Create a divider
+
                             const divider = document.createElement('div');
                             divider.classList.add('gap-divider', 'mb-2');
                             const lunchText = document.createElement('span');
@@ -678,27 +577,59 @@
                             lunchText.style.marginRight = '5px';
                             divider.style.display = 'flex';
                             divider.style.alignItems = 'center';
-                            // Create a div for the horizontal line
+
                             const line = document.createElement('div');
                             line.classList.add('break-line');
-                            line.style.flexGrow = '1'; // Allow the line to grow and fill available space
-                            line.style.height = '2px'; // Set the height of the line
+                            line.style.flexGrow = '1';
+                            line.style.height = '2px';
                             divider.appendChild(lunchText);
                             divider.appendChild(line);
                             dataContainer.appendChild(divider);
-                            console.log('Made Divider');
-                            
-                        }
-                    }   
-                    lastEndTime = period.EndTime;
-                
-                    // Create Box for Timetable
-                    const classDiv = document.createElement('div');
-                    classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
-                    // Create color dot span
+                        }
+                    }
+                    lastEndTime = period.EndTime;
+
+
+                    const classDiv = document.createElement('div');
+
                     const colorDotSpan = document.createElement('span');
-                    colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+
+                    // Get Class Progress 
+                    if (!weekend) {
+
+                        // Get Class Progress
+                        let nowT = new Date();
+
+                        let startParts = period['StartTime'].split(":");
+                        let startTime = new Date();
+                        startTime.setHours(parseInt(startParts[0]), parseInt(startParts[1]), 0, 0);
+    
+                        let endParts = period['EndTime'].split(":");
+                        let endTime = new Date();
+                        endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
+
+                        if (nowT >= startTime && nowT < endTime) {
+                            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'border');
+                        } else {
+                            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                        }
+
+                        if (nowT < startTime) {
+                            colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                        } else if (nowT >= startTime && nowT < endTime) {
+                            colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
+                        } else {
+                            colorDotSpan.classList.add('color-dot', 'bg-secondary', 'me-2');
+                        }
+
+
+                    } else {
+                        classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                        colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                    }
+
+
                     classDiv.appendChild(colorDotSpan);
 
                     // Create class name span
@@ -746,34 +677,32 @@
                     period.Description !== "Recess Duty" &&
                     period.Description !== "Lunch Duty 1" &&
                     period.Description !== "Lunch Duty 2") {
-                        if (lastEndTime !== null) {
-                            const startTimeNextPeriod = period.StartTime;
-                            const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
-                            console.log(timeGap);
-                            //Create Reccess/Lunch Divider if needed.
-                            if (timeGap === 20 || timeGap === 40) {
+                    if (lastEndTime !== null) {
+                        const startTimeNextPeriod = period.StartTime;
+                        const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
+                        //Create Reccess/Lunch Divider if needed.
+                        if (timeGap === 20 || timeGap === 40) {
                             // Create a divider
-                                const divider = document.createElement('div');
-                                divider.classList.add('gap-divider', 'mb-2');
-                                const lunchText = document.createElement('span');
-                                lunchText.classList.add('lunch-text'); // Add your CSS class for styling the text here
-                                lunchText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
-                                lunchText.style.marginRight = '5px';
-                                divider.style.display = 'flex';
-                                divider.style.alignItems = 'center';
-                                // Create a div for the horizontal line
-                                const line = document.createElement('div');
-                                line.classList.add('break-line'); // Add your CSS class for styling the line here
-                                line.style.flexGrow = '1'; // Allow the line to grow and fill available space
-                                line.style.height = '2px'; // Set the height of the line
-                                divider.appendChild(lunchText);
-                                divider.appendChild(line);
-                                dataContainer.appendChild(divider);
-                                console.log('Made Divider');  
-                        }  
+                            const divider = document.createElement('div');
+                            divider.classList.add('gap-divider', 'mb-2');
+                            const lunchText = document.createElement('span');
+                            lunchText.classList.add('lunch-text'); // Add your CSS class for styling the text here
+                            lunchText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
+                            lunchText.style.marginRight = '5px';
+                            divider.style.display = 'flex';
+                            divider.style.alignItems = 'center';
+                            // Create a div for the horizontal line
+                            const line = document.createElement('div');
+                            line.classList.add('break-line'); // Add your CSS class for styling the line here
+                            line.style.flexGrow = '1'; // Allow the line to grow and fill available space
+                            line.style.height = '2px'; // Set the height of the line
+                            divider.appendChild(lunchText);
+                            divider.appendChild(line);
+                            dataContainer.appendChild(divider);
+                        }
                         // Sets last end time for recess and lunch calculator
                         lastEndTime = period.EndTime;
-                
+
                         // Create Box for Timetable
                         const classDiv = document.createElement('div');
                         classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'specialbox');
@@ -795,11 +724,11 @@
                         classDiv.appendChild(classNameSpan)
                         classDiv.appendChild(timeSpan);
                         dataContainer.appendChild(classDiv);
-                        }    
                     }
-
                 }
-        
+
+            }
+
 
             const divElement = document.getElementById('timetableLoading');
             divElement.style.display = 'none';
@@ -865,8 +794,19 @@
             let currentISOString = currentDate.toISOString();
 
             if (currentDay == "Saturday" || currentDay == "Sunday") {
-                // Timetable
-                fetch(`/api/getTimetable?cookie=${authCookie}&date=${getNextMonday(currentISOString)}`)
+
+
+                let data = {
+                    date: getNextMonday(currentISOString)
+                };
+
+                fetch(`/api/getTimetable?date=${getNextMonday(currentISOString)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
                     .then(response => response.json())
                     .then(data => {
                         addTimetable(data, true)
@@ -876,7 +816,17 @@
                     });
             } else {
 
-                fetch(`/api/getTimetable?cookie=${authCookie}&date=${currentISOString}`)
+                let data = {
+                    date: currentISOString
+                };
+
+                fetch(`/api/getTimetable?date=${currentISOString}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
                     .then(response => response.json())
                     .then(data => {
                         addTimetable(data, false)
@@ -928,7 +878,18 @@
     </script>
     <!-- Daily Messages -->
     <script>
-        fetch(`/api/getDailyMessages?cookie=${authCookie}&date=${currentISOString}`)
+
+        let data = {
+            date: currentISOString
+        };
+
+        fetch(`/api/getDailyMessages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
             .then(response => response.json())
             .then(data => {
                 const dataContainer = document.getElementById('dailyMessages');
@@ -996,7 +957,12 @@
 
     <!-- Weather -->
     <script>
-        fetch(`/api/getWeather`)
+        fetch(`/api/getWeather`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
             .then(response => response.json())
             .then(data => {
 
@@ -1023,7 +989,12 @@
 
     <!-- Classes (Due, Results, Overdue) -->
     <script>
-        fetch(`/api/getClasses?cookie=${authCookie}`)
+        fetch(`/api/getClasses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
             .then(response => response.json())
             .then(data => {
 
@@ -1052,9 +1023,7 @@
                 const overdueTasks = document.getElementById('overdueTasks');
                 const overdueContainer = document.getElementById('overdueTasksExpand');
                 overdueTasks.textContent = data.d.OverDueTasksStudent.length + ' Overdue'
-                console.log(data.d.OverDueTasksStudent)
                 for (const task of data.d.OverDueTasksStudent) {
-                    console.log(task)
                     var spanElement = document.createElement('span');
                     spanElement.className = 'ms-2';
 
@@ -1102,7 +1071,12 @@
 
     <!-- Today -->
     <script>
-        fetch(`/api/getToday?cookie=${authCookie}`)
+        fetch(`/api/getToday`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
             .then(response => response.json())
             .then(data => {
                 const dataContainer = document.getElementById('todayActivities');
@@ -1173,7 +1147,6 @@
         if (setDarkMode === 'on') {
             var element = document.body;
             document.documentElement.setAttribute('data-theme', 'dark');
-            console.log('Dark mode is on')
         }
     </script>
     <script>
@@ -1189,8 +1162,8 @@
                 setDarkMode = localStorage.setItem('dark', null);
             }
         }
-        document.addEventListener('keydown', function(event) {
-        // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
+        document.addEventListener('keydown', function (event) {
+            // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
             if (event.ctrlKey && event.altKey && event.key === 'd') {
                 toggleTheme(); // Toggle dark mode when the shortcut is triggered
             }

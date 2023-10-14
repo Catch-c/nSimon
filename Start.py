@@ -21,7 +21,7 @@ flask_secret = config.get('Flask', 'flask.secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.2.8"
+VERSION = "1.2.9"
 
 
 
@@ -30,67 +30,72 @@ VERSION = "1.2.8"
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
-@app.route("/api/getTimetable", methods=["GET"])
+@app.route("/api/getTimetable", methods=["POST"])
 def getTimetable():
-    cookie = request.args.get("cookie")
-    date = request.args.get("date")
+    cookie = request.cookies.get("adAuthCookie")
+    data = request.json
+    date = data['date']
 
     return jsonify(Simon.getTimetable(cookie, date)), 200
 
 #       --[[ getCalendar () ]]--
-@app.route("/api/getCalendar", methods=["GET"])
+@app.route("/api/getCalendar", methods=["POST"])
 def getCalendar():
-    cookie = request.args.get("cookie")
-    date = request.args.get("date")
+    cookie = request.cookies.get("adAuthCookie")
+    data = request.json
+    date = data['date']
 
 
     return jsonify(Simon.getCalendar(cookie, f"{date}T14:00:00.000Z")), 200
 
 
 #       --[[ getDailyMessages () ]]--
-@app.route("/api/getDailyMessages", methods=["GET"])
+@app.route("/api/getDailyMessages", methods=["POST"])
 def getMessages():
-    cookie = request.args.get("cookie")
-    date = request.args.get("date")
+    cookie = request.cookies.get("adAuthCookie")
+    data = request.json
+    date = data['date']
 
     return jsonify(Simon.getDailyMessages(cookie, date)), 200
 
 
 #       --[[ getUserInfo () ]]--
-@app.route("/api/getUserInfo", methods=["GET"])
+@app.route("/api/getUserInfo", methods=["POST"])
 def getUserInfo():
-    cookie = request.args.get("cookie")
+    cookie = request.cookies.get("adAuthCookie")
 
     return jsonify(Simon.getUserInfo(cookie)), 200
 
 
 #       --[[ getClasses () ]]--
-@app.route("/api/getClasses", methods=["GET"])
+@app.route("/api/getClasses", methods=["POST"])
 def getClasses():
-    cookie = request.args.get("cookie")
+    cookie = request.cookies.get("adAuthCookie")
 
     return jsonify(Simon.getClasses(cookie)), 200
 
 
 #       --[[ getClassTasks () ]]--
-@app.route("/api/getClassTasks", methods=["GET"])
+@app.route("/api/getClassTasks", methods=["POST"])
 def getClassTasks():
-    cookie = request.args.get("cookie")
-    classID = request.args.get("classID")
+    cookie = request.cookies.get("adAuthCookie")
+
+    data = request.json
+    classID = data['classID']
 
     return jsonify(Simon.getClassTasks(cookie, classID)), 200
 
 
 #       --[[ getToday () ]]--
-@app.route("/api/getToday", methods=["GET"])
+@app.route("/api/getToday", methods=["POST"])
 def getToday():
-    cookie = request.args.get("cookie")
+    cookie = request.cookies.get("adAuthCookie")
 
     return jsonify(Simon.getToday(cookie)), 200
 
 
 #       --[[ getWeather () ]]--
-@app.route("/api/getWeather", methods=["GET"])
+@app.route("/api/getWeather", methods=["POST"])
 def getWeather():
     campus = request.cookies.get("campus")
     LATITUDE = -38.069780
@@ -150,7 +155,7 @@ def getWeather():
 
 
 #       --[[ checkCookie () ]]--
-@app.route("/api/checkCookie", methods=["GET"])
+@app.route("/api/checkCookie", methods=["POST"])
 def checkCookie():
     cookie = request.args.get("cookie")
 
@@ -161,7 +166,7 @@ def checkCookie():
 
 
 #       --[[ getCookie () ]]--
-@app.route("/api/getCookie", methods=["GET"])
+@app.route("/api/getCookie", methods=["POST"])
 def getCookie():
     username = request.args.get("username")
     password = request.args.get("password")
@@ -176,9 +181,9 @@ def getCookie():
 
 
 #       --[[ getUserProfileInfo () ]]--
-@app.route("/api/getUserProfileInfo", methods=["GET"])
+@app.route("/api/getUserProfileInfo", methods=["POST"])
 def getUserProfileInfo():
-    cookie = request.args.get("cookie")
+    cookie = request.cookies.get("adAuthCookie")
 
     GUID = Simon.getUserInfo(cookie)["d"]["guid"]
 
