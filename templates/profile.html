@@ -45,15 +45,21 @@
                 <div class="big-box rounded p-3 mb-2">
                     <h4 class="pageSubtitle" style="font-weight: 600;">General Information</h4>
                     <div class="small-box rounded p-3 mb-2" style="position: relative;">
-                        <img src="{{ url_for('static', filename='images/unknown.png') }}"
-                            style="border-radius: 10%; min-width: 90px; width: 90px; " alt="Cinque Terre">
+                        <img src="https://i.imgur.com/RNtocZX.png"
+                            style="border-radius: 10%; min-width: 90px; width: 90px; " alt="Cinque Terre" id="studentImage">
 
                         <span class="class-name ps-3" id="studentName" style="position: absolute;">LOADING</span>
+                        
                         <span class="class-teacher ps-3" id="studentID" style="position: absolute; top: 35px;">Student
                             ID: LOADING</span>
+
                         <span class="class-teacher ps-3" id="studentYearLevel"
-                            style="position: absolute; top: 75px;">Year Level: LOADING</span>
-                        <span class="class-teacher ps-3" id="studentHouse" style="position: absolute; top: 95px;">House:
+                            style="position: absolute; top: 55px;">Year Level:
+                            LOADING</span>
+
+                        <span class="class-teacher ps-3" id="studentHouse" style="position: absolute; top: 75px;">House:
+                            LOADING</span>
+                        <span class="class-teacher ps-3" id="studentCareGroup" style="position: absolute; top: 95px;">Care Group:
                             LOADING</span>
                     </div>
                 </div>
@@ -106,38 +112,69 @@
 
             </div>
 
-            <!-- Courage & Contributions -->
+            <!-- Notes/Incidents -->
             <div class="col-md-3 col-12p-3 order-2 order-md-1">
+
+                <div class="big-box rounded p-3 mb-2">
+                    <h4 class="pageSubtitle" style="font-weight: 600;">Teacher Notes</h4>
+
+                    <!-- Parent Notified Absences -->
+                    <div class="small-box rounded p-3 mb-2">
+                        <span class="class-name ps-3">Notes: </span><span class="class-name-sub"
+                            id="studentNotes">LOADING</span>
+                    </div>
+
+                    <!-- Late to School -->
+                    <div class="small-box rounded p-3 mb-2">
+                        <span class="class-name ps-3">Important Notes: </span><span class="class-name-sub"
+                            id="studentImportantNotes">LOADING</span>
+                    </div>
+
+                    <!-- Leave Passes -->
+                    <div class="small-box rounded p-3 mb-2">
+                        <span class="class-name ps-3">Incidents: </span><span class="class-name-sub"
+                            id="studentIncidents">LOADING</span>
+                    </div>
+
+                    <!-- Sick Passes -->
+                    <div class="small-box rounded p-3 mb-2">
+                        <span class="class-name ps-3">Detentions: </span><span class="class-name-sub"
+                            id="studentDetentions">LOADING</span>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Courage & Contributions -->
+            <!-- <div class="col-md-3 col-12p-3 order-2 order-md-1">
 
                 <div class="big-box rounded p-3 mb-2">
                     <h4 class="pageSubtitle" style="font-weight: 600;">Courage & Contributions</h4>
 
 
-                    <!-- Total  -->
                     <div class="small-box rounded p-3 mb-2">
                         <span class="class-name ps-3">Total: </span><span class="class-name-sub"
                             id="courageTotal">LOADING</span>
                     </div>
 
-                    <!-- Leadership in Community and Culture  -->
                     <div class="small-box rounded p-3 mb-2">
                         <span class="class-name ps-3">Community and Culture: </span><span class="class-name-sub"
                             id="courageCommunity">LOADING</span>
                     </div>
 
-                    <!-- Leadership in Faith and Service -->
                     <div class="small-box rounded p-3 mb-2">
                         <span class="class-name ps-3">Faith and Service: </span><span class="class-name-sub"
                             id="courageFaith">LOADING</span>
                     </div>
 
-                    <!-- Leadership in Learning -->
                     <div class="small-box rounded p-3 mb-2">
                         <span class="class-name ps-3">Learning: </span><span class="class-name-sub"
                             id="courageLearning">LOADING</span>
                     </div>
 
-                    <!-- Leadership in Positive Learning Partnerships -->
                     <div class="small-box rounded p-3 mb-2">
                         <span class="class-name ps-3">Positive Learning Partnerships: </span><span
                             class="class-name-sub" id="couragePositive">LOADING</span>
@@ -146,7 +183,7 @@
                 </div>
 
 
-            </div>
+            </div> -->
 
 
         </div>
@@ -232,13 +269,22 @@
             window.location.href = '/logout';
         }
 
+        function getFirstTwoDecimalPlacesAsWholeNumber(num) {
+            let result = Math.round(num * 100);
+            return result;
+        }
+
+
     </script>
 
 
 
     <!-- User Information -->
+
+
     <script>
-        fetch(`/api/getUserProfileInfo`, {
+
+        fetch(`/api/getDashboardData`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -246,126 +292,105 @@
         })
             .then(response => response.json())
             .then(data => {
-                if (data['status'] == 404) {
 
-                    // GENERAL INFO
-                    let element = document.getElementById('studentName');
-                    element.innerText = "There was an issue while fetching user profile data."
+                // ABSENSES
+                element = document.getElementById('absencesParentNotified');
+                element.innerText = data['d']['SemesterBasedData'][0]['ParentNotifiedAbsences'].length;
 
-                    element = document.getElementById('studentID');
-                    element.innerText = "Student ID: ???"
+                element = document.getElementById('absencesLateToSchool');
+                element.innerText = data['d']['SemesterBasedData'][0]['LateToSchool'].length;
 
-                    element = document.getElementById('studentCampus');
-                    element.innerText = "Campus: ???"
+                element = document.getElementById('absencesLeavePasses');
+                element.innerText = data['d']['SemesterBasedData'][0]['LeavePass'].length;
 
-                    element = document.getElementById('studentYearLevel');
-                    element.innerText = "Year Level: ???"
-
-                    element = document.getElementById('studentHouse');
-                    element.innerText = "House: ???"
-
-                    // ABSENSES
-                    element = document.getElementById('absencesParentNotified');
-                    element.innerText = "???"
-
-                    element = document.getElementById('absencesLateToSchool');
-                    element.innerText = "???"
-
-                    element = document.getElementById('absencesLeavePasses');
-                    element.innerText = "???"
-
-                    element = document.getElementById('absencesSickPasses');
-                    element.innerText = "???"
-
-                    element = document.getElementById('attendenceProgress');
-                    element.style.width = "100%";
-                    element.setAttribute("aria-valuenow", "100");
-                    element.classList.remove("bg-success");
-                    element.classList.add("bg-danger");
+                element = document.getElementById('absencesSickPasses');
+                element.innerText = data['d']['SemesterBasedData'][0]['SickPasses'].length;
 
 
-                    element.innerText = "??%"
+                attendance = getFirstTwoDecimalPlacesAsWholeNumber(data['d']['SemesterBasedData'][0]['AttendancePercentage'])
+                element = document.getElementById('attendenceProgress');
+                element.style.width = `${attendance}%`;
+                element.setAttribute("aria-valuenow", attendance);
+                element.classList.remove("bg-success");
+                element.classList.add("bg-danger");
 
-                    // COURAGE
-                    element = document.getElementById('courageTotal');
-                    element.innerText = "???"
-
-                    element = document.getElementById('courageFaith');
-                    element.innerText = "???"
-
-                    element = document.getElementById('courageCommunity');
-                    element.innerText = "???"
-
-                    element = document.getElementById('courageLearning');
-                    element.innerText = "???"
-
-                    element = document.getElementById('couragePositive');
-                    element.innerText = "???"
-
-
-
-                } else {
-
-
-                    // GENERAL INFO
-                    let element = document.getElementById('studentName');
-                    element.innerText = data['data']['name']
-
-                    element = document.getElementById('studentID');
-                    element.innerText = `Student ID: ${data['data']['studentID']}`
-
-                    element = document.getElementById('studentYearLevel');
-                    element.innerText = `Year Level: ${data['data']['yearLevel']}`
-
-                    element = document.getElementById('studentHouse');
-                    element.innerText = `House: ${data['data']['house']}`
-
-                    // ABSENSES
-                    element = document.getElementById('absencesParentNotified');
-                    element.innerText = data['data']['attendence']['pna']
-
-                    element = document.getElementById('absencesLateToSchool');
-                    element.innerText = data['data']['attendence']['late']
-
-                    element = document.getElementById('absencesLeavePasses');
-                    element.innerText = data['data']['attendence']['leave']
-
-                    element = document.getElementById('absencesSickPasses');
-                    element.innerText = data['data']['attendence']['sick']
-
-                    element = document.getElementById('attendenceProgress');
-                    element.style.width = `${data['data']['attendence']['percent']}%`;
-                    element.setAttribute("aria-valuenow", data['data']['attendence']['percent']);
-                    element.classList.remove("bg-success");
-                    element.classList.add("bg-danger");
-
-                    if (data['data']['attendence']['percent'] > 79.9) {
-                        element.classList.remove("bg-danger");
-                        element.classList.add("bg-warning");
-                    } else if (data['data']['attendence']['percent'] > 89.9) {
-                        element.classList.remove("bg-danger");
-                        element.classList.add("bg-success");
-                    }
-
-
-                    element.innerText = `${data['data']['attendence']['percent']}%`
-
-                    // COURAGE
-                    element = document.getElementById('courageTotal');
-                    element.innerText = data['data']['courage']['total']
-
-                    element = document.getElementById('courageFaith');
-                    element.innerText = data['data']['courage']['faith']
-
-                    element = document.getElementById('courageCommunity');
-                    element.innerText = data['data']['courage']['community']
-
-                    element = document.getElementById('courageLearning');
-                    element.innerText = data['data']['courage']['learning']
-
-                    element = document.getElementById('couragePositive');
-                    element.innerText = data['data']['courage']['positive']
+                if (attendance > 79.9) {
+                    element.classList.remove("bg-danger");
+                    element.classList.add("bg-warning");
+                } else if (attendance > 89.9) {
+                    element.classList.remove("bg-danger");
+                    element.classList.add("bg-success");
                 }
+
+
+                element.innerText = `${attendance}%`
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+    <script>
+
+        fetch(`/api/getStudentProfileDetails`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+
+
+                // GENERAL INFO
+
+                let element = document.getElementById('studentName');
+                element.textContent = `${data['d']['FullName']}`
+
+                element = document.getElementById('studentID');
+                element.innerText = `Student ID: ${data['d']['UID']}`
+
+                element = document.getElementById('studentHouse');
+                element.innerText = `House: ${data['d']['HouseDescription']}`
+
+                element = document.getElementById('studentYearLevel');
+                element.innerText = `Year Level: ${data['d']['YearLevelCode']}`
+
+                element = document.getElementById('studentCareGroup');
+                element.innerText = `Care Group: ${data['d']['HomeroomCode']}`
+
+                element = document.getElementById('studentNotes');
+                element.innerText = `${data['d']['NoteCount']}`
+
+                element = document.getElementById('studentImportantNotes');
+                element.innerText = `${data['d']['NoteImportantCount']}`
+
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+    <script>
+        fetch(`/api/getStudentProfileBehaviouralHistory`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+
+
+                // GENERAL INFO
+                let element = document.getElementById('studentIncidents');
+                element.textContent = `${data['d']['IncidentEntryCount']}`
+
+                element = document.getElementById('studentDetentions');
+                element.textContent = `${data['d']['DetentionEntryCount']}`
 
             })
             .catch(error => {

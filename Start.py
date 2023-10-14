@@ -21,7 +21,7 @@ flask_secret = config.get('Flask', 'flask.secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.2.9"
+VERSION = "1.2.10"
 
 
 
@@ -64,7 +64,7 @@ def getMessages():
 def getUserInfo():
     cookie = request.cookies.get("adAuthCookie")
 
-    return jsonify(Simon.getUserInfo(cookie)), 200
+    return jsonify(Simon.getUserInformation(cookie)), 200
 
 
 #       --[[ getClasses () ]]--
@@ -72,7 +72,7 @@ def getUserInfo():
 def getClasses():
     cookie = request.cookies.get("adAuthCookie")
 
-    return jsonify(Simon.getClasses(cookie)), 200
+    return jsonify(Simon.getClassResources(cookie)), 200
 
 
 #       --[[ getClassTasks () ]]--
@@ -91,7 +91,7 @@ def getClassTasks():
 def getToday():
     cookie = request.cookies.get("adAuthCookie")
 
-    return jsonify(Simon.getToday(cookie)), 200
+    return jsonify(Simon.getCalendarEvents(cookie)), 200
 
 
 #       --[[ getWeather () ]]--
@@ -181,17 +181,37 @@ def getCookie():
 
 
 #       --[[ getUserProfileInfo () ]]--
-@app.route("/api/getUserProfileInfo", methods=["POST"])
-def getUserProfileInfo():
+@app.route("/api/getDashboardData", methods=["POST"])
+def getDashboardData():
     cookie = request.cookies.get("adAuthCookie")
 
-    GUID = Simon.getUserInfo(cookie)["d"]["guid"]
+    GUID = Simon.getUserInformation(cookie)["d"]["guid"]
 
-    profileInfo = Simon.getUserProfileInfo(cookie, GUID)
-    if not profileInfo:
-        return jsonify({"status": 404}), 404
-    else:
-        return jsonify({"status": 200, "data": profileInfo}), 200
+    return jsonify(Simon.getDashboardData(cookie, GUID)), 200
+
+
+#       --[[ getStudentProfile () ]]--
+@app.route("/api/getStudentProfile", methods=["POST"])
+def getStudentProfile():
+    cookie = request.cookies.get("adAuthCookie")
+
+    return jsonify(Simon.getStudentProfile(cookie)), 200
+
+
+#       --[[ getUserProfileInfo () ]]--
+@app.route("/api/getStudentProfileDetails", methods=["POST"])
+def getStudentProfileDetails():
+    cookie = request.cookies.get("adAuthCookie")
+
+    return jsonify(Simon.getStudentProfileDetails(cookie)), 200
+
+#       --[[ getUserProfileInfo () ]]--
+@app.route("/api/getStudentProfileBehaviouralHistory", methods=["POST"])
+def getStudentProfileBehaviouralHistory():
+    cookie = request.cookies.get("adAuthCookie")
+
+    return jsonify(Simon.getStudentProfileBehaviouralHistory(cookie)), 200
+
 
 
 #       --[[ login () ]]--
