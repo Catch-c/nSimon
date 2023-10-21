@@ -185,34 +185,102 @@
     </script>
 
 
+    <!-- Themes -->
     <script>
-        let setDarkMode = localStorage.getItem('dark');
-        if(setDarkMode === 'on') {
-          var element = document.body;
-          document.documentElement.setAttribute('data-theme', 'dark');
-          console.log('Dark mode is on')
+        let availableThemes = ['dark', 'light', 'green', 'blue'];
+        let currentTheme = 0;
+        const cachedTheme = localStorage.getItem('theme');
+            if (cachedTheme && availableThemes.includes(cachedTheme)) {
+            document.documentElement.setAttribute('data-theme', cachedTheme);
         }
-      </script>
-      <script>
-        function toggleTheme() {
-          setDarkMode = localStorage.getItem('dark');
-          if(setDarkMode !== "on") {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            // Set the value of the itwm to "on" when dark mode is on
-            setDarkMode = localStorage.setItem('dark', 'on');
-          } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            // Set the value of the item to  "null" when dark mode if off
-            setDarkMode = localStorage.setItem('dark', null);
+
+        function loadTheme() {
+            fetch('/api/getTheme', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(theme => {
+                switch (theme) {
+                    case 'dark':
+                        setTheme('dark');
+                        break;
+                    case 'light':
+                        setTheme('light');
+                        break;
+                    case 'green':
+                        setTheme('green');
+                        break;
+                    case 'blue':
+                        setTheme('blue');
+                        break;
+                    default:
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
-      }
-      document.addEventListener('keydown', function(event) {
-        // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            // Update the current theme index
+            currentTheme = availableThemes.indexOf(theme);
+            updateThemeInServer(theme);
+        }
+
+        function updateThemeInServer(theme) {
+            const username = getCookie("username");
+
+            if (!username) {
+                console.log("Username not found in cookies.");
+                return;
+            }
+
+            const data = { theme: theme };
+            localStorage.setItem('theme', theme);
+            fetch("/api/setTheme", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Theme set to ${theme}`);
+                } else {
+                    console.error('Failed to set theme');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        document.addEventListener('keydown', function (event) {
+            // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
             if (event.ctrlKey && event.altKey && event.key === 'd') {
                 toggleTheme(); // Toggle dark mode when the shortcut is triggered
             }
         });
-      </script>
+
+        function toggleTheme() {
+            currentTheme = (currentTheme + 1) % availableThemes.length;
+            const nextTheme = availableThemes[currentTheme];
+            setTheme(nextTheme);
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        loadTheme();
+    </script>
 
 
 
