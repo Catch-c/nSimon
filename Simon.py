@@ -163,6 +163,23 @@ def getStudentProfile(cookie):
     response = requests.post(url, headers=headers)
     return response.json()
 
+def getSimonStudentImageURL(cookie):
+    url = "https://simon.sfx.vic.edu.au/Default.asmx/GetUserInfo"
+    headers = {
+        "Content-Type": "application/json",
+        "Cookie": f"adAuthCookie={cookie}"
+    }
+
+    response = requests.post(url, headers=headers)
+    data = response.json()
+
+    if 'd' in data and 'UserPhotoUrl' in data['d']:
+        user_photo_url = data['d']['UserPhotoUrl']
+        full_image_url = f"https://simon.sfx.vic.edu.au{user_photo_url}"
+        return full_image_url
+
+    return None
+
 def getStudentProfileDetails(cookie):
 
     studentIDSimon = getStudentProfile(cookie)['d'][0]['StudentID']
