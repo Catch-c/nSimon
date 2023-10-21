@@ -93,6 +93,19 @@ def getUserInformation(cookie):
 
     return response.json()
 
+def getUserProfileImage(cookie):
+    url = "https://simon.sfx.vic.edu.au/Default.asmx/UserInformation"
+    headers = {
+        "Content-Type": "application/json",
+        "Cookie": f"adAuthCookie={cookie}"
+    }
+
+
+
+    response = requests.post(url, headers=headers)
+
+    return response.json()
+
 def getCalendarEvents(cookie):
     url = "https://simon.sfx.vic.edu.au/Default.asmx/GetCalendarEvents"
     headers = {

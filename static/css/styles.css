@@ -48,6 +48,42 @@
 
 }
 
+[data-theme="blue"] {
+    --primary-color: #1976d2;
+    --secondary-color: #ffffff;
+    --font-color: #000000;
+    --bg-color: #e1f5fe;
+    --heading-color: #000000;
+    --buttons: #1976d2;
+    --button-text: #ffffff;
+    --big-box-shadow: #1a1a1a;
+    --big-box-color: #eeeeee;
+    --small-box-shadow: #1a1a1a;
+    --small-box-color: #e0e0e0;
+    --nav-shadow: rgba(0, 0, 0, 0.2);
+    --sidebar-shadow: rgba(0, 0, 0, 0.2);
+    --subtitle-sub-color: #888888;
+}
+
+[data-theme="green"] {
+    --primary-color: #4caf50;
+    --secondary-color: #fff;
+    --font-color: #000;
+    --bg-color: #c8e6c9;
+    --heading-color: #000;
+    --buttons: #4caf50;
+    --button-text: #fff;
+    --big-box-shadow: #4caf50;
+    --big-box-color: #f1f8e9;
+    --small-box-shadow: #4caf50;
+    --small-box-color: #c5e1a5;
+    --nav-shadow: rgba(0, 0, 0, 0.2);
+    --sidebar-shadow: rgba(0, 0, 0, 0.2);
+    --subtitle-sub-color: #888888;
+}
+
+
+
 body {
     background-color: var(--bg-color);
     color: var(--font-color);
@@ -177,6 +213,8 @@ span {
 
 }
 
+
+
 #dueTasksExpand, #overdueTasksExpand, #resultTasksExpand {
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
@@ -202,6 +240,12 @@ span {
     text-align: right;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.border-timetable {
+    border-color: var(--buttons);
+    border-width: 1px;
+    border-style: solid;
 }
 
 .teacher-name {

@@ -1,0 +1,6 @@
+Dockerfile
+.dockerignore
+.gitignore
+__pycache__/
+config.ini
+main/

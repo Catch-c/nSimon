@@ -10,18 +10,24 @@ from flask import (
     flash,
 )
 import Simon as Simon
+import Database as Database
 import requests
 import configparser
+import logging
+
+# LOGS
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # --[[Import Config Values]]--
 config = configparser.ConfigParser()
 config.read('config.ini')
-flask_secret = config.get('Flask', 'flask.secret')
+flask_secret = config.get('Flask', 'secret')
 
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.2.10"
+VERSION = "1.3"
 
 
 
@@ -188,14 +194,54 @@ def getDashboardData():
     GUID = Simon.getUserInformation(cookie)["d"]["guid"]
 
     return jsonify(Simon.getDashboardData(cookie, GUID)), 200
+    
 
 
-#       --[[ getStudentProfile () ]]--
-@app.route("/api/getStudentProfile", methods=["POST"])
-def getStudentProfile():
+#       --[[ getStudentProfileImage () ]]--
+@app.route("/api/getStudentProfileImage", methods=["POST"])
+def getStudentProfileImage():
     cookie = request.cookies.get("adAuthCookie")
+    username = request.cookies.get("username")
 
-    return jsonify(Simon.getStudentProfile(cookie)), 200
+    image_data = Database.databaseCheckImage(username)
+
+    if image_data is None:
+        # If the image is not found in the database, add it
+        image_data = Database.databaseAddImage(username, cookie)
+
+    if image_data is not None:
+        # If image data exists, return it as an image response
+        return image_data, 200, {"Content-Type": "image/jpeg"}  # Adjust the content type as needed
+    else:
+        # If no image data is available, return a placeholder image or an error response
+        return "Image not found", 404
+    
+
+#       --[[ getTheme () ]]--
+@app.route("/api/getTheme", methods=["POST"])
+def getTheme():
+    username = request.cookies.get("username")
+
+    theme = Database.databaseGetTheme(username)
+    return theme
+
+#       --[[ setTheme () ]]--
+@app.route("/api/setTheme", methods=["POST"])
+def setTheme():
+    username = request.cookies.get("username")
+    theme = request.json.get("theme")  # Assuming the theme is passed in the request JSON
+    print(theme)
+
+    if theme not in ["dark", "light", "blue", "green"]:
+        return "Invalid theme", 400  # Return a bad request response for invalid theme
+
+    result = Database.databaseChangeTheme(username, theme)
+
+    if result == 200:
+        return "Theme updated", 200
+    else:
+        return "Failed to update theme", 500
+
 
 
 #       --[[ getUserProfileInfo () ]]--
@@ -221,41 +267,52 @@ def login():
     password = request.form.get("password")
     rememberme = request.form.get("rememberme")
 
-    status, cookie = Simon.login(username, password)
+    result = Database.databaseCheckUser(username, password)
 
-    if status != 200:
-        flash(status)
+    if result == 404:
+    # User doesn't exist in the database, so attempt to login using Simon
+        status, cookie = Simon.login(username, password)
+
+        if status == 404:
+        # Simon.login also failed, show a flash message and redirect to the login page
+            flash('Incorrect password')
+            return redirect(url_for("home"))
+
+    # If Simon.login was successful, add the user to the database
+        Database.databaseAddUser(username, password, cookie)
+    elif result == 403:
+    # The password is incorrect in the database, so show a flash message and redirect to the login page
+        flash('Incorrect password')
         return redirect(url_for("home"))
     else:
+    # User exists in the database
+        _, cookie = result
 
-        # GETTING CAMPUS
-        timetableData = Simon.getTimetable(cookie, "2023-08-09T21:02:04.085Z")
-        campusCode = timetableData["d"]["DefaultTimeTableGroup"]
+    # GETTING CAMPUS
+    timetableData = Simon.getTimetable(cookie, "2023-08-09T21:02:04.085Z")
+    campusCode = timetableData["d"]["DefaultTimeTableGroup"]
 
-        if campusCode == "BER":
-            campus = "Berwick"
-        elif campusCode == "BEA":
-            campus = "Beaconsfield"
-        elif campusCode == "OFF":
-            campus = "Officer"
-        else:
-            campus = "Beaconsfield"
+    if campusCode == "BER":
+        campus = "Berwick"
+    elif campusCode == "BEA":
+        campus = "Beaconsfield"
+    elif campusCode == "OFF":
+        campus = "Officer"
+    else:
+        campus = "Beaconsfield"
 
-        response = make_response(redirect(url_for("dashboard")))
+    response = make_response(redirect(url_for("dashboard")))
 
-        if rememberme == "on":
-            response.set_cookie("adAuthCookie", cookie, max_age=7776000)
-            response.set_cookie("campus", campus, max_age=7776000)
-        else:
-            response.set_cookie("adAuthCookie", cookie)
-            response.set_cookie("campus", campus)
+    if rememberme == "on":
+        response.set_cookie("adAuthCookie", cookie, max_age=7776000)
+        response.set_cookie("username", username, max_age=7776000)
+        response.set_cookie("campus", campus, max_age=7776000)
+    else:
+        response.set_cookie("adAuthCookie", cookie)
+        response.set_cookie("username", username)
+        response.set_cookie("campus", campus)
 
-        return response
-
-
-
-
-
+    return response
 
 # --[[ Frontend Routes ]]--
 #       --[[ /logout ]]--
@@ -373,7 +430,7 @@ def classesShow(classID):
 #       --[[ PRODUCTION ]]--
 if __name__ == "__main__":
     from waitress import serve
-    print("STARTED!")
+    logger.info("nSimon Started!")
     serve(app, host="0.0.0.0", port=8080)
 
 #       --[[ TESTING ]]--
