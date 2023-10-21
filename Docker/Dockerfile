@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:3.10
 
 # 2. EXPOSE PORT
 EXPOSE 8080
