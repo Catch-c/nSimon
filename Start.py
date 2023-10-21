@@ -27,7 +27,8 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.3.1"
+VERSION = "1.3.2
+
 
 
 
@@ -230,7 +231,6 @@ def getTheme():
 def setTheme():
     username = request.cookies.get("username")
     theme = request.json.get("theme")  # Assuming the theme is passed in the request JSON
-    print(theme)
 
     if theme not in ["dark", "light", "blue", "green"]:
         return "Invalid theme", 400  # Return a bad request response for invalid theme
