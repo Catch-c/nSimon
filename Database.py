@@ -189,7 +189,6 @@ def databaseChangeTheme(username, theme):
         # Check if an image already exists in the database
         cursor.execute("UPDATE users SET theme = %s WHERE username = %s", (theme, username))
         conn.commit()
-        print('Changed Theme')
 
         # Get the image URL using Simon.getUserProfileImageURL
 

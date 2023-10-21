@@ -230,7 +230,6 @@ def getTheme():
 def setTheme():
     username = request.cookies.get("username")
     theme = request.json.get("theme")  # Assuming the theme is passed in the request JSON
-    print(theme)
 
     if theme not in ["dark", "light", "blue", "green"]:
         return "Invalid theme", 400  # Return a bad request response for invalid theme

@@ -1238,6 +1238,18 @@
 
         loadTheme();
     </script>
+    <script>
+        function checkNewLoginAndLogOut() {
+        // Check if the "username" cookie exists
+            const usernameCookie = getCookie("username");
+    
+            if (!usernameCookie) {
+                // Clear all cookies
+               window.location.href = "/logout";  // Adjust the URL as needed
+        }
+    }
+    checkNewLoginAndLogOut();
+    </script>
 
 </body>
 
