@@ -26,9 +26,6 @@
     <link color="#5bbad5" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" rel="mask-icon" />
     <meta content="#da532c" name="msapplication-TileColor" />
     <meta content="#3a3a3a" name="theme-color" />
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
-        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
-        crossorigin="anonymous"></script>
 
 </head>
 <style>
@@ -478,11 +475,11 @@
 
 
 
-        function addTimetable(data, weekend) {
+        function addTimetable(data, weekend, today) {
 
             let currentUnixTimestamp = Math.floor(Date.now() / 1000);
 
-
+            let dayInCycle = data.d.Info;
             const dataContainer = document.getElementById('timetable');
             const timetableDayText = document.getElementById('timetableDay');
             timetableDayText.textContent = weekend ? 'Weekend' : data.d.Info;
@@ -594,7 +591,6 @@
                     const classDiv = document.createElement('div');
 
                     const colorDotSpan = document.createElement('span');
-
                     // Get Class Progress 
                     if (!weekend) {
 
@@ -608,19 +604,27 @@
                         let endParts = period['EndTime'].split(":");
                         let endTime = new Date();
                         endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
+                        console.log(dayInCycle)
+                        console.log(currentDayInCycle)
+                        if (dayInCycle == currentDayInCycle) {
+                            if (nowT >= startTime && nowT < endTime) {
+                                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'border-timetable');
+                            } else {
+                                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                            }
 
-                        if (nowT >= startTime && nowT < endTime) {
-                            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'border');
-                        } else {
-                            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+
+                            if (nowT < startTime) {
+                                colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                            } else if (nowT >= startTime && nowT < endTime) {
+                                colorDotSpan.classList.add('color-dot', 'bg-warning', 'me-2');
+                            } else {
+                                colorDotSpan.classList.add('color-dot', 'bg-success', 'me-2');
+                            }
                         }
-
-                        if (nowT < startTime) {
+                        else {
+                            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
                             colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
-                        } else if (nowT >= startTime && nowT < endTime) {
-                            colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
-                        } else {
-                            colorDotSpan.classList.add('color-dot', 'bg-secondary', 'me-2');
                         }
 
 
@@ -746,7 +750,7 @@
             document.getElementById('prevDay').disabled = true
             document.getElementById('nextDay').disabled = true
             currentDate.setDate(currentDate.getDate() - 1);
-            fetchTimetable(currentDate);
+            fetchTimetable(currentDate, false, false);
         });
 
         document.getElementById('nextDay').addEventListener('click', function () {
@@ -756,10 +760,10 @@
             document.getElementById('prevDay').disabled = true
             document.getElementById('nextDay').disabled = true
             currentDate.setDate(currentDate.getDate() + 1);
-            fetchTimetable(currentDate);
+            fetchTimetable(currentDate, false, true);
         });
 
-        function fetchTimetable(date) {
+        function fetchTimetable(date, today) {
 
             document.getElementById('timetable').innerHTML = '';
 
@@ -809,7 +813,7 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        addTimetable(data, true)
+                        addTimetable(data, true, today)
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -829,7 +833,7 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        addTimetable(data, false)
+                        addTimetable(data, false, today)
 
                     })
                     .catch(error => {
@@ -839,8 +843,8 @@
 
         }
 
-
-        fetchTimetable(currentDate);
+        // currentDate.setDate(currentDate.getDate() + 1);
+        fetchTimetable(currentDate, true, false);
 
     </script>
 
@@ -896,57 +900,69 @@
 
                 const periods = data.d.SchoolMessages;
 
-                let musicLessons = localStorage.getItem('musicLessons');
+                let musicLessons
 
-                for (const message of periods) {
-                    if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
-
-                        if (musicLessons && musicLessons == "Hide") {
-                            messageTitle = message.MessageTitle
-                            if (messageTitle.toLowerCase().includes('lesson')) {
-                                continue
+                fetch('/api/getMusic', {
+                        method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
                             }
-                        }
+                        })
+                        .then(response => response.text())
+                        .then(theme => {
+                            const musicLessons = theme
+                            for (const message of periods) {
+                                if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
+                                    if (musicLessons && musicLessons == 'no') {
+                                        messageTitle = message.MessageTitle
+                                        if (messageTitle.toLowerCase().includes('lesson')) {
+                                            continue
+                                        }
+                                    }
+
+                        
+                                    totalDailyMessages += 1
 
 
-                        totalDailyMessages += 1
+                                    // Create the <h6> element
+                                    const classDiv = document.createElement('div');
+                                    classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
+                                    if (isNewMessage(message['StartDateTime'])) {
+                                        // Create color dot span
+                                        const colorDotSpan = document.createElement('span');
+                                        colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
+                                        classDiv.appendChild(colorDotSpan);
+                                    }
 
-                        // Create the <h6> element
-                        const classDiv = document.createElement('div');
-                        classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                                    const classNameSpan = document.createElement('span');
+                                    classNameSpan.classList.add('class-name');
+                                    classNameSpan.textContent = message.MessageTitle;
+                                    classDiv.appendChild(classNameSpan);
 
-                        if (isNewMessage(message['StartDateTime'])) {
-                            // Create color dot span
-                            const colorDotSpan = document.createElement('span');
-                            colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
-                            classDiv.appendChild(colorDotSpan);
-                        }
+                                    const teacherDiv = document.createElement('div');
+                                    teacherDiv.classList.add('teacher-name');
+                                    teacherDiv.innerHTML = removeColorStyles(message.MessageContent);
+                                    classDiv.appendChild(teacherDiv);
 
-                        const classNameSpan = document.createElement('span');
-                        classNameSpan.classList.add('class-name');
-                        classNameSpan.textContent = message.MessageTitle;
-                        classDiv.appendChild(classNameSpan);
+                                    const timeSpan = document.createElement('span');
+                                    timeSpan.classList.add('time');
+                                    timeSpan.textContent = `By: ${message.SubmittedByUserName}`;
+                                    classDiv.appendChild(timeSpan);
 
-                        const teacherDiv = document.createElement('div');
-                        teacherDiv.classList.add('teacher-name');
-                        teacherDiv.innerHTML = removeColorStyles(message.MessageContent);
-                        classDiv.appendChild(teacherDiv);
+                                    dataContainer.appendChild(classDiv);
 
-                        const timeSpan = document.createElement('span');
-                        timeSpan.classList.add('time');
-                        timeSpan.textContent = `By: ${message.SubmittedByUserName}`;
-                        classDiv.appendChild(timeSpan);
+                                }
+                            }
+                            const dailyMessageCountText = document.getElementById('totalDailyMessages');
+                            dailyMessageCountText.textContent = totalDailyMessages + " Messages"
 
-                        dataContainer.appendChild(classDiv);
-
-                    }
-                }
-                const dailyMessageCountText = document.getElementById('totalDailyMessages');
-                dailyMessageCountText.textContent = totalDailyMessages + " Messages"
-
-                const divElement = document.getElementById('dailyMessagesLoading');
-                divElement.style.display = 'none';
+                            const divElement = document.getElementById('dailyMessagesLoading');
+                            divElement.style.display = 'none';
+                        })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
             })
             .catch(error => {
@@ -1142,114 +1158,33 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+    <script>
+        const referenceDate = new Date('2023-10-16'); // Replace with your desired start date
+
+        // Function to calculate the day number within a two-week cycle
+        function getDayInCycle(currentDate) {
+            const timeDiff = Math.abs(currentDate - referenceDate);
+            const daysInMilliseconds = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+
+            const totalDays = Math.floor(timeDiff / daysInMilliseconds);
+            const daysInCycle = (totalDays % 10);
+
+            if (daysInCycle >= 5) {
+                return daysInCycle - 1;
+            }
+
+            return daysInCycle + 1;
+        }
+
+
+        // Example usage:
+        const todays = new Date(); // Replace with your current date
+        let currentDayInCycle = getDayInCycle(todays);
+        currentDayInCycle = `Timetable Day ${currentDayInCycle}`;
+
+    </script>
     <!-- Themes -->
-    <script>
-        let availableThemes = ['light', 'dark', 'blue', 'green'];
-        let currentTheme = 0;
-        const cachedTheme = localStorage.getItem('theme');
-            if (cachedTheme && availableThemes.includes(cachedTheme)) {
-            document.documentElement.setAttribute('data-theme', cachedTheme);
-        }
-
-        function loadTheme() {
-            fetch('/api/getTheme', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.text())
-            .then(theme => {
-                switch (theme) {
-                    case 'dark':
-                        setTheme('dark');
-                        break;
-                    case 'light':
-                        setTheme('light');
-                        break;
-                    case 'green':
-                        setTheme('green');
-                        break;
-                    case 'blue':
-                        setTheme('blue');
-                        break;
-                    default:
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            // Update the current theme index
-            currentTheme = availableThemes.indexOf(theme);
-            updateThemeInServer(theme);
-        }
-
-        function updateThemeInServer(theme) {
-            const username = getCookie("username");
-
-            if (!username) {
-                console.log("Username not found in cookies.");
-                return;
-            }
-
-            const data = { theme: theme };
-            localStorage.setItem('theme', theme);
-            fetch("/api/setTheme", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log(`Theme set to ${theme}`);
-                } else {
-                    console.error('Failed to set theme');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        document.addEventListener('keydown', function (event) {
-            // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
-            if (event.ctrlKey && event.altKey && event.key === 'd') {
-                toggleTheme(); // Toggle dark mode when the shortcut is triggered
-            }
-        });
-
-        function toggleTheme() {
-            currentTheme = (currentTheme + 1) % availableThemes.length;
-            const nextTheme = availableThemes[currentTheme];
-            setTheme(nextTheme);
-        }
-
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-
-        loadTheme();
-    </script>
-    <script>
-        function checkNewLoginAndLogOut() {
-        // Check if the "username" cookie exists
-            const usernameCookie = getCookie("username");
-    
-            if (!usernameCookie) {
-                // Clear all cookies
-               window.location.href = "/logout";  // Adjust the URL as needed
-        }
-    }
-    checkNewLoginAndLogOut();
-    </script>
+    {% include "partials/themes.html" %}
 
 </body>
 

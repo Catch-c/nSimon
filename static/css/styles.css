@@ -9,6 +9,8 @@
     --banner-text: white;
     --font-color: black;
     --bg-color: #fff;
+    --sidebar-bg: #fff;             /* sidebar background color */
+    --sidebar-text: #000;         /* sidebar text color */
     --heading-color: #292922;
     --buttons: #212529;
     --button-text: white;
@@ -28,8 +30,11 @@
 [data-theme="dark"] {
     --primary-color: #1976d2;
     --secondary-color: #ffffff;
+    --banner-color: rgb(0,95,157);
     --font-color: #ffffff;
     --bg-color: #1c1c1c;
+    --sidebar-bg: #1c1c1c;             /* sidebar background color */
+    --sidebar-text: #fff;         /* sidebar text color */
     --heading-color: #818cab;
     --buttons: white;
     --button-text: black;
@@ -49,38 +54,47 @@
 }
 
 [data-theme="blue"] {
-    --primary-color: #1976d2;
-    --secondary-color: #ffffff;
-    --font-color: #000000;
-    --bg-color: #e1f5fe;
-    --heading-color: #000000;
-    --buttons: #1976d2;
-    --button-text: #ffffff;
-    --big-box-shadow: #1a1a1a;
-    --big-box-color: #eeeeee;
-    --small-box-shadow: #1a1a1a;
-    --small-box-color: #e0e0e0;
-    --nav-shadow: rgba(0, 0, 0, 0.2);
-    --sidebar-shadow: rgba(0, 0, 0, 0.2);
-    --subtitle-sub-color: #888888;
+    --primary-color: #1565c0;         /* Primary background color */
+    --secondary-color: #ffffff;        /* Secondary accent color */
+    --banner-color: #005f9d;          /* Banner background color */
+    --font-color: #000000;            /* General text color */
+    --bg-color: #bbdefb;              /* Page background color */
+    --sidebar-bg: #aad5f8;             /* sidebar background color */
+    --sidebar-text: #000f;         /* sidebar text color */
+    --heading-color: #000000;         /* Heading text color */
+    --buttons: #1565c0;               /* Button background color */
+    --button-text: #ffffff;           /* Button text color */
+    --big-box-shadow: #1a1a1a;        /* Big box shadow color */
+    --big-box-color: #eeeeee;         /* Big box background color */
+    --small-box-shadow: #1565c0;      /* Small box shadow color */
+    --small-box-color: #d7e9f7;  
+    --nav-shadow: rgba(0, 0, 0, 0.2); /* Navigation shadow color */
+    --sidebar-shadow: rgba(0, 0, 0, 0.2); /* Sidebar shadow color */
+    --subtitle-sub-color: #888888;    /* Subtitle and secondary text color */
 }
 
-[data-theme="green"] {
-    --primary-color: #4caf50;
-    --secondary-color: #fff;
-    --font-color: #000;
-    --bg-color: #c8e6c9;
-    --heading-color: #000;
-    --buttons: #4caf50;
-    --button-text: #fff;
-    --big-box-shadow: #4caf50;
-    --big-box-color: #f1f8e9;
-    --small-box-shadow: #4caf50;
-    --small-box-color: #c5e1a5;
-    --nav-shadow: rgba(0, 0, 0, 0.2);
-    --sidebar-shadow: rgba(0, 0, 0, 0.2);
-    --subtitle-sub-color: #888888;
+
+[data-theme="tiktok"] {
+    --primary-color: #000000;         /* Primary background color */
+    --secondary-color: #74F0ED;       /* Secondary accent color */
+    --banner-color: rgb(0,95,157);             /* Banner background color */
+    --banner-text: #fff;              /* Banner text color */
+    --font-color: #000;               /* General text color */
+    --bg-color: #000000;                /* main background color */
+    --sidebar-bg: #000;             /* sidebar background color */
+    --sidebar-text: #fff;         /* sidebar text color */
+    --heading-color: #000;            /* Heading text color */
+    --buttons: #EA445A;               /* Button background color */
+    --button-text: #fff;              /* Button text color */
+    --big-box-shadow: #74F0ED;        /* Big box shadow color */
+    --big-box-color: #f8f5f5;            /* Big box background color */
+    --small-box-shadow: #EA445A;      /* Small box shadow color */
+    --small-box-color: #fff;          /* Small box background color */
+    --nav-shadow: rgba(0, 0, 0, 0.2); /* Navigation shadow color */
+    --sidebar-shadow: rgba(0, 0, 0, 0.2); /* Sidebar shadow color */
+    --subtitle-sub-color: #888888;    /* Subtitle and secondary text color */
 }
+
 
 
 
@@ -95,7 +109,7 @@ h1 {
 }
 
 a {
-    color: var(--primary-color);
+    color: var(--font-color);
 }
 
 span {
@@ -114,12 +128,17 @@ span {
     top: 0;
     width: 300px;
     height: 100%;
-    background-color: var(--bg-color);
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
     overflow-x: hidden;
     transition: 0.5s;
     z-index: 1000;
     padding: 20px;
     box-shadow: -3px 0 5px 0 var(--sidebar-shadow);
+}
+
+.sidebar a, .sidebar span {
+    color: var(--sidebar-text);
 }
 
 .navbar {
@@ -132,7 +151,7 @@ span {
 }
 
 .navbar span {
-    color: white;
+    color: var(--banner-text);
 }
 
 .blue-text {
@@ -197,7 +216,7 @@ span {
 .big-box {
     padding: 10px;
     margin-bottom: 10px;
-    box-shadow: 3px 3px 20px 0 var(--big-box-shadow);
+    box-shadow: 0px 0px 15px var(--big-box-shadow);
     background-color: var(--big-box-color);
 }
 
@@ -205,6 +224,7 @@ span {
     padding: 10px;
     margin-bottom: 10px;
     background-color: var(--small-box-color);
+    box-shadow: 0px 0px 5px var(--sidebar-shadow);
     transition: height 0.3s ease-in-out;
 }
 
@@ -232,6 +252,10 @@ span {
     display: flex;
 }
 
+h4 {
+    color: var(--sidebar-text)
+}
+
 .time {
     font-size: 80%;
     float: right;
@@ -243,9 +267,9 @@ span {
 }
 
 .border-timetable {
-    border-color: var(--buttons);
-    border-width: 1px;
-    border-style: solid;
+    border-color: #f0ad4e;
+    border-width: 3px;
+    border-style: inset;
 }
 
 .teacher-name {
@@ -336,6 +360,7 @@ h3 {
 }
 .modal-content {
     background-color: var(--bg-color);
+    color: var(--font-color)
 }
 .form-signin {
     width: 100%;
