@@ -231,7 +231,6 @@ def databaseChangeMusic(username, music):
         # change music setting in database
         cursor.execute("UPDATE users SET music = %s WHERE username = %s", (music, username))
         conn.commit()
-        print('music set to {music}')
 
         # Get the image URL using Simon.getUserProfileImageURL
 

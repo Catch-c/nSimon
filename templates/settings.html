@@ -47,7 +47,7 @@
         <div class="row h-100 ps-2 pt-3">
             <!-- Timetable -->
             <div class="col-md-3 col-12p-3 order-1 order-md-1">
-                <h4 class="pageSubtitle" style="font-weight: 600;">Settings
+                <h4 class="settingsPageSubtitle" style="font-weight: 600;">Settings
                 </h4>
 
                     <div class="big-box rounded p-3 mb-2" id="timetableLoading">
@@ -319,8 +319,6 @@
                 console.error('Error:', error);
             });
             }
-
-            console.log(value)
 
             var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
             toastEl.show();

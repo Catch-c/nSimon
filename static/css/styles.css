@@ -252,8 +252,8 @@ span {
     display: flex;
 }
 
-h4 {
-    color: var(--sidebar-text)
+h4.settingsPageSubtitle {
+    color: var(--sidebar-text);
 }
 
 .time {
