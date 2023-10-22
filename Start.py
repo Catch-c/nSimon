@@ -29,7 +29,6 @@ app = Flask(__name__)
 app.secret_key = flask_secret
 VERSION = "1.3.4"
 
-
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
 @app.route("/api/getTimetable", methods=["POST"])

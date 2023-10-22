@@ -12,6 +12,7 @@ import requests
 
 # LOGS
 logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 def read_db_config(filename='config.ini', section='database'):
@@ -87,7 +88,7 @@ def databaseAddUser(username, password, cookie):
         cursor = conn.cursor()
         hashed_password = hash_password(password)
         encrypted_cookie = encrypt_cookie(cookie)
-        cursor.execute("INSERT INTO users (username, password, cookie, studentImage) VALUES (%s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, ''))
+        cursor.execute("INSERT INTO users (username, password, cookie, studentImage, theme) VALUES (%s, %s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, '', 'light'))
         conn.commit()
         logger.info(f"User '{username}' added to the database.")
         cursor.execute("UPDATE statistics SET users = users + 1")
