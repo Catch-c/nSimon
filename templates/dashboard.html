@@ -604,8 +604,6 @@
                         let endParts = period['EndTime'].split(":");
                         let endTime = new Date();
                         endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
-                        console.log(dayInCycle)
-                        console.log(currentDayInCycle)
                         if (dayInCycle == currentDayInCycle) {
                             if (nowT >= startTime && nowT < endTime) {
                                 classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'border-timetable');
