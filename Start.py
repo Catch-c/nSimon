@@ -27,12 +27,7 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.3.2
-
-
-
-
-
+VERSION = "1.3.4"
 
 
 # --[[ API Routes ]]--
@@ -224,7 +219,10 @@ def getTheme():
     username = request.cookies.get("username")
 
     theme = Database.databaseGetTheme(username)
-    return theme
+    if theme is not None:
+        return jsonify({"theme": theme})  # Return the theme as JSON response
+    else:
+        return jsonify({"error": "Theme not found"}, 404)  # Return an error response
 
 #       --[[ setTheme () ]]--
 @app.route("/api/setTheme", methods=["POST"])
@@ -232,7 +230,7 @@ def setTheme():
     username = request.cookies.get("username")
     theme = request.json.get("theme")  # Assuming the theme is passed in the request JSON
 
-    if theme not in ["dark", "light", "blue", "green"]:
+    if theme not in ["dark", "light", "blue", "tiktok"]:
         return "Invalid theme", 400  # Return a bad request response for invalid theme
 
     result = Database.databaseChangeTheme(username, theme)
@@ -241,6 +239,32 @@ def setTheme():
         return "Theme updated", 200
     else:
         return "Failed to update theme", 500
+    
+#       --[[ getMusic () ]]--
+@app.route("/api/getMusic", methods=["POST"])
+def getMusic():
+    username = request.cookies.get("username")
+
+    music = Database.databaseGetMusic(username)
+    return music
+
+#       --[[ setMusic () ]]--
+@app.route("/api/setMusic", methods=["POST"])
+def setMusic():
+    username = request.cookies.get("username")
+    music = request.json.get("music")  # Assuming the theme is passed in the request JSON
+
+    if music not in ["yes", "no"]:
+        return "Invalid theme", 400  # Return a bad request response for invalid theme
+
+    result = Database.databaseChangeMusic(username, music)
+
+    if result == 200:
+        return "Music updated", 200
+    else:
+        return "Failed to update Music Choice", 500
+    
+
 
 
 

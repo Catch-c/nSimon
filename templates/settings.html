@@ -52,6 +52,7 @@
 
                     <div class="big-box rounded p-3 mb-2" id="timetableLoading">
                         <button class="toggleDarkModeButton" onclick="toggleTheme()">Toggle Theme</span><br>
+                        <h6 id="currentTheme">Current Theme</h1>
                     </div>
                     <div class="big-box rounded p-3 mb-2" id="timetableLoading">
                         <span class="class-name">Selected Campus</span><br>
@@ -244,16 +245,34 @@
         }
     </script>
 
-
-
-    <!-- Music Selection -->
+    <!-- Initialize Music-->
     <script>
         let musicLessons = localStorage.getItem('musicLessons');
 
-        if (musicLessons) {
-            document.getElementById("musicSelection").value = musicLessons;
-        }
+        fetch('/api/getMusic', {
+               method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(theme => {
+                switch (theme) {
+                    case 'yes':
+                        document.getElementById("musicSelection").value = 'Show';
+                        break;
+                    case 'no':
+                        document.getElementById("musicSelection").value = 'Hide';
+                        break;
+                    default:
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     </script>
+
+    <!-- Change Music-->
     <script>
 
         document.getElementById("musicSelection").addEventListener("change", function (event) {
@@ -262,10 +281,46 @@
             var value = document.getElementById("musicSelection").value;
             
             if (value == "Show") {
-                setMusicSelection = localStorage.setItem('musicLessons', 'Show');
+                let data = { music: 'yes' };
+                fetch("/api/setMusic", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`music set to show`);
+                } else {
+                    console.error('Failed to set music');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
             } else {
-                setMusicSelection = localStorage.setItem('musicLessons', 'Hide');
+                let data = { music: 'no' };
+                fetch("/api/setMusic", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`music set to hide`);
+                } else {
+                    console.error('Failed to set music');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
             }
+
+            console.log(value)
 
             var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
             toastEl.show();
@@ -297,7 +352,7 @@
 
     <!-- Themes -->
     <script>
-        let availableThemes = ['light', 'dark', 'blue', 'green'];
+        let availableThemes = ['light', 'dark', 'blue', 'tiktok'];
         let currentTheme = 0;
         const cachedTheme = localStorage.getItem('theme');
             if (cachedTheme && availableThemes.includes(cachedTheme)) {
@@ -320,8 +375,8 @@
                     case 'light':
                         setTheme('light');
                         break;
-                    case 'green':
-                        setTheme('green');
+                    case 'tiktok':
+                        setTheme('tiktok');
                         break;
                     case 'blue':
                         setTheme('blue');
@@ -378,9 +433,26 @@
         });
 
         function toggleTheme() {
+            const currentThemeText = document.getElementById('currentTheme');
             currentTheme = (currentTheme + 1) % availableThemes.length;
             const nextTheme = availableThemes[currentTheme];
             setTheme(nextTheme);
+            switch (nextTheme) {
+                    case 'dark':
+                        currentThemeText.textContent = 'Current Theme: Dark Mode'
+                        break;
+                    case 'light':
+                        currentThemeText.textContent = 'Current Theme: Light Mode'
+                        break;
+                    case 'tiktok':
+                        currentThemeText.textContent = 'Current Theme: TikTok Style'
+                        break;
+                    case 'blue':
+                        currentThemeText.textContent = 'Current Theme: Blue Theme'
+                        break;
+                    default:
+                }
+
         }
 
         function getCookie(name) {
@@ -390,6 +462,50 @@
         }
 
         loadTheme();
+    </script>
+    <script>
+        function checkNewLoginAndLogOut() {
+        // Check if the "username" cookie exists
+            const usernameCookie = getCookie("username");
+    
+            if (!usernameCookie) {
+                // Clear all cookies
+               window.location.href = "/logout";  // Adjust the URL as needed
+        }
+    }
+    checkNewLoginAndLogOut();
+    </script>
+
+    <script>
+        const currentThemeText = document.getElementById('currentTheme');
+
+        fetch('/api/getTheme', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(theme => {
+                switch (theme) {
+                    case 'dark':
+                        currentThemeText.textContent = 'Current Theme: Dark Mode'
+                        break;
+                    case 'light':
+                        currentThemeText.textContent = 'Current Theme: Light Mode'
+                        break;
+                    case 'tiktok':
+                        currentThemeText.textContent = 'Current Theme: TikTok Style'
+                        break;
+                    case 'blue':
+                        currentThemeText.textContent = 'Current Theme: Blue Theme'
+                        break;
+                    default:
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     </script>
 
 
