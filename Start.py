@@ -27,7 +27,7 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.3.5"
+VERSION = "1.3.6"
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
@@ -219,7 +219,7 @@ def getTheme():
 
     theme = Database.databaseGetTheme(username)
     if theme is not None:
-        return jsonify({"theme": theme})  # Return the theme as JSON response
+        return theme
     else:
         return jsonify({"error": "Theme not found"}, 404)  # Return an error response
 
