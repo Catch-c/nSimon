@@ -27,7 +27,7 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.3.6"
+VERSION = "1.3.7"
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--

@@ -12,6 +12,7 @@
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 
@@ -1157,16 +1158,14 @@
         })
     </script>
     <script>
-        const referenceDate = new Date('2023-10-16'); // Replace with your desired start date
+        const referenceDate = moment('2023-10-16').startOf('day'); // Set the reference date at the start of the day
 
         // Function to calculate the day number within a two-week cycle
         function getDayInCycle(currentDate) {
-            const timeDiff = Math.abs(currentDate - referenceDate);
-            const daysInMilliseconds = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-
-            const totalDays = Math.floor(timeDiff / daysInMilliseconds);
-            const daysInCycle = (totalDays % 10);
-
+            const localCurrentDate = moment(currentDate);
+    
+            const daysInCycle = localCurrentDate.diff(referenceDate, 'days') % 10;
+    
             if (daysInCycle >= 5) {
                 return daysInCycle - 1;
             }
@@ -1174,12 +1173,10 @@
             return daysInCycle + 1;
         }
 
-
         // Example usage:
-        const todays = new Date(); // Replace with your current date
+        const todays = moment(); // Use moment to create the current date
         let currentDayInCycle = getDayInCycle(todays);
         currentDayInCycle = `Timetable Day ${currentDayInCycle}`;
-
     </script>
     <!-- Themes -->
     {% include "partials/themes.html" %}

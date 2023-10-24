@@ -173,7 +173,7 @@ span {
     background: none;
     font-size: 30px;
     cursor: pointer;
-    color: var(--font-color);
+    color: var(--sidebar-text);
 }
 
 .links-section {
