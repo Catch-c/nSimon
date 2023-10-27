@@ -243,6 +243,44 @@ def databaseChangeMusic(username, music):
         cursor.close()
         conn.close()
 
+def databaseGetSession(username):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+
+        # fetch music setting from database
+        cursor.execute("SELECT showSessionNames FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
+
+        sessionName = result[0] if result else 'true'
+
+        return sessionName
+
+    except mysql.connector.Error as e:
+        logger.error(f"Error finding Session setting in the database: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+def databaseChangeSession(username, sessionName):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+
+        # change music setting in database
+        cursor.execute("UPDATE users SET showSessionNames = %s WHERE username = %s", (sessionName, username))
+        conn.commit()
+
+        return 200
+
+    except mysql.connector.Error as e:
+        logger.error(f"Error storing Session setting in the database: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
 # Create a connection pool
 db_pool = pooling.MySQLConnectionPool(
     pool_name="main_pool",

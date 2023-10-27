@@ -27,7 +27,7 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.3.7"
+VERSION = "1.3.8"
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
@@ -262,6 +262,30 @@ def setMusic():
         return "Music updated", 200
     else:
         return "Failed to update Music Choice", 500
+
+#       --[[ getSessionSetting () ]]--
+@app.route("/api/getSessionSetting", methods=["POST"])
+def getSession():
+    username = request.cookies.get("username")
+
+    session = Database.databaseGetSession(username)
+    return session
+
+#       --[[ setSessionSetting () ]]--
+@app.route("/api/setSessionSetting", methods=["POST"])
+def setSession():
+    username = request.cookies.get("username")
+    sessionSetting = request.json.get("session")  # Assuming the theme is passed in the request JSON
+
+    if sessionSetting not in ["true", "false"]:
+        return "Invalid Session Setting", 400  # Return a bad request response for invalid theme
+
+    result = Database.databaseChangeSession(username, sessionSetting)
+
+    if result == 200:
+        return "Session updated", 200
+    else:
+        return "Failed to update Session Choice", 500
     
 
 

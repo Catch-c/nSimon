@@ -228,6 +228,13 @@ span {
     transition: height 0.3s ease-in-out;
 }
 
+.session-name {
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 400;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 .arrow {
     color: var(--heading-color);
 
@@ -274,6 +281,10 @@ h4.settingsPageSubtitle {
 
 .teacher-name {
     font-size: 80%;
+}
+
+.lunch-text {
+    font-weight: 600;
 }
 
 .color-dot {

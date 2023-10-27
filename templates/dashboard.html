@@ -27,6 +27,21 @@
     <link color="#5bbad5" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" rel="mask-icon" />
     <meta content="#da532c" name="msapplication-TileColor" />
     <meta content="#3a3a3a" name="theme-color" />
+    <script>
+        fetch('/api/getSessionSetting', {
+            method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(sessionSetting => {
+                localStorage.setItem('sessionSetting', sessionSetting);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
 
 </head>
 <style>
@@ -588,6 +603,25 @@
                     }
                     lastEndTime = period.EndTime;
 
+                    settingValue = localStorage.getItem('sessionSetting');
+                    console.log(settingValue)
+
+                    if(settingValue == 'true') {
+                        const sessionDiv = document.createElement('div');
+
+                        const sessionSpan = document.createElement('span');
+                        sessionSpan.classList.add('session-name');
+                        sessionSpan.textContent = period.Description;
+
+                        sessionSpan.setAttribute('data-bs-toggle', 'tooltip');
+                        sessionSpan.setAttribute('data-bs-html', 'true');
+                        sessionSpan.setAttribute('title', period.Description);
+
+
+                        sessionDiv.appendChild(sessionSpan);
+                        new bootstrap.Tooltip(sessionSpan);
+                        dataContainer.appendChild(sessionDiv);                  
+                    }
 
                     const classDiv = document.createElement('div');
 
@@ -661,20 +695,30 @@
                     teacherDiv.classList.add('teacher-name');
 
                     let teacherName = period.Classes[0].TeacherName;
+                    let roomChange = period.Classes[0].HasRoomChange;
                     let roomInfo
                     roomInfo = filterTimetable(period.Classes[0].Room);
 
-                    // Check if the teacherName includes "CRT"
-                    if (teacherName.includes("CRT")) {
-                        // If it does, set the text content and change the color to red
-                        teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
+                    // Check if the there is a room change
+                    if (roomChange == 'true') {
+                        if (teacherName.includes("CRT")) {
+                            // If it does, set the text content and change the color to red
+                            teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | <span style="color: red;">${teacherName}</span>`;
+                        } else {
+                            // Otherwise, set the text content without any styling
+                            teacherDiv.textContent = `<span style="color: red;">${roomInfo}</span> | ${teacherName}`;
+                        }
                     } else {
+                        if (teacherName.includes("CRT")) {
+                        // If it does, set the text content and change the color to red
+                            teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
+                        } else {
                         // Otherwise, set the text content without any styling
-                        teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
+                            teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
+                        }
                     }
-                    classDiv.appendChild(teacherDiv);
-
                     // Append the created classDiv to the body or any other parent element
+                    classDiv.appendChild(teacherDiv);
                     dataContainer.appendChild(classDiv);
                 } else if (period.IsTeachingPeriod === false &&
                     period.Description !== "Recess Duty" &&
@@ -1157,27 +1201,34 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+
     <script>
-        const referenceDate = moment('2023-10-16').startOf('day'); // Set the reference date at the start of the day
-
-        // Function to calculate the day number within a two-week cycle
+        // Function to calculate the day within a two-week cycle
         function getDayInCycle(currentDate) {
+            const cycle = [
+                'Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Weekend', 'Weekend',
+                'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Weekend', 'Weekend'
+            ];
+    
+            const referenceDate = moment('2023-10-16').startOf('day'); // Set the reference date at the start of the day
             const localCurrentDate = moment(currentDate);
+            console.log(referenceDate, localCurrentDate)
     
-            const daysInCycle = localCurrentDate.diff(referenceDate, 'days') % 10;
-    
-            if (daysInCycle >= 5) {
-                return daysInCycle - 1;
-            }
-
-            return daysInCycle + 1;
+            const timeDiff = moment.duration(localCurrentDate.diff(referenceDate));
+            const daysInCycle = Math.floor(timeDiff.asDays()) % cycle.length;
+            return cycle[daysInCycle];
         }
-
+    
         // Example usage:
         const todays = moment(); // Use moment to create the current date
-        let currentDayInCycle = getDayInCycle(todays);
-        currentDayInCycle = `Timetable Day ${currentDayInCycle}`;
+        currentDayInCycle = getDayInCycle(todays);
+        currentDayInCycle = `Timetable ${currentDayInCycle}`;
+        console.log(currentDayInCycle);
     </script>
+
+    
+    
+    
     <!-- Themes -->
     {% include "partials/themes.html" %}
 

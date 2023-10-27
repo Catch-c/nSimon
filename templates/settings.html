@@ -64,6 +64,14 @@
                     </div>
 
                     <div class="big-box rounded p-3 mb-2" id="timetableLoading">
+                        <span class="class-name">Show Session Numbers on Timetable</span><br>
+                        <select class="settingsSelect" id="sessionSelection" name="sessionSelection">
+                            <option value="Hide">HIDE</option>
+                            <option value="Show" selected>SHOW</option>
+                        </select>
+                    </div>       
+
+                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
                         <span class="class-name">Show Music Lessons on Daily Messages</span><br>
                         <select class="settingsSelect" id="musicSelection" name="musicSelection">
                             <option value="Hide">HIDE</option>
@@ -247,8 +255,6 @@
 
     <!-- Initialize Music-->
     <script>
-        let musicLessons = localStorage.getItem('musicLessons');
-
         fetch('/api/getMusic', {
                method: 'POST',
                 headers: {
@@ -263,6 +269,31 @@
                         break;
                     case 'no':
                         document.getElementById("musicSelection").value = 'Hide';
+                        break;
+                    default:
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+    <!-- Initialize session Setting-->
+    <script>
+        fetch('/api/getSessionSetting', {
+               method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.text())
+            .then(theme => {
+                switch (theme) {
+                    case 'true':
+                        document.getElementById("sessionSelection").value = 'Show';
+                        break;
+                    case 'false':
+                        document.getElementById("sessionSelection").value = 'Hide';
                         break;
                     default:
                 }
@@ -313,6 +344,60 @@
                     console.log(`music set to hide`);
                 } else {
                     console.error('Failed to set music');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+            }
+
+            var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
+            toastEl.show();
+        });
+
+    </script>
+
+    <!-- Change Session Setting-->
+    <script>
+
+        document.getElementById("sessionSelection").addEventListener("change", function (event) {
+            event.preventDefault();
+
+            var value = document.getElementById("sessionSelection").value;
+            
+            if (value == "Show") {
+                let data = { session: 'true' };
+                fetch("/api/setSessionSetting", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Session set to show`);
+                } else {
+                    console.error('Failed to set Session');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+            } else {
+                let data = { session: 'false' };
+                fetch("/api/setSessionSetting", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Session set to hide`);
+                } else {
+                    console.error('Failed to set Session');
                 }
             })
             .catch(error => {
