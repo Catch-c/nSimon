@@ -23,6 +23,10 @@ jobs:
         GHCR_USERNAME: ${{ secrets.GITHUB_ACTOR }}
         GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/nsimon
+        DOCKER_CLI_AARCH64_ARCH: arm64
+        DOCKER_CLI_ARM_ARCH: arm
+        DOCKER_CLI_PLATFORM: linux/arm64,linux/arm/v7,linux/arm/v6
+        DOCKER_BUILDKIT: 1
       run: |
         docker buildx create --use
         docker buildx inspect your-builder-name --bootstrap
@@ -38,8 +42,3 @@ jobs:
         docker push $DOCKER_IMAGE_NAME:latest
         docker push $DOCKER_IMAGE_NAME:$GITHUB_SHA
         docker push $DOCKER_IMAGE_NAME:$GITHUB_REF
-      env:
-        DOCKER_CLI_AARCH64_ARCH: arm64
-        DOCKER_CLI_ARM_ARCH: arm
-        DOCKER_CLI_PLATFORM: linux/arm64,linux/arm/v7,linux/arm/v6
-        DOCKER_BUILDKIT: 1
