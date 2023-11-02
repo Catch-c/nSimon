@@ -18,17 +18,11 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       id: qemu
 
-    - name: Convert DOCKER_IMAGE_NAME to lowercase
-      run: |
-        DOCKER_IMAGE_NAME=$(echo $DOCKER_IMAGE_NAME | tr '[:upper:]' '[:lower:]')
-        echo "Lowercase DOCKER_IMAGE_NAME: $DOCKER_IMAGE_NAME"
-      shell: bash
-
     - name: Build and Push Docker Image
       env:
         GHCR_USERNAME: ${{ secrets.GITHUB_ACTOR }}
         GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        DOCKER_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/nsimon
+        DOCKER_IMAGE_NAME: ghcr.io/kavenci/nsimon
         DOCKER_CLI_AARCH64_ARCH: arm64
         DOCKER_CLI_ARM_ARCH: arm
         DOCKER_CLI_PLATFORM: linux/arm64,linux/arm/v7,linux/arm/v6
