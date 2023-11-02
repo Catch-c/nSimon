@@ -25,14 +25,14 @@ jobs:
         DOCKER_IMAGE_NAME: ghcr.io/kavenci/nsimon
         DOCKER_CLI_AARCH64_ARCH: arm64
         DOCKER_CLI_ARM_ARCH: arm
-        DOCKER_CLI_PLATFORM: linux/arm64,linux/arm/v7,linux/arm/v6
+        DOCKER_CLI_PLATFORM: linux/arm64
         DOCKER_BUILDKIT: 1
       run: |
         docker buildx create --use
         docker buildx inspect --bootstrap
 
         docker buildx build \
-          --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6 \
+          --platform linux/amd64,linux/arm64 \
           -t $DOCKER_IMAGE_NAME:latest \
           -t $DOCKER_IMAGE_NAME:latest-${GITHUB_SHA:0:7} \
           -f Dockerfile .
