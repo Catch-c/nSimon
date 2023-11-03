@@ -35,7 +35,8 @@ jobs:
           --platform linux/amd64,linux/arm64 \
           -t $DOCKER_IMAGE_NAME:latest \
           -t $DOCKER_IMAGE_NAME:latest-${GITHUB_SHA:0:7} \
-          -f Dockerfile .
+          -f Dockerfile . \
+          --output "type=image,name=$DOCKER_IMAGE_NAME:latest,push=true"
 
         echo "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USERNAME" --password "$GHCR_TOKEN"
         docker push $DOCKER_IMAGE_NAME:latest
