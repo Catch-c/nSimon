@@ -14,12 +14,9 @@ jobs:
         uses: actions/checkout@master
       -
         name: Build and publish image
-        env:
-          GHCR_USERNAME: ${{ secrets.GITHUB_ACTOR }}
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: zmingxie/docker_buildx@master
         with:
           publish: true
-          imageName: ghcr.io/kavenci/nsimon:latest
-          dockerHubUser: $GHCR_USERNAME
-          dockerHubPassword: $GHCR_TOKEN
+          imageName: ghcr.io/kavenci/nsimon
+          dockerHubUser: ${{ secrets.GITHUB_ACTOR }}
+          dockerHubPassword: ${{ secrets.GITHUB_TOKEN }}
