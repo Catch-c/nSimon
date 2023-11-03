@@ -1,5 +1,4 @@
-# Overview
-[![CodeFactor](https://www.codefactor.io/repository/github/kavenci/nsimon/badge/main)](https://www.codefactor.io/repository/github/kavenci/nsimon/overview/main)
+# Overview [![CodeFactor](https://www.codefactor.io/repository/github/kavenci/nsimon/badge/main)](https://www.codefactor.io/repository/github/kavenci/nsimon/overview/main)
 nSimon is a restyled version of the SFX Simon website that makes API calls to SFX Simon to enhance its functionality and improve the overall look and feel. It has been developed to provide students with a more user-friendly and visually appealing experience while still leveraging the existing data and functionality of SFX Simon.
 
 # Features
