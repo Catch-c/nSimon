@@ -1,41 +1,22 @@
-name: Build and Publish Docker Image
+name: docker-buildx-push
 
 on:
   push:
     branches:
-      - main # Adjust to match your branch name
+      - master
 
 jobs:
-  build-and-publish:
+  docker-buildx:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check out the code
-      uses: actions/checkout@v2
-
-    - name: Set up QEMU
-      run: |
-        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      id: qemu
-
-    - name: Build and Push Docker Image
-      env:
-        GHCR_USERNAME: ${{ secrets.GITHUB_ACTOR }}
-        GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        DOCKER_IMAGE_NAME: ghcr.io/kavenci/nsimon
-        DOCKER_CLI_AARCH64_ARCH: arm64
-        DOCKER_CLI_ARM_ARCH: arm
-        DOCKER_CLI_PLATFORM: linux/arm64
-        DOCKER_BUILDKIT: 1
-      run: |
-        docker buildx create --use
-        docker buildx inspect --bootstrap
-
-        docker buildx build \
-          --platform linux/amd64,linux/arm64 \
-          -t $DOCKER_IMAGE_NAME:latest \
-          -f Dockerfile . \
-          --output "type=image,name=$DOCKER_IMAGE_NAME:latest"
-
-        echo "$GHCR_TOKEN" | docker login ghcr.io --username "$GHCR_USERNAME" --password "$GHCR_TOKEN"
-        docker push $DOCKER_IMAGE_NAME:latest
+      -
+        name: Checkout master
+        uses: actions/checkout@master
+      -
+        name: Build and publish image
+        uses: zmingxie/docker_buildx@master
+        with:
+          publish: true
+          imageName: ghcr.io/kavenci/nsimon:latest
+          dockerHubUser: $GHCR_USERNAME
+          dockerHubPassword: $GHCR_TOKEN
