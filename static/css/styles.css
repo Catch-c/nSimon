@@ -419,3 +419,12 @@ button.dmt {
     color: #555; /* Adjust the color as needed */
 }
 
+
+.courageButton {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+    font-weight: bold;
+    color: var(--font-color);
+}
