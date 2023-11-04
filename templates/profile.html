@@ -34,11 +34,132 @@
 </style>
 
 <body id="MainBody">
+
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Courage and Contributions</h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body" id="courageHolder">
+                    <div class="small-box rounded p-2 mb-2">
+                        <span class="class-name">Click an award to view more information.</span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="specificCourage" tabindex="-1" aria-labelledby="specificCourage" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="specificTitle">Courage and Contributions</h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="small-box rounded p-2 mb-2">
+                        <span class="class-name" id="specificDate">Participation in the Beaumont Oratory
+                            competition</span>
+                    </div>
+                    <div class="small-box rounded p-2 mb-2">
+                        <span class="class-name" id="specificCategory">Category: </span>
+                    </div>
+                    <div class="small-box rounded p-2 mb-2">
+                        <span class="class-name" id="specificAwarder">Awarded By:</span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button"
+                        onclick=openCourageModal()>Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatDate(dateString) {
+            // Check if the dateString is indeed a string and has the expected format
+            if (typeof dateString === 'string' && dateString.includes('/Date(')) {
+              // Extract the timestamp from the string using a regular expression
+              const match = dateString.match(/\/Date\((\d+)\)\//);
+              if (match) {
+                const timestamp = parseInt(match[1], 10);
+          
+                // Create a new Date object using the extracted timestamp
+                const date = new Date(timestamp);
+          
+                // Define an array with the month names
+                const monthNames = [
+                  "January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"
+                ];
+          
+                // Get the day of the month, the month name, and the year
+                const day = date.getDate();
+                const month = monthNames[date.getMonth()];
+                const year = date.getFullYear();
+          
+                // Return the formatted date
+                return `${day} ${month} ${year}`;
+              }
+            }
+          
+            // If the input is not as expected, return a message or throw an error
+            return 'Invalid date string format';
+          }
+
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+        });
+
+        var mySpecific = new bootstrap.Modal(document.getElementById('specificCourage'), {
+        });
+
+        function openCourageModal() {
+            mySpecific.hide()
+            myModal.show();
+        }
+
+        function openSpecific(item) {
+            myModal.hide();
+
+            container = document.getElementById('specificTitle');
+            container.textContent = item.CommendationTitle
+
+            container = document.getElementById('specificDate');
+            container.textContent = `Awarded On: ${formatDate(item.CommendationDate)}`
+
+            container = document.getElementById('specificCategory');
+            container.textContent = `Category: ${item.CategoryDescription}`
+
+            container = document.getElementById('specificAwarder');
+            container.textContent = `Awarded By: ${item.ReportedBy}`
+
+            mySpecific.show();
+        }
+    </script>
+
+
+
     {% include "partials/navbar.html" %}
 
 
+
     <div class="mainBody container-fluid h-100">
+
+
+
         <div class="row h-100 pt-3">
+
             <!-- General Information -->
             <div class="col-md-12 col-12p-3 order-2 order-md-1">
 
@@ -46,10 +167,11 @@
                     <h4 class="pageSubtitle" style="font-weight: 600;">General Information</h4>
                     <div class="small-box rounded p-3 mb-2" style="position: relative;">
                         <img src="https://i.imgur.com/RNtocZX.png"
-                            style="border-radius: 10%; min-width: 90px; width: 90px; " alt="Cinque Terre" id="studentImage">
+                            style="border-radius: 10%; min-width: 90px; width: 90px; " alt="Cinque Terre"
+                            id="studentImage">
 
                         <span class="class-name ps-3" id="studentName" style="position: absolute;">LOADING</span>
-                        
+
                         <span class="class-teacher ps-3" id="studentID" style="position: absolute; top: 35px;">Student
                             ID: LOADING</span>
 
@@ -59,7 +181,8 @@
 
                         <span class="class-teacher ps-3" id="studentHouse" style="position: absolute; top: 75px;">House:
                             LOADING</span>
-                        <span class="class-teacher ps-3" id="studentCareGroup" style="position: absolute; top: 95px;">Care Group:
+                        <span class="class-teacher ps-3" id="studentCareGroup"
+                            style="position: absolute; top: 95px;">Care Group:
                             LOADING</span>
                     </div>
                 </div>
@@ -112,47 +235,17 @@
 
             </div>
 
-            <!-- Notes/Incidents -->
-            <div class="col-md-3 col-12p-3 order-2 order-md-1">
-
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Teacher Notes</h4>
-
-                    <!-- Parent Notified Absences -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Notes: </span><span class="class-name-sub"
-                            id="studentNotes">LOADING</span>
-                    </div>
-
-                    <!-- Late to School -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Important Notes: </span><span class="class-name-sub"
-                            id="studentImportantNotes">LOADING</span>
-                    </div>
-
-                    <!-- Leave Passes -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Incidents: </span><span class="class-name-sub"
-                            id="studentIncidents">LOADING</span>
-                    </div>
-
-                    <!-- Sick Passes -->
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Detentions: </span><span class="class-name-sub"
-                            id="studentDetentions">LOADING</span>
-                    </div>
-
-                </div>
-
-
-            </div>
 
 
             <!-- Courage & Contributions -->
-            <!-- <div class="col-md-3 col-12p-3 order-2 order-md-1">
+            <div class="col-md-3 col-12p-3 order-2 order-md-1">
 
                 <div class="big-box rounded p-3 mb-2">
                     <h4 class="pageSubtitle" style="font-weight: 600;">Courage & Contributions</h4>
+
+
+
+
 
 
                     <div class="small-box rounded p-3 mb-2">
@@ -160,30 +253,14 @@
                             id="courageTotal">LOADING</span>
                     </div>
 
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Community and Culture: </span><span class="class-name-sub"
-                            id="courageCommunity">LOADING</span>
-                    </div>
-
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Faith and Service: </span><span class="class-name-sub"
-                            id="courageFaith">LOADING</span>
-                    </div>
-
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Learning: </span><span class="class-name-sub"
-                            id="courageLearning">LOADING</span>
-                    </div>
-
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name ps-3">Positive Learning Partnerships: </span><span
-                            class="class-name-sub" id="couragePositive">LOADING</span>
+                    <div class="small-box rounded p-2 mb-2">
+                        <button class="class-name courageButton" onclick=openCourageModal()>Click to View</button>
                     </div>
 
                 </div>
 
 
-            </div> -->
+            </div>
 
 
         </div>
@@ -360,11 +437,6 @@
                 element = document.getElementById('studentCareGroup');
                 element.innerText = `Care Group: ${data['d']['HomeroomCode']}`
 
-                element = document.getElementById('studentNotes');
-                element.innerText = `${data['d']['NoteCount']}`
-
-                element = document.getElementById('studentImportantNotes');
-                element.innerText = `${data['d']['NoteImportantCount']}`
 
 
 
@@ -401,7 +473,7 @@
     </script>
 
     <script>
-        fetch(`/api/getStudentProfileBehaviouralHistory`, {
+        fetch(`/api/getCommendations`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -409,14 +481,32 @@
         })
             .then(response => response.json())
             .then(data => {
+                console.log(data)
+
+                let element = document.getElementById('courageTotal');
+                element.textContent = `${data['d']['Total']}`
+
+                let container = document.getElementById('courageHolder');
 
 
-                // GENERAL INFO
-                let element = document.getElementById('studentIncidents');
-                element.textContent = `${data['d']['IncidentEntryCount']}`
+                data.d.Data.forEach((item) => {
+                    // Create the div and button elements
+                    const div = document.createElement('div');
+                    div.className = 'small-box rounded p-2 mb-2';
 
-                element = document.getElementById('studentDetentions');
-                element.textContent = `${data['d']['DetentionEntryCount']}`
+                    const button = document.createElement('button');
+                    button.className = 'class-name courageButton';
+                    button.textContent = item.CommendationTitle;
+                    button.onclick = openSpecific;
+
+                    button.addEventListener('click', function () {
+                        openSpecific(item);
+                    });
+
+                    // Append the button to the div, and the div to the container
+                    div.appendChild(button);
+                    container.appendChild(div);
+                });
 
             })
             .catch(error => {
@@ -437,7 +527,7 @@
 
     <!-- Themes -->
     {% include "partials/themes.html" %}
-    
+
 
 </body>
 

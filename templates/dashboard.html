@@ -30,10 +30,10 @@
     <script>
         fetch('/api/getSessionSetting', {
             method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.text())
             .then(sessionSetting => {
                 localStorage.setItem('sessionSetting', sessionSetting);
@@ -606,7 +606,7 @@
                     settingValue = localStorage.getItem('sessionSetting');
                     console.log(settingValue)
 
-                    if(settingValue == 'true') {
+                    if (settingValue == 'true') {
                         const sessionDiv = document.createElement('div');
 
                         const sessionSpan = document.createElement('span');
@@ -620,7 +620,7 @@
 
                         sessionDiv.appendChild(sessionSpan);
                         new bootstrap.Tooltip(sessionSpan);
-                        dataContainer.appendChild(sessionDiv);                  
+                        dataContainer.appendChild(sessionDiv);
                     }
 
                     const classDiv = document.createElement('div');
@@ -635,7 +635,7 @@
                         let startParts = period['StartTime'].split(":");
                         let startTime = new Date();
                         startTime.setHours(parseInt(startParts[0]), parseInt(startParts[1]), 0, 0);
-    
+
                         let endParts = period['EndTime'].split(":");
                         let endTime = new Date();
                         endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
@@ -710,10 +710,10 @@
                         }
                     } else {
                         if (teacherName.includes("CRT")) {
-                        // If it does, set the text content and change the color to red
+                            // If it does, set the text content and change the color to red
                             teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
                         } else {
-                        // Otherwise, set the text content without any styling
+                            // Otherwise, set the text content without any styling
                             teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
                         }
                     }
@@ -946,66 +946,66 @@
                 let musicLessons
 
                 fetch('/api/getMusic', {
-                        method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                        .then(response => response.text())
-                        .then(theme => {
-                            const musicLessons = theme
-                            for (const message of periods) {
-                                if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
-                                    if (musicLessons && musicLessons == 'no') {
-                                        messageTitle = message.MessageTitle
-                                        if (messageTitle.toLowerCase().includes('lesson')) {
-                                            continue
-                                        }
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.text())
+                    .then(theme => {
+                        const musicLessons = theme
+                        for (const message of periods) {
+                            if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
+                                if (musicLessons && musicLessons == 'no') {
+                                    messageTitle = message.MessageTitle
+                                    if (messageTitle.toLowerCase().includes('lesson')) {
+                                        continue
                                     }
-
-                        
-                                    totalDailyMessages += 1
-
-
-                                    // Create the <h6> element
-                                    const classDiv = document.createElement('div');
-                                    classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-
-                                    if (isNewMessage(message['StartDateTime'])) {
-                                        // Create color dot span
-                                        const colorDotSpan = document.createElement('span');
-                                        colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
-                                        classDiv.appendChild(colorDotSpan);
-                                    }
-
-                                    const classNameSpan = document.createElement('span');
-                                    classNameSpan.classList.add('class-name');
-                                    classNameSpan.textContent = message.MessageTitle;
-                                    classDiv.appendChild(classNameSpan);
-
-                                    const teacherDiv = document.createElement('div');
-                                    teacherDiv.classList.add('teacher-name');
-                                    teacherDiv.innerHTML = removeColorStyles(message.MessageContent);
-                                    classDiv.appendChild(teacherDiv);
-
-                                    const timeSpan = document.createElement('span');
-                                    timeSpan.classList.add('time');
-                                    timeSpan.textContent = `By: ${message.SubmittedByUserName}`;
-                                    classDiv.appendChild(timeSpan);
-
-                                    dataContainer.appendChild(classDiv);
-
                                 }
-                            }
-                            const dailyMessageCountText = document.getElementById('totalDailyMessages');
-                            dailyMessageCountText.textContent = totalDailyMessages + " Messages"
 
-                            const divElement = document.getElementById('dailyMessagesLoading');
-                            divElement.style.display = 'none';
-                        })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+
+                                totalDailyMessages += 1
+
+
+                                // Create the <h6> element
+                                const classDiv = document.createElement('div');
+                                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+
+                                if (isNewMessage(message['StartDateTime'])) {
+                                    // Create color dot span
+                                    const colorDotSpan = document.createElement('span');
+                                    colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
+                                    classDiv.appendChild(colorDotSpan);
+                                }
+
+                                const classNameSpan = document.createElement('span');
+                                classNameSpan.classList.add('class-name');
+                                classNameSpan.textContent = message.MessageTitle;
+                                classDiv.appendChild(classNameSpan);
+
+                                const teacherDiv = document.createElement('div');
+                                teacherDiv.classList.add('teacher-name');
+                                teacherDiv.innerHTML = removeColorStyles(message.MessageContent);
+                                classDiv.appendChild(teacherDiv);
+
+                                const timeSpan = document.createElement('span');
+                                timeSpan.classList.add('time');
+                                timeSpan.textContent = `By: ${message.SubmittedByUserName}`;
+                                classDiv.appendChild(timeSpan);
+
+                                dataContainer.appendChild(classDiv);
+
+                            }
+                        }
+                        const dailyMessageCountText = document.getElementById('totalDailyMessages');
+                        dailyMessageCountText.textContent = totalDailyMessages + " Messages"
+
+                        const divElement = document.getElementById('dailyMessagesLoading');
+                        divElement.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
 
             })
             .catch(error => {
@@ -1193,7 +1193,7 @@
                 console.error('Error:', error);
             });
     </script>
-
+    
     <!-- Tooltips -->
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -1209,16 +1209,16 @@
                 'Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Weekend', 'Weekend',
                 'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Weekend', 'Weekend'
             ];
-    
+
             const referenceDate = moment('2023-10-16').startOf('day'); // Set the reference date at the start of the day
             const localCurrentDate = moment(currentDate);
             console.log(referenceDate, localCurrentDate)
-    
+
             const timeDiff = moment.duration(localCurrentDate.diff(referenceDate));
             const daysInCycle = Math.floor(timeDiff.asDays()) % cycle.length;
             return cycle[daysInCycle];
         }
-    
+
         // Example usage:
         const todays = moment(); // Use moment to create the current date
         currentDayInCycle = getDayInCycle(todays);
@@ -1226,9 +1226,9 @@
         console.log(currentDayInCycle);
     </script>
 
-    
-    
-    
+
+
+
     <!-- Themes -->
     {% include "partials/themes.html" %}
 
