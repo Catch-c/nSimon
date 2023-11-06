@@ -1,7 +1,3 @@
-
-
-
-
 .card-custom-general {
   height: calc(35vh);
   min-height: calc(35vh);
@@ -11,8 +7,6 @@
   height: calc(52vh);
   min-height: calc(52vh);
 }
-
-
 
 .text-button {
   transition: 0.5s;

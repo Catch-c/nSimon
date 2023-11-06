@@ -1,5 +1,5 @@
 .card {
-  margin: 0.5vh 1vw;
+  margin: 0.5vh 0.5vw;
   display: flex;
   flex-direction: column;
   box-shadow: 0px 0px 15px var(--card-shadow);
@@ -21,9 +21,12 @@
 
 .card-body {
   padding: 1vh 1vw;
+  padding-right: 10px;
+  padding-left: 10px;
   overflow-y: auto;
+  overflow-x: hidden;
   flex-grow: 1;
-  color: var(--font-colour)
+  color: var(--font-colour);
 }
 
 .card-custom-large {
@@ -45,8 +48,8 @@
   color: var(--box-text-colour);
   background-color: var(--box-colour);
   box-shadow: 0px 0px 5px var(--box-shadow);
+  height: auto;
 }
-
 
 .cardTitle {
   font-weight: bold;
