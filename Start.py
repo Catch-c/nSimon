@@ -189,7 +189,29 @@ def getDashboardData():
     GUID = Simon.getUserInformation(cookie)["d"]["guid"]
 
     return jsonify(Simon.getDashboardData(cookie, GUID)), 200
-    
+
+
+#       --[[ getTaskRubric () ]]--
+@app.route("/api/getTaskRubric", methods=["POST"])
+def getTaskRubric():
+    cookie = request.cookies.get("adAuthCookie")
+
+    data = request.json
+    classID = data['classID']
+    taskID = data['taskID']
+
+    return jsonify(Simon.getTaskRubric(cookie, classID, taskID)), 200
+
+#       --[[ getResultInfo () ]]--
+@app.route("/api/getResultInfo", methods=["POST"])
+def getResultInfo():
+    cookie = request.cookies.get("adAuthCookie")
+
+    data = request.json
+    classID = data['classID']
+    taskID = data['taskID']
+
+    return jsonify(Simon.getTaskSubmission(cookie, classID, taskID)), 200
 
 
 #       --[[ getStudentProfileImage () ]]--

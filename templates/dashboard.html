@@ -53,6 +53,216 @@
 
 <body>
 
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+
+    <!-- Due Tasks -->
+    <div class="modal fade" id="dueModal" tabindex="-1" aria-labelledby="dueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dueModalLabel">Due Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="dueModalHolder">
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dueTaskModal" tabindex="-1" aria-labelledby="dueTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dueTaskModalLabel">???</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box rounded">
+                        <strong>Class:</strong>
+                        <span id="dueTaskClass">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Due Date:</strong>
+                        <span id="dueTaskDueDate">???</span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="" target="_blank" type="button" class="btn btn-secondary" id="submitTaskButton">Submit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var dueTaskSpecificModal = new bootstrap.Modal(document.getElementById('dueTaskModal'), {})
+
+        function openDueTask(title, classs, duedate, url) {
+            document.getElementById('dueTaskModalLabel').textContent = title
+            document.getElementById('dueTaskClass').textContent = classs
+            document.getElementById('dueTaskDueDate').textContent = duedate
+            document.getElementById('submitTaskButton').href = `https://simon.sfx.vic.edu.au${url}`
+            dueTaskSpecificModal.show()
+        };
+    </script>
+
+
+    <!-- Result Tasks -->
+    <div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="resultsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="resultsModalLabel">Results Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="resultsModalHolder">
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resultsTaskModal" tabindex="-1" aria-labelledby="resultsTaskModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="resultsTaskModalLabel">Results Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box rounded">
+                        <strong>Class:</strong>
+                        <span id="resultTaskClass">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Topic:</strong>
+                        <span id="resultTaskTopic">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Result:</strong>
+                        <span id="resultTaskResult">???</span>
+                    </div>
+
+                    <div class="box rounded">
+                        <strong>Feedback:</strong>
+                        <span id="resultTaskFeedback">???</span>
+                    </div>
+
+                    <div class="box rounded">
+                        <strong>Rubric</strong>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Criteria</th>
+                                    <th>Score</th>
+                                    <th>Score Descriptor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rubricTable">
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var resultTaskSpecificModal = new bootstrap.Modal(document.getElementById('resultsTaskModal'), {})
+
+        function openResultTask(title, classs, topic, result, task, classss) {
+            document.getElementById('resultsTaskModalLabel').textContent = title
+            document.getElementById('resultTaskClass').textContent = classs
+            document.getElementById('resultTaskTopic').textContent = topic
+            document.getElementById('resultTaskResult').textContent = result
+            resultTaskSpecificModal.show()
+
+            document.getElementById("resultTaskFeedback").textContent = "???"
+
+            
+            const tbody = document.getElementById("rubricTable")
+            tbody.innerHTML = ''
+
+            let data = {
+                taskID: task['TaskID'],
+                classID: classss['ID'],
+            };
+
+            fetch(`/api/getTaskRubric`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+
+
+                    
+
+
+                    data.d.MarkingRubricCriteria.forEach((criteria) => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                <td>${criteria.Criteria}</td>
+                <td>${criteria.CriteriaMark} / ${criteria.MaxScore}</td>
+                <td>${criteria.RubricContent[criteria.CriteriaMark].Content}</td>
+            `;
+                        tbody.appendChild(row);
+                    });
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            fetch(`/api/getResultInfo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+
+
+                    document.getElementById('resultTaskFeedback').textContent = data['d']['MarkingSummaryInfo']['MarkingNotes']
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+    </script>
+
     {% include "partials/navbar.html" %}
 
     <!-- Content -->
@@ -97,13 +307,21 @@
                     <!-- Contents -->
                     <div class="card-body">
 
-                        <div class="box rounded">
+                        <div class="box rounded box-button" id="dashboardDueButton">
                             <strong>
                                 <span class="color-dot bg-primary me-2"></span>
                                 <span id="classResourcesDueCount">Loading</span>
                                 Due
                             </strong>
                         </div>
+
+                        <script>
+                            var dueTasksModal = new bootstrap.Modal(document.getElementById('dueModal'), {})
+
+                            document.getElementById("dashboardDueButton").addEventListener("click", function () {
+                                dueTasksModal.show()
+                            });
+                        </script>
 
                         <div class="box rounded">
                             <strong>
@@ -113,13 +331,21 @@
                             </strong>
                         </div>
 
-                        <div class="box rounded">
+                        <div class="box rounded box-button" id="dashboardResultsButton">
                             <strong>
                                 <span class="color-dot bg-success me-2"></span>
                                 <span id="classResourcesResultsCount">Loading</span>
                                 Results
                             </strong>
                         </div>
+
+                        <script>
+                            var resultTasksModal = new bootstrap.Modal(document.getElementById('resultsModal'), {})
+
+                            document.getElementById("dashboardResultsButton").addEventListener("click", function () {
+                                resultTasksModal.show()
+                            });
+                        </script>
                     </div>
                 </div>
 
@@ -396,13 +622,36 @@
                 // Due
                 const dueTasks = document.getElementById('classResourcesDueCount');
                 dueTasks.textContent = data.d.DueTasksStudent.length
+                const dueTaskHolder = document.getElementById('dueModalHolder');
+
+                data.d.DueTasksStudent.forEach((task) => {
+                    const divElement = document.createElement('div');
+                    divElement.className = 'box rounded box-button';
+
+                    const strongElement = document.createElement('strong');
+                    const spanElement = document.createElement('span');
+                    strongElement.textContent = `${task['SubjectCode']}: `;
+                    spanElement.textContent = `${task['TaskTitle']}`;
+
+                    strongElement.appendChild(spanElement);
+                    divElement.appendChild(strongElement);
+
+                    divElement.addEventListener('click', function () {
+                        openDueTask(task['TaskTitle'], task['ClassCode'], task['DueDate'], task['ViewDetailsURL'])
+                    });
+
+                    dueTaskHolder.appendChild(divElement);
+                });
 
                 // Overdue
                 const overdueTasks = document.getElementById('classResourcesOverdueCount');
                 overdueTasks.textContent = data.d.OverDueTasksStudent.length
 
 
+                // Results
                 const resultTasks = document.getElementById('classResourcesResultsCount');
+                const resultTasksHolder = document.getElementById('resultsModalHolder');
+
                 let totalTasks = 0;
 
                 const classes = data.d.ResultTasksStudent;
@@ -410,6 +659,29 @@
                     totalTasks += classes[i].Tasks.length;
                 }
                 resultTasks.textContent = totalTasks
+
+                data.d.ResultTasksStudent.forEach((classs) => {
+                    classs['Tasks'].forEach((task) => {
+
+                        const divElement = document.createElement('div');
+                        divElement.className = 'box rounded box-button';
+
+                        const strongElement = document.createElement('strong');
+                        const spanElement = document.createElement('span');
+                        strongElement.textContent = `${classs['SubjectCode']}: `;
+                        spanElement.textContent = `${task['Title']}`;
+
+                        strongElement.appendChild(spanElement);
+                        divElement.appendChild(strongElement);
+
+                        divElement.addEventListener('click', function () {
+                            openResultTask(task['Title'], classs['SubjectCode'], task['Topic'], task['FinalResult'], task, classs)
+                        });
+
+                        resultTasksHolder.appendChild(divElement);
+
+                    });
+                });
 
 
             })

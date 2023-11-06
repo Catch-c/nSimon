@@ -12,15 +12,7 @@
   min-height: calc(52vh);
 }
 
-.box-button {
-  transition: 0.5s;
-  cursor: pointer;
-}
 
-.box-button:hover {
-  background-color: var(--card-hover);
-  transform: scale(1.01);
-}
 
 .text-button {
   transition: 0.5s;
