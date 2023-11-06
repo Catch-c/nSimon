@@ -27,7 +27,7 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.3.8"
+VERSION = "1.3.9"
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
@@ -289,7 +289,15 @@ def setSession():
     
 
 
+#       --[[ getCommendations () ]]--
+@app.route("/api/getCommendations", methods=["POST"])
+def getCommendations():
+    
+    cookie = request.cookies.get("adAuthCookie")
 
+    GUID = Simon.getUserInformation(cookie)["d"]["guid"]
+
+    return jsonify(Simon.getCommendations(cookie, GUID)), 200
 
 #       --[[ getUserProfileInfo () ]]--
 @app.route("/api/getStudentProfileDetails", methods=["POST"])
