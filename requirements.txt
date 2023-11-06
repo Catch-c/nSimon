@@ -2,7 +2,7 @@ cryptography==41.0.3
 bcrypt
 Flask==2.3.2
 mysql-connector-python
-playwright
+playwright==1.39.0
 Requests==2.31.0
 waitress==2.1.2
 Pillow==10.1.0
