@@ -1,0 +1,116 @@
+.card {
+  margin: 0.5vh 1vw;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 0px 15px var(--card-shadow);
+  background-color: var(--card-colour);
+  padding-bottom: 1.5vh;
+}
+.card-daily {
+  color: var(--box-text-colour) !important;
+  background-color: var(--box-colour) !important;
+  box-shadow: 0px 0px 5px var(--box-shadow) !important;
+  margin-bottom: 3.5vh;
+}
+
+.card-header {
+  padding: 1vh 1vw;
+  border-bottom: none;
+  background-color: var(--card-colour);
+}
+
+.card-body {
+  padding: 1vh 1vw;
+  overflow-y: auto;
+  flex-grow: 1;
+  color: var(--font-colour)
+}
+
+.card-custom-large {
+  height: calc(100vh - 12.5vh);
+}
+
+.card-custom-medium {
+  height: calc(50vh - 9.9vh);
+}
+
+.card-custom-small {
+  height: calc(22.5vh);
+}
+
+.box {
+  padding: 8px;
+  margin-bottom: 10px;
+  transition: height 0.3s ease-in-out;
+  color: var(--box-text-colour);
+  background-color: var(--box-colour);
+  box-shadow: 0px 0px 5px var(--box-shadow);
+}
+
+
+.cardTitle {
+  font-weight: bold;
+  color: var(--card-title-colour);
+}
+
+.cardSubtitle {
+  font-weight: 400;
+  font-size: 75%;
+  color: var(--card-subtitle-colour);
+}
+
+
+
+
+
+/* Scroll Bar */
+.card-body::-webkit-scrollbar {
+  display: none;
+}
+
+.card-body:hover::-webkit-scrollbar {
+  display: block;
+  width: 1.5px;
+}
+
+.card-body:hover::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.card-body:hover::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.card-body:hover::-webkit-scrollbar-thumb:active {
+  background: #222;
+}
+
+.card-body:hover {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+
+@media (max-width: 767.98px) {
+
+
+  .card-custom-large,
+  .card-custom-small {
+    height: auto;
+  }
+
+  .card-header {
+    padding: 1.5vh 1vw;
+  }
+}
+
+.card-custom-calendartop {
+  height: calc(8vh);
+
+}
+
+.card-custom-calendar-day {
+  height: calc(38vh);
+
+}
