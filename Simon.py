@@ -208,3 +208,39 @@ def getCommendations(cookie, GUID):
 
     response = requests.post(url, headers=headers, json=data)
     return response.json()
+
+def getTaskSubmission(cookie, classID, taskID):
+    unix_seconds = time.time()
+
+    unix_milliseconds = int(unix_seconds * 1000)
+
+    url = f"https://simon.sfx.vic.edu.au/WebModules/LearningAreas/LearningAreas.asmx/GetStudentTaskSubmissionInfo?{unix_milliseconds}"
+    headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
+
+    data = {
+        "classId": classID,
+        "taskId": taskID,
+        "inactiveClassFlag": False
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    responsejson = response.json()
+
+
+    return responsejson
+
+def getTaskRubric(cookie, classID, taskID):
+    subID = getTaskSubmission(cookie, classID, taskID)['d']['TaskResult']['SubmissionID']
+
+    url = f"https://simon.sfx.vic.edu.au/WebModules/LearningAreas/LearningAreas.asmx/GetSubmissionMarkingRubric"
+    headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
+    data = {
+        "classId": classID,
+        "taskId": taskID,
+        "inactiveClassFlag": False,
+        "submissionID": subID
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    return response.json()
