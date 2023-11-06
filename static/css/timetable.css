@@ -1,19 +1,33 @@
+.classBox {
+  position: relative;
+  display: block;
+}
 
-
+.sessionName {
+  font-size: 70%;
+}
 
 .cardTime {
   font-weight: bold;
   font-size: 70%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.descriptionName {
+  flex-grow: 1;
+  white-space: nowrap; /* Prevent the class name from wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for long class names */
+  font-size: 90%;
 }
 
 .cardTeacher {
   font-weight: bold;
   font-size: 80%;
-}
-
-
-.sessionName {
-  font-size: 70%;
 }
 
 .breakLine {

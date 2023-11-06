@@ -27,7 +27,7 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
@@ -386,10 +386,12 @@ def login():
         response.set_cookie("adAuthCookie", cookie, max_age=7776000)
         response.set_cookie("username", username, max_age=7776000)
         response.set_cookie("campus", campus, max_age=7776000)
+        response.set_cookie("loginVer", '1.1', max_age=7776000)
     else:
         response.set_cookie("adAuthCookie", cookie)
         response.set_cookie("username", username)
         response.set_cookie("campus", campus)
+        response.set_cookie("loginVer", '1.1')
 
     return response
 

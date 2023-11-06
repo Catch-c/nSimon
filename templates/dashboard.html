@@ -270,7 +270,7 @@
         <div class="row">
 
             <!-- Left Column (Weather, Class Resources, Today) -->
-            <div class="col-12 col-sm-3 col-custom">
+            <div class="col-12 col-sm-3 col-custom order-2 order-sm-first">
 
                 <!-- Weather -->
                 <div class="card card-custom-small mb-2">
@@ -317,7 +317,6 @@
 
                         <script>
                             var dueTasksModal = new bootstrap.Modal(document.getElementById('dueModal'), {})
-
                             document.getElementById("dashboardDueButton").addEventListener("click", function () {
                                 dueTasksModal.show()
                             });
@@ -341,7 +340,6 @@
 
                         <script>
                             var resultTasksModal = new bootstrap.Modal(document.getElementById('resultsModal'), {})
-
                             document.getElementById("dashboardResultsButton").addEventListener("click", function () {
                                 resultTasksModal.show()
                             });
@@ -369,7 +367,7 @@
             </div>
 
             <!-- Center Column (Daily Messages) -->
-            <div class="col-12 col-sm-6 col-custom">
+            <div class="col-12 col-sm-6 col-custom order-3 order-sm-2">
 
                 <div class="card card-custom-large">
 
@@ -390,7 +388,7 @@
             </div>
 
             <!-- Right Column (Timetable) -->
-            <div class="col-12 col-sm-3 col-custom">
+            <div class="col-12 col-sm-3 col-custom order-1 order-sm-last">
 
                 <div class="card card-custom-large">
 
@@ -462,14 +460,18 @@
 
         const authCookie = getCookie('adAuthCookie');
         const campus = getCookie('campus');
+        const outdatedLogin = getCookie('loginVer');
 
         if (authCookie == null) {
+            window.location.href = '/logout';
+        }
+        if (outdatedLogin != '1.1') {
             window.location.href = '/logout';
         }
 
         if (campus == null) {
             window.location.href = '/logout';
-        }
+        } 
 
     </script>
 
@@ -623,23 +625,18 @@
                 const dueTasks = document.getElementById('classResourcesDueCount');
                 dueTasks.textContent = data.d.DueTasksStudent.length
                 const dueTaskHolder = document.getElementById('dueModalHolder');
-
                 data.d.DueTasksStudent.forEach((task) => {
                     const divElement = document.createElement('div');
                     divElement.className = 'box rounded box-button';
-
                     const strongElement = document.createElement('strong');
                     const spanElement = document.createElement('span');
                     strongElement.textContent = `${task['SubjectCode']}: `;
                     spanElement.textContent = `${task['TaskTitle']}`;
-
                     strongElement.appendChild(spanElement);
                     divElement.appendChild(strongElement);
-
                     divElement.addEventListener('click', function () {
                         openDueTask(task['TaskTitle'], task['ClassCode'], task['DueDate'], task['ViewDetailsURL'])
                     });
-
                     dueTaskHolder.appendChild(divElement);
                 });
 
@@ -648,10 +645,8 @@
                 overdueTasks.textContent = data.d.OverDueTasksStudent.length
 
 
-                // Results
                 const resultTasks = document.getElementById('classResourcesResultsCount');
                 const resultTasksHolder = document.getElementById('resultsModalHolder');
-
                 let totalTasks = 0;
 
                 const classes = data.d.ResultTasksStudent;
@@ -662,24 +657,18 @@
 
                 data.d.ResultTasksStudent.forEach((classs) => {
                     classs['Tasks'].forEach((task) => {
-
                         const divElement = document.createElement('div');
                         divElement.className = 'box rounded box-button';
-
                         const strongElement = document.createElement('strong');
                         const spanElement = document.createElement('span');
                         strongElement.textContent = `${classs['SubjectCode']}: `;
                         spanElement.textContent = `${task['Title']}`;
-
                         strongElement.appendChild(spanElement);
                         divElement.appendChild(strongElement);
-
                         divElement.addEventListener('click', function () {
                             openResultTask(task['Title'], classs['SubjectCode'], task['Topic'], task['FinalResult'], task, classs)
                         });
-
                         resultTasksHolder.appendChild(divElement);
-
                     });
                 });
 
@@ -1100,9 +1089,9 @@
                         endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
                         if (dayInCycle == currentDayInCycle) {
                             if (nowT >= startTime && nowT < endTime) {
-                                classDiv.classList.add('box', 'rounded', 'border-timetable');
+                                classDiv.classList.add('box', 'rounded', 'classBox', 'border-timetable');
                             } else {
-                                classDiv.classList.add('box', 'rounded');
+                                classDiv.classList.add('box', 'rounded', 'classBox');
                             }
 
 
@@ -1115,13 +1104,13 @@
                             }
                         }
                         else {
-                            classDiv.classList.add('box', 'rounded');
+                            classDiv.classList.add('box', 'rounded', 'classBox');
                             colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
                         }
 
 
                     } else {
-                        classDiv.classList.add('box', 'rounded');
+                        classDiv.classList.add('box', 'rounded', 'classBox');
                         colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
                     }
 
@@ -1160,15 +1149,15 @@
                     let roomChange = period.Classes[0].HasRoomChange;
                     let roomInfo
                     roomInfo = filterTimetable(period.Classes[0].Room);
-
                     // Check if the there is a room change
-                    if (roomChange == 'true') {
+                    if (roomChange == true) {
                         if (teacherName.includes("CRT")) {
                             // If it does, set the text content and change the color to red
                             teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | <span style="color: red;">${teacherName}</span>`;
                         } else {
                             // Otherwise, set the text content without any styling
-                            teacherDiv.textContent = `<span style="color: red;">${roomInfo}</span> | ${teacherName}`;
+                            console.log('RoomChange Regular')
+                            teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | ${teacherName}`;
                         }
                     } else {
                         if (teacherName.includes("CRT")) {
@@ -1188,8 +1177,132 @@
 
                     dataContainer.appendChild(classDiv);
 
-                }
+                } else if (period.IsTeachingPeriod === false && period.Description !== "Recess Duty" && period.Description !== "Lunch Duty 1" && period.Description !== "Lunch Duty 2") {
+                    if (lastEndTime !== null) {
+                        const startTimeNextPeriod = period.StartTime;
+                        const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
 
+                        if (timeGap === 20 || timeGap === 40) {
+
+                            const spanBreakText = document.createElement('span');
+                            spanBreakText.className = 'breakText';
+                            spanBreakText.style.marginRight = '5px';
+                            spanBreakText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
+
+                            // Create a div element with class "breakLine" and style attribute
+                            const divBreakLine = document.createElement('div');
+                            divBreakLine.className = 'breakLine mb-2';
+                            divBreakLine.style.flexGrow = '1';
+                            divBreakLine.style.height = '2px';
+
+                            // Append the span and div elements to a container div
+                            const containerDiv = document.createElement('div');
+                            containerDiv.appendChild(spanBreakText);
+                            containerDiv.appendChild(divBreakLine);
+
+                            dataContainer.appendChild(containerDiv);
+
+                        }
+                    }
+                    lastEndTime = period.EndTime;
+
+                    settingValue = localStorage.getItem('sessionSetting');
+
+                    if (settingValue == 'true') {
+                        // const sessionDiv = document.createElement('div');
+
+                        // const sessionSpan = document.createElement('span');
+                        // sessionSpan.classList.add('session-name');
+                        // sessionSpan.textContent = period.Description;
+
+                        // sessionSpan.setAttribute('data-bs-toggle', 'tooltip');
+                        // sessionSpan.setAttribute('data-bs-html', 'true');
+                        // sessionSpan.setAttribute('title', period.Description);
+
+
+                        // sessionDiv.appendChild(sessionSpan);
+                        // new bootstrap.Tooltip(sessionSpan);
+                        // dataContainer.appendChild(sessionDiv);
+                    }
+
+                    const classDiv = document.createElement('div');
+
+                    const strongElement = document.createElement('strong');
+                    const colorDotSpan = document.createElement('span');
+
+                    if (!weekend) {
+
+                        let nowT = new Date();
+
+                        let startParts = period['StartTime'].split(":");
+                        let startTime = new Date();
+                        startTime.setHours(parseInt(startParts[0]), parseInt(startParts[1]), 0, 0);
+
+                        let endParts = period['EndTime'].split(":");
+                        let endTime = new Date();
+                        endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
+                        if (dayInCycle == currentDayInCycle) {
+                            if (nowT >= startTime && nowT < endTime) {
+                                classDiv.classList.add('box', 'rounded', 'classBox', 'border-timetable');
+                            } else {
+                                classDiv.classList.add('box', 'rounded', 'classBox');
+                            }
+
+
+                            if (nowT < startTime) {
+                                colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                            } else if (nowT >= startTime && nowT < endTime) {
+                                colorDotSpan.classList.add('color-dot', 'bg-warning', 'me-2');
+                            } else {
+                                colorDotSpan.classList.add('color-dot', 'bg-secondary', 'me-2');
+                            }
+                        }
+                        else {
+                            classDiv.classList.add('box', 'rounded', 'classBox');
+                            colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                        }
+
+
+                    } else {
+                        classDiv.classList.add('box', 'rounded', 'classBox');
+                        colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+                    }
+
+
+                    strongElement.appendChild(colorDotSpan);
+                    const spanDescription = document.createElement('span');
+                    spanDescription.textContent = `${period.Description}`
+                    spanDescription.classList.add('descriptionName');
+
+                    // classNameSpan.setAttribute('data-bs-toggle', 'tooltip');
+                    // classNameSpan.setAttribute('data-bs-html', 'true');
+                    // classNameSpan.setAttribute('title', period.Classes[0].Description);
+
+                    strongElement.appendChild(spanDescription);
+                    // new bootstrap.Tooltip(classNameSpan);
+
+
+                    // Create time span
+
+                    const spanTime = document.createElement('span');
+                    spanTime.className = 'cardTime';
+                    spanTime.textContent = `${convertToAMPM(period.StartTime)}-${convertToAMPM(period.EndTime)}`;
+
+                    // Create Line Break
+                    const lineBreak = document.createElement('br');
+
+                    // Create Teacher & Room
+
+
+
+                    // Append the created classDiv to the body or any other parent element
+
+                    classDiv.appendChild(strongElement);
+                    classDiv.appendChild(spanTime);
+                    classDiv.appendChild(lineBreak);
+
+                    dataContainer.appendChild(classDiv);                    
+                }
             }
 
 
