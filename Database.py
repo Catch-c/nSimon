@@ -88,7 +88,7 @@ def databaseAddUser(username, password, cookie):
         cursor = conn.cursor()
         hashed_password = hash_password(password)
         encrypted_cookie = encrypt_cookie(cookie)
-        cursor.execute("INSERT INTO users (username, password, cookie, studentImage, theme, music, showSessionNames) VALUES (%s, %s, %s, %s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, '', 'light',  'yes', 'false'))
+        cursor.execute("INSERT INTO users (username, password, cookie, studentImage, theme, music, showSessionNames) VALUES (%s, %s, %s, %s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, '', 'light', 'yes', 'false'))
         conn.commit()
         logger.info(f"User '{username}' added to the database.")
         cursor.execute("UPDATE statistics SET users = users + 1")
