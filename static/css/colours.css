@@ -1,0 +1,93 @@
+:root {
+    --bg-colour: #fafafa;
+    --font-colour: #000000;
+    --primary-colour: rgb(50, 13, 232);
+
+    --navbar-colour: #116aa4;
+    --navbar-border: #c5261e;
+    --navbar-text: white;
+    --navbar-shadow: #560e0b;
+
+    --sidebar-font-colour: rgb(36, 36, 36);
+    --sidebar-colour: white;
+    --sidebar-hover-colour: rgb(69, 69, 69);
+    --sidebar-link-hover-colour: rgb(184, 184, 184);
+
+    --card-colour: #f4f4f4;
+    --card-shadow: #c9c9c9;
+    --card-title-colour: black;
+    --card-subtitle-colour: gray;
+    --card-hover: rgb(185, 185, 185);
+    --card-text-hover: rgb(34, 34, 34);
+
+
+    --box-colour: #ffffff;;
+    --box-shadow: #c9c9c9;
+
+    --modal-bg:#fafafa;
+}
+
+[data-theme="dark"] {
+    --bg-colour: #1b1b1b;
+    --font-colour: #ffffff;
+    --primary-colour: rgb(50, 13, 232);
+
+    --navbar-colour: #116aa4;
+    --navbar-border: #c5261e;
+    --navbar-text: white;
+    --navbar-shadow: #560e0b;
+
+    --sidebar-font-colour: rgb(214, 214, 214);
+    --sidebar-colour: rgb(24, 24, 24);
+    --sidebar-hover-colour: rgb(197, 183, 183);
+    --sidebar-link-hover-colour: rgb(73, 73, 73);
+
+    --card-colour: rgb(23, 23, 23);
+    --card-shadow: #2a2a2a;
+    --card-title-colour: rgb(255, 255, 255);
+    --card-subtitle-colour: rgb(202, 202, 202);
+    --card-hover: rgb(54, 54, 54);
+    --card-text-hover: rgb(34, 34, 34);
+
+
+    --box-colour: #1b1b1b;
+    --box-text-colour: #ffffff;
+    --box-shadow: #383838;
+
+
+    --modal-bg:#1b1b1b;
+}
+
+[data-theme="blue"] {
+    --bg-colour: #bbdefb;
+    --font-colour: #333333;
+    --primary-colour: rgb(50, 13, 232);
+
+    --navbar-colour: #116aa4;
+    --navbar-border: #c5261e;
+    --navbar-text: white;
+    --navbar-shadow: #560e0b;
+
+    --sidebar-font-colour: rgb(30, 30, 30);
+    --sidebar-colour: #bbdefb;
+    --sidebar-hover-colour: rgb(43, 43, 43);
+    --sidebar-link-hover-colour: rgb(96, 96, 96);
+
+    --card-colour: #9ecaec;
+    --card-shadow: #2a2a2a;
+    --card-title-colour: rgb(40, 40, 40);
+    --card-subtitle-colour: rgb(96, 96, 96);
+    --card-hover: #a4bacc;
+    --card-text-hover: rgb(34, 34, 34);
+
+
+    --box-colour: #bbdefb;
+    --box-text-colour: #525252;
+    --box-shadow: #95b0c6;
+
+
+    --modal-bg:#bbdefb;
+}
+
+
+

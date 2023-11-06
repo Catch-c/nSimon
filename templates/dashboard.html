@@ -1,20 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>NSimon | Student Dashboard</title>
-    <!-- Bootstrap & CSS -->
-    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet" />
-    <script crossorigin="anonymous" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | NSimon {{VERSION}}</title>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 
-    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/colours.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/navbar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/sidebar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/cards.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/misc.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/timetable.css') }}" rel="stylesheet" type="text/css">
 
     <!-- FavIcon -->
     <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
@@ -27,6 +32,8 @@
     <link color="#5bbad5" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" rel="mask-icon" />
     <meta content="#da532c" name="msapplication-TileColor" />
     <meta content="#3a3a3a" name="theme-color" />
+
+    <!-- Session Setting -->
     <script>
         fetch('/api/getSessionSetting', {
             method: 'POST',
@@ -42,273 +49,405 @@
                 console.error('Error:', error);
             });
     </script>
-
 </head>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
-</style>
 
-<body id="MainBody">
+<body>
 
-    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="firstTimeModal" tabindex="-1">
-        <div class="modal-dialog">
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+
+    <!-- Due Tasks -->
+    <div class="modal fade" id="dueModal" tabindex="-1" aria-labelledby="dueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">For students using laptops:</h5>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                    <h1 class="modal-title fs-5" id="dueModalLabel">Due Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    For the best experience it is <b>highly recommended to set your zoom for this web page to
-                        75%-85%.</b> This will give you the best viewing experience and will remove the need to scroll.
+                <div class="modal-body" id="dueModalHolder">
+
+
+
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dueTaskModal" tabindex="-1" aria-labelledby="dueTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dueTaskModalLabel">???</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box rounded">
+                        <strong>Class:</strong>
+                        <span id="dueTaskClass">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Due Date:</strong>
+                        <span id="dueTaskDueDate">???</span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="" target="_blank" type="button" class="btn btn-secondary" id="submitTaskButton">Submit</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var myModal = new bootstrap.Modal(document.getElementById('firstTimeModal'), {});
+        var dueTaskSpecificModal = new bootstrap.Modal(document.getElementById('dueTaskModal'), {})
 
-            if (!localStorage.getItem("shownSizeModal")) {
-                myModal.show();
-                localStorage.setItem("shownSizeModal", "true");
-            }
+        function openDueTask(title, classs, duedate, url) {
+            document.getElementById('dueTaskModalLabel').textContent = title
+            document.getElementById('dueTaskClass').textContent = classs
+            document.getElementById('dueTaskDueDate').textContent = duedate
+            document.getElementById('submitTaskButton').href = `https://simon.sfx.vic.edu.au${url}`
+            dueTaskSpecificModal.show()
+        };
+    </script>
 
-        });
+
+    <!-- Result Tasks -->
+    <div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="resultsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="resultsModalLabel">Results Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="resultsModalHolder">
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resultsTaskModal" tabindex="-1" aria-labelledby="resultsTaskModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="resultsTaskModalLabel">Results Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box rounded">
+                        <strong>Class:</strong>
+                        <span id="resultTaskClass">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Topic:</strong>
+                        <span id="resultTaskTopic">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Result:</strong>
+                        <span id="resultTaskResult">???</span>
+                    </div>
+
+                    <div class="box rounded">
+                        <strong>Feedback:</strong>
+                        <span id="resultTaskFeedback">???</span>
+                    </div>
+
+                    <div class="box rounded">
+                        <strong>Rubric</strong>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Criteria</th>
+                                    <th>Score</th>
+                                    <th>Score Descriptor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rubricTable">
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var resultTaskSpecificModal = new bootstrap.Modal(document.getElementById('resultsTaskModal'), {})
+
+        function openResultTask(title, classs, topic, result, task, classss) {
+            document.getElementById('resultsTaskModalLabel').textContent = title
+            document.getElementById('resultTaskClass').textContent = classs
+            document.getElementById('resultTaskTopic').textContent = topic
+            document.getElementById('resultTaskResult').textContent = result
+            resultTaskSpecificModal.show()
+
+            document.getElementById("resultTaskFeedback").textContent = "???"
+
+            
+            const tbody = document.getElementById("rubricTable")
+            tbody.innerHTML = ''
+
+            let data = {
+                taskID: task['TaskID'],
+                classID: classss['ID'],
+            };
+
+            fetch(`/api/getTaskRubric`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+
+
+                    
+
+
+                    data.d.MarkingRubricCriteria.forEach((criteria) => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                <td>${criteria.Criteria}</td>
+                <td>${criteria.CriteriaMark} / ${criteria.MaxScore}</td>
+                <td>${criteria.RubricContent[criteria.CriteriaMark].Content}</td>
+            `;
+                        tbody.appendChild(row);
+                    });
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            fetch(`/api/getResultInfo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+
+
+                    document.getElementById('resultTaskFeedback').textContent = data['d']['MarkingSummaryInfo']['MarkingNotes']
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
     </script>
 
     {% include "partials/navbar.html" %}
 
+    <!-- Content -->
+    <div class="container-fluid main-content">
+        <div class="row">
 
-    <div class="mainBody container-fluid h-100">
-        <div class="row h-100 pt-3">
-            <div class="col-md-3 col-12p-3 order-2 order-md-1">
+            <!-- Left Column (Weather, Class Resources, Today) -->
+            <div class="col-12 col-sm-3 col-custom">
 
                 <!-- Weather -->
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Weather <span style="font-size:medium;"
-                            id="weatherCampus" class="pageSubtitleSub">Berwick</span>
-                    </h4>
-                    <div class="small-box rounded p-3 mb-2">
-                        <img id="weatherIcon" src="https://openweathermap.org/img/wn/01d.png" alt="Weather Icon"
-                            width="35px" height="35px">
-                        <span class="class-name" id="currentWeather">Loading°</span>
-                        <span class="time" id="minMax">⬇️ Loading° | ⬆️ Loading° | 🤔 Loading°</span>
-                        <div class="teacher-name" id="weatherInformation">Loading...</div>
+                <div class="card card-custom-small mb-2">
+
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Weather</span>
+                            <span class="cardSubtitle" id="weatherCampus">Loading</span>
+                        </h5>
                     </div>
+
+                    <!-- Contents -->
+                    <div class="card-body">
+                        <div class="box rounded">
+                            <strong id="weatherTemperature">Loading°</strong><br>
+                            <span id="weatherConditions">Loading</span>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Class Resources -->
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Class Resources
-                    </h4>
+                <div class="card card-custom-small mb-2">
 
-                    <!-- Due -->
-                    <div class="small-box rounded p-3 mb-2" id="dueTasksBox" style="position: relative;">
-                        <span class="color-dot bg-primary me-2"></span>
-                        <span class="class-name" id="dueTasks">0 Due</span>
-                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
-                        <div style="display: none" id="dueTasksExpand">
-                        </div>
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Class Resources</span>
+                            <span class="cardSubtitle"></span>
+                        </h5>
                     </div>
-                    <script>
-                        $(document).ready(function () {
-                            $('#dueTasksBox').on('click', function () {
-                                var dueTasksExpand = $('#dueTasksExpand');
-                                var arrow = $(this).find('.arrow');
 
-                                if (dueTasksExpand.css('display') === 'none') {
-                                    dueTasksExpand.css('display', 'block');
+                    <!-- Contents -->
+                    <div class="card-body">
 
-                                    arrow.removeClass('bi-arrow-down-circle');
-                                    arrow.addClass('bi-arrow-up-circle');
-
-                                    setTimeout(() => {
-                                        dueTasksExpand.addClass('visible');
-                                    }, 1); // small delay to allow for display:block to take effect
-                                } else {
-                                    dueTasksExpand.removeClass('visible');
-                                    arrow.removeClass('bi-arrow-up-circle');
-                                    arrow.addClass('bi-arrow-down-circle');
-                                    setTimeout(() => {
-                                        dueTasksExpand.css('display', 'none');
-                                    }, 300); // delay to allow for the fade out transition to complete
-                                }
-                            });
-                        });
-
-
-                    </script>
-
-                    <!-- Overdue -->
-                    <div class="small-box rounded p-3 mb-2" id="overdueTasksBox" style="position: relative;">
-                        <span class="color-dot bg-danger me-2"></span>
-                        <span class="class-name" id="overdueTasks">0 Overdue</span>
-                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
-                        <div style="display: none" id="overdueTasksExpand">
+                        <div class="box rounded box-button" id="dashboardDueButton">
+                            <strong>
+                                <span class="color-dot bg-primary me-2"></span>
+                                <span id="classResourcesDueCount">Loading</span>
+                                Due
+                            </strong>
                         </div>
-                    </div>
-                    <script>
-                        $(document).ready(function () {
-                            $('#overdueTasksBox').on('click', function () {
-                                var dueTasksExpand = $('#overdueTasksExpand');
-                                var arrow = $(this).find('.arrow');
 
-                                if (dueTasksExpand.css('display') === 'none') {
-                                    dueTasksExpand.css('display', 'block');
+                        <script>
+                            var dueTasksModal = new bootstrap.Modal(document.getElementById('dueModal'), {})
 
-                                    arrow.removeClass('bi-arrow-down-circle');
-                                    arrow.addClass('bi-arrow-up-circle');
-
-                                    setTimeout(() => {
-                                        dueTasksExpand.addClass('visible');
-                                    }, 1); // small delay to allow for display:block to take effect
-                                } else {
-                                    dueTasksExpand.removeClass('visible');
-                                    arrow.removeClass('bi-arrow-up-circle');
-                                    arrow.addClass('bi-arrow-down-circle');
-                                    setTimeout(() => {
-                                        dueTasksExpand.css('display', 'none');
-                                    }, 300); // delay to allow for the fade out transition to complete
-                                }
+                            document.getElementById("dashboardDueButton").addEventListener("click", function () {
+                                dueTasksModal.show()
                             });
-                        });
+                        </script>
 
-
-                    </script>
-
-                    <!-- Results -->
-                    <div class="small-box rounded p-3 mb-2" id="resultTasksBox" style="position: relative;">
-                        <span class="color-dot bg-success me-2"></span>
-                        <span class="class-name" id="resultTasks">0 Results</span>
-                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
-                        <div style="display: none" id="resultTasksExpand">
+                        <div class="box rounded">
+                            <strong>
+                                <span class="color-dot bg-danger me-2"></span>
+                                <span id="classResourcesOverdueCount">Loading</span>
+                                Overdue
+                            </strong>
                         </div>
-                    </div>
-                    <script>
-                        $(document).ready(function () {
-                            $('#resultTasksBox').on('click', function () {
-                                var dueTasksExpand = $('#resultTasksExpand');
-                                var arrow = $(this).find('.arrow');
 
-                                if (dueTasksExpand.css('display') === 'none') {
-                                    dueTasksExpand.css('display', 'block');
+                        <div class="box rounded box-button" id="dashboardResultsButton">
+                            <strong>
+                                <span class="color-dot bg-success me-2"></span>
+                                <span id="classResourcesResultsCount">Loading</span>
+                                Results
+                            </strong>
+                        </div>
 
-                                    arrow.removeClass('bi-arrow-down-circle');
-                                    arrow.addClass('bi-arrow-up-circle');
+                        <script>
+                            var resultTasksModal = new bootstrap.Modal(document.getElementById('resultsModal'), {})
 
-                                    setTimeout(() => {
-                                        dueTasksExpand.addClass('visible');
-                                    }, 1); // small delay to allow for display:block to take effect
-                                } else {
-                                    dueTasksExpand.removeClass('visible');
-                                    arrow.removeClass('bi-arrow-up-circle');
-                                    arrow.addClass('bi-arrow-down-circle');
-                                    setTimeout(() => {
-                                        dueTasksExpand.css('display', 'none');
-                                    }, 300); // delay to allow for the fade out transition to complete
-                                }
+                            document.getElementById("dashboardResultsButton").addEventListener("click", function () {
+                                resultTasksModal.show()
                             });
-                        });
-
-
-                    </script>
-
+                        </script>
+                    </div>
                 </div>
 
                 <!-- Today -->
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Today <span style="font-size:medium;"
-                            id="todayDate" class="pageSubtitleSub">LOADING</span>
-                    </h4>
-                    <div id="todayActivities">
+                <div class="card card-custom-medium">
+
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Today</span>
+                            <span class="cardSubtitle" id="dashboardTodayDate">Loading</span>
+                        </h5>
                     </div>
-                </div>
 
-                <!-- Other Links -->
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Other Links</h4>
-                    <div class="small-box rounded p-3 mb-2">
-                        <a href="/calendar" style="text-decoration: none"><span class="class-name">Calendar <i
-                                    class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>
-                    </div>
-                    <div class="small-box rounded p-3 mb-2">
-                        <a href="/profile" style="text-decoration: none"><span class="class-name">Profile <i
-                                    class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>
-                    </div>
-                    <div class="small-box rounded p-3 mb-2">
-                        <a href="/classes" style="text-decoration: none"><span class="class-name">Classes <i
-                                    class="bi bi-box-arrow-up-right pageSubtitleSub"></i></span></a>
-                    </div>
-                </div>
+                    <!-- Contents -->
+                    <div class="card-body" id="dashboardTodayHolder">
 
-            </div>
-
-            <!-- Daily Messages -->
-            <div class="col-md-6 col-12p-3 order-3 order-md-2">
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Daily Messages <span style="font-size:medium;"
-                            id="totalDailyMessages" class="pageSubtitleSub">LOADING...</span>
-                    </h4>
-                    <div class="messages-container rounded p-3" id="dailyMessages" style="overflow-y:scroll;">
-
-
-                        <div class="small-box rounded p-3 mb-2" id="dailyMessagesLoading">
-                            <span class="color-dot bg-danger me-2"></span>
-                            <span class="class-name">Loading</span>
-                            <div class="teacher-name">Your daily messages are loading...</div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Timetable -->
-            <div class="col-md-3 col-12p-3 order-1 order-md-3">
-
-
-
-                <div class="big-box rounded p-3 mb-2">
-
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Timetable
-                        <button id="prevDay" class="btn btn-sm pageSubtitleSub"><i
-                                class="bi bi-arrow-left"></i></button>
-                        <span style="font-size:medium;" id="timetableDay" class="pageSubtitleSub">
-                            LOADING...
-                        </span>
-                        <button id="nextDay" class="btn btn-sm pageSubtitleSub"><i
-                                class="bi bi-arrow-right"></i></button>
-                    </h4>
-
-                    <div id="timetable">
-
-                        <div class="small-box rounded p-3 mb-2" id="timetableLoading">
-                            <span class="color-dot bg-primary me-2"></span>
-                            <span class="class-name">Loading</span>
-                            <div class="teacher-name">Your classes are loading...</div>
-                        </div>
 
                     </div>
                 </div>
             </div>
+
+            <!-- Center Column (Daily Messages) -->
+            <div class="col-12 col-sm-6 col-custom">
+
+                <div class="card card-custom-large">
+
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Daily Messages</span>
+                            <span class="cardSubtitle" id="dashboardMessagesCount">Loading</span>
+                        </h5>
+                    </div>
+
+                    <div class="card-body" id="dashboardMessagesHolder">
+
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Right Column (Timetable) -->
+            <div class="col-12 col-sm-3 col-custom">
+
+                <div class="card card-custom-large">
+
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Timetable</span>
+                            <span class="cardSubtitle">
+                                <button id="prevDay" class="btn btn-sm"><i class="bi bi-arrow-left"></i></button>
+
+                                <span style="font-size:medium;" id="timetableDay">
+                                    Loading
+                                </span>
+
+                                <button id="nextDay" class="btn btn-sm"><i class="bi bi-arrow-right"></i></button>
+
+                            </span>
+                        </h5>
+                    </div>
+
+                    <div class="card-body" id="timetableHolder">
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
+
+
+
+    </div>
     </div>
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
-    <!-- Variables -->
 
-    <!-- Get Cookie/Campus -->
+
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+    <!-- Script Initialisations -->
+
+    <!-- Cookie Handler -->
     <script>
         function getCookie(cookieName) {
             const cookies = document.cookie.split(';');
@@ -334,64 +473,48 @@
 
     </script>
 
+    <!-- Variables -->
     <script>
-        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Days of the Week
-        let currentDate = new Date(); // Current Date
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        let currentDate = new Date();
         let currentISOString = currentDate.toISOString();
-        let unixTimestamp = currentDate.getTime(); // Current UNIX Timestamp
-        let unixTimestampInSeconds = Math.floor(unixTimestamp / 1000); // Current UNIX Timestamp in Seconds
+        let unixTimestamp = currentDate.getTime();
+        let unixTimestampInSeconds = Math.floor(unixTimestamp / 1000);
         var totalDailyMessages = 0
+        var totalNewDailyMessages = 0
     </script>
-
-
-    <!-- Time/Data Updated -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function updateDateAndTime() {
-                const today = new Date();
-
-                // Update Date
-                const day = String(today.getDate()).padStart(2, '0');
-                const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                const year = today.getFullYear();
-                const formattedDate = `${day}/${month}/${year}`;
-                document.getElementById("currentDate").textContent = formattedDate;
-                document.getElementById("todayDate").textContent = formattedDate;
-
-                // Update Time
-                let hours = today.getHours();
-                const minutes = String(today.getMinutes()).padStart(2, '0');
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-
-                // Convert 24-hour time to 12-hour time format
-                hours = hours % 12;
-                // If hour is 0 (which would be 12 in 24-hour time), set it to 12
-                hours = hours ? hours : 12;
-                const formattedTime = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
-                document.getElementById("currentTime").textContent = formattedTime;
-            }
-
-            // Call the function to initialize the display
-            updateDateAndTime();
-
-            // Set an interval to update the time every minute
-            setInterval(updateDateAndTime, 60 * 1000); // 60 * 1000ms = 1 minute
-        });
-    </script>
-
 
     <!-- Functions -->
     <script>
+        function getNextMonday(currentISODate) {
+            const currentDate = new Date(currentISODate);
+            const dayOfWeek = currentDate.getDay();
+            const daysUntilMonday = (8 - dayOfWeek) % 7;
+            const nextMonday = new Date(currentDate);
+            nextMonday.setDate(currentDate.getDate() + daysUntilMonday);
+            return nextMonday.toISOString();
+        }
+
+        function extractNumberFromString(text) {
+            const regex = /(\d+)/;
+
+            const match = text.match(regex);
+
+            if (match) {
+                const number = parseInt(match[0]);
+
+                return number;
+            }
+
+            return null;
+        }
 
         function removeColorStyles(htmlString) {
-            // Create a new DOM parser
             let parser = new DOMParser();
             let doc = parser.parseFromString(htmlString, 'text/html');
 
-            // Get all elements with style attributes
             let styledElements = doc.querySelectorAll('[style]');
 
-            // Iterate through each element and remove color and background styles
             styledElements.forEach(elem => {
                 let styles = elem.getAttribute('style').split(';').filter(style => {
                     return !style.trim().startsWith('color:') &&
@@ -401,35 +524,24 @@
                 elem.setAttribute('style', styles.join(';'));
             });
 
-            // Convert the modified DOM back to an HTML string
             return doc.body.innerHTML;
 
         }
 
-        function getNextMonday(currentISODate) {
-            const currentDate = new Date(currentISODate);
-            const dayOfWeek = currentDate.getDay();
-            const daysUntilMonday = (8 - dayOfWeek) % 7; // Calculate how many days until Monday
-            const nextMonday = new Date(currentDate);
-            nextMonday.setDate(currentDate.getDate() + daysUntilMonday);
-            return nextMonday.toISOString();
+        function timeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
         }
 
-
         function convertToAMPM(timeString) {
-            // Split the input time string into hours and minutes
             const [hours, minutes] = timeString.split(':');
 
-            // Convert hours to a number
             const hour = parseInt(hours, 10);
 
-            // Determine whether it's AM or PM based on the hour
             const period = hour >= 12 ? 'PM' : 'AM';
 
-            // Convert hours to 12-hour format
             const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
 
-            // Create the formatted time string
             const formattedTime = `${formattedHour}:${minutes}${period}`;
 
             return formattedTime;
@@ -448,33 +560,17 @@
         }
 
         function extractNumberFromString(text) {
-            // Use a regular expression to match the number inside the text
             const regex = /(\d+)/;
 
-            // Use the match method to find the first occurrence of the number
             const match = text.match(regex);
 
-            // Check if a match was found
             if (match) {
-                // Convert the matched string to a number
                 const number = parseInt(match[0]);
 
                 return number;
             }
 
-            // If no match was found, return null or an appropriate value
             return null;
-        }
-
-        function countTotalTasks(data) {
-            let totalTasks = 0;
-
-            const classes = data.d.ResultTasksStudent;
-            for (let i = 0; i < classes.length; i++) {
-                totalTasks += classes[i].Tasks.length;
-            }
-
-            return totalTasks;
         }
     </script>
 
@@ -482,13 +578,349 @@
 
 
 
-    <!-- Timetable -->
+
+    <!-- Weather -->
     <script>
-        function timeToMinutes(time) {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours * 60 + minutes;
+        fetch(`/api/getWeather`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                const currentWeather = document.getElementById('weatherTemperature');
+                currentWeather.textContent = data.currentTemperature.toFixed(1) + '°';
+
+                const weatherInformation = document.getElementById('weatherConditions');
+                weatherInformation.textContent = `${data.currentDescription}`;
+
+                const weatherCampus = document.getElementById('weatherCampus');
+                weatherCampus.textContent = data.campus;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+
+
+    <!-- Class Resources -->
+    <script>
+        fetch(`/api/getClasses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+
+
+                // Due
+                const dueTasks = document.getElementById('classResourcesDueCount');
+                dueTasks.textContent = data.d.DueTasksStudent.length
+                const dueTaskHolder = document.getElementById('dueModalHolder');
+
+                data.d.DueTasksStudent.forEach((task) => {
+                    const divElement = document.createElement('div');
+                    divElement.className = 'box rounded box-button';
+
+                    const strongElement = document.createElement('strong');
+                    const spanElement = document.createElement('span');
+                    strongElement.textContent = `${task['SubjectCode']}: `;
+                    spanElement.textContent = `${task['TaskTitle']}`;
+
+                    strongElement.appendChild(spanElement);
+                    divElement.appendChild(strongElement);
+
+                    divElement.addEventListener('click', function () {
+                        openDueTask(task['TaskTitle'], task['ClassCode'], task['DueDate'], task['ViewDetailsURL'])
+                    });
+
+                    dueTaskHolder.appendChild(divElement);
+                });
+
+                // Overdue
+                const overdueTasks = document.getElementById('classResourcesOverdueCount');
+                overdueTasks.textContent = data.d.OverDueTasksStudent.length
+
+
+                // Results
+                const resultTasks = document.getElementById('classResourcesResultsCount');
+                const resultTasksHolder = document.getElementById('resultsModalHolder');
+
+                let totalTasks = 0;
+
+                const classes = data.d.ResultTasksStudent;
+                for (let i = 0; i < classes.length; i++) {
+                    totalTasks += classes[i].Tasks.length;
+                }
+                resultTasks.textContent = totalTasks
+
+                data.d.ResultTasksStudent.forEach((classs) => {
+                    classs['Tasks'].forEach((task) => {
+
+                        const divElement = document.createElement('div');
+                        divElement.className = 'box rounded box-button';
+
+                        const strongElement = document.createElement('strong');
+                        const spanElement = document.createElement('span');
+                        strongElement.textContent = `${classs['SubjectCode']}: `;
+                        spanElement.textContent = `${task['Title']}`;
+
+                        strongElement.appendChild(spanElement);
+                        divElement.appendChild(strongElement);
+
+                        divElement.addEventListener('click', function () {
+                            openResultTask(task['Title'], classs['SubjectCode'], task['Topic'], task['FinalResult'], task, classs)
+                        });
+
+                        resultTasksHolder.appendChild(divElement);
+
+                    });
+                });
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+
+
+    <!-- Today -->
+    <script>
+        fetch(`/api/getToday`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const dataContainer = document.getElementById('dashboardTodayHolder');
+                const todayDate = document.getElementById('dashboardTodayDate');
+
+                const events = data.d.Events;
+
+                if (events.length == 0) {
+                    const divElement = document.createElement('div');
+                    divElement.className = 'box rounded';
+
+                    const strongElement = document.createElement('strong');
+                    const spanElement = document.createElement('span');
+                    spanElement.textContent = 'No events on.';
+
+                    strongElement.appendChild(spanElement);
+                    divElement.appendChild(strongElement);
+
+                    dataContainer.appendChild(divElement);
+                }
+
+
+                for (const event of events) {
+
+                    const divElement = document.createElement('div');
+                    divElement.className = 'box rounded';
+
+                    const strongElement = document.createElement('strong');
+                    const spanElement = document.createElement('span');
+                    spanElement.textContent = event.EventTitle;
+
+                    strongElement.appendChild(spanElement);
+                    divElement.appendChild(strongElement);
+
+                    dataContainer.appendChild(divElement);
+
+                }
+
+                var dd = String(currentDate.getDate()).padStart(2, '0');
+                var mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+                var yyyy = currentDate.getFullYear();
+
+                todayDate.textContent = `${dd}/${mm}/${yyyy}`;
+
+
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+
+
+    <!-- Daily Messages -->
+    <script>
+        let today = new Date();
+        let yyyy = today.getFullYear();
+        let mm = String(today.getMonth() + 1).padStart(2, '0');  // January is 0!
+        let dd = String(today.getDate()).padStart(2, '0');
+
+        let formattedDate = `${yyyy} ${mm} ${dd}`;
+
+        function isNewMessage(unixTimestamp) {
+            newUnix = parseInt(unixTimestamp.replace(/\D/g, ''), 10);
+
+            dateUnix = new Date(newUnix);
+
+            yyyyUnix = dateUnix.getFullYear();
+            mmUnix = String(dateUnix.getMonth() + 1).padStart(2, '0');  // January is 0!
+            ddUnix = String(dateUnix.getDate()).padStart(2, '0');
+
+            formattedDateUnix = `${yyyyUnix} ${mmUnix} ${ddUnix}`;
+
+            if (formattedDateUnix == formattedDate) {
+                return true
+            } else {
+                return false
+            }
         }
 
+        let data = {
+            date: currentISOString
+        };
+
+        fetch(`/api/getDailyMessages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                const dataContainer = document.getElementById('dashboardMessagesHolder');
+
+                const periods = data.d.SchoolMessages;
+
+                let musicLessons
+
+                fetch('/api/getMusic', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.text())
+                    .then(theme => {
+                        const musicLessons = theme
+                        for (const message of periods) {
+                            if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
+                                if (musicLessons && musicLessons == 'no') {
+                                    messageTitle = message.MessageTitle
+                                    if (messageTitle.toLowerCase().includes('lesson')) {
+                                        continue
+                                    }
+                                }
+
+
+                                totalDailyMessages += 1
+
+
+
+
+
+                                const cardDiv = document.createElement('div');
+                                cardDiv.className = 'card card-daily';
+
+                                const cardBodyDiv = document.createElement('div');
+                                cardBodyDiv.className = 'card-body';
+
+                                const rowDiv = document.createElement('div');
+                                rowDiv.className = 'row';
+
+                                const leftColDiv = document.createElement('div');
+                                leftColDiv.className = 'col-6';
+
+                                if (isNewMessage(message['StartDateTime'])) {
+                                    totalNewDailyMessages += 1
+                                    const colorDotSpan = document.createElement('span');
+                                    colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
+                                    leftColDiv.appendChild(colorDotSpan);
+                                }
+
+                                const strongElement = document.createElement('strong');
+                                strongElement.textContent = message.MessageTitle;
+
+
+
+                                leftColDiv.appendChild(strongElement);
+
+                                const rightColDiv = document.createElement('div');
+                                rightColDiv.className = 'col-6 text-end';
+
+                                const spanElement = document.createElement('span');
+                                spanElement.textContent = `By: ${message.SubmittedByUserName}`;
+
+                                rightColDiv.appendChild(spanElement);
+
+                                rowDiv.appendChild(leftColDiv);
+                                rowDiv.appendChild(rightColDiv);
+
+                                const paragraphElement = document.createElement('p');
+                                paragraphElement.className = 'mt-3';
+                                paragraphElement.innerHTML = removeColorStyles(message.MessageContent);
+
+                                cardBodyDiv.appendChild(rowDiv);
+                                cardBodyDiv.appendChild(paragraphElement);
+
+                                cardDiv.appendChild(cardBodyDiv);
+
+                                dataContainer.appendChild(cardDiv);
+
+
+                            }
+                        }
+                        const dailyMessageCountText = document.getElementById('dashboardMessagesCount');
+                        dailyMessageCountText.textContent = `${totalDailyMessages} Messages | ${totalNewDailyMessages} New`
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+
+
+    <!-- Timetable -->
+    <script>
+        // Function to calculate the day within a two-week cycle
+        function getDayInCycle(currentDate) {
+            const cycle = [
+                'Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Weekend', 'Weekend',
+                'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Weekend', 'Weekend'
+            ];
+
+            const referenceDate = moment('2023-10-16').startOf('day'); // Set the reference date at the start of the day
+            const localCurrentDate = moment(currentDate);
+            console.log(referenceDate, localCurrentDate)
+
+            const timeDiff = moment.duration(localCurrentDate.diff(referenceDate));
+            const daysInCycle = Math.floor(timeDiff.asDays()) % cycle.length;
+            return cycle[daysInCycle];
+        }
+
+        // Example usage:
+        const todays = moment(); // Use moment to create the current date
+        currentDayInCycle = getDayInCycle(todays);
+        currentDayInCycle = `Timetable ${currentDayInCycle}`;
+        console.log(currentDayInCycle);
+    </script>
+    <script>
 
 
         function addTimetable(data, weekend, today) {
@@ -496,81 +928,107 @@
             let currentUnixTimestamp = Math.floor(Date.now() / 1000);
 
             let dayInCycle = data.d.Info;
-            const dataContainer = document.getElementById('timetable');
+            const dataContainer = document.getElementById('timetableHolder');
             const timetableDayText = document.getElementById('timetableDay');
-            timetableDayText.textContent = weekend ? 'Weekend' : data.d.Info;
+            timetableDayText.textContent = weekend ? 'Weekend' : data.d.Info.replace(/^Timetable\s+/, '');;
 
             const periods = data.d.Periods;
             if (weekend && periods.length == 0) {
-                const timetableDayText = document.getElementById('timetableDay');
-                timetableDayText.textContent = 'Holiday'
-                const classDiv = document.createElement('div');
-                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
-                // Create color dot span
-                const colorDotSpan = document.createElement('span');
-                colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
-                classDiv.appendChild(colorDotSpan);
+                // HOLIDAY DIV
+                const boxDiv = document.createElement('div');
+                boxDiv.className = 'box rounded';
 
-                // Create class name span
-                const classNameSpan = document.createElement('span');
-                classNameSpan.classList.add('class-name');
-                classNameSpan.textContent = "Weekend";
-                classDiv.appendChild(classNameSpan);
+                const strongElement = document.createElement('strong');
 
-                // Create teacher div
-                const teacherDiv = document.createElement('div');
-                teacherDiv.classList.add('teacher-name');
-                teacherDiv.textContent = `Enjoy your holiday!`;
-                classDiv.appendChild(teacherDiv);
+                const spanDot = document.createElement('span');
+                spanDot.className = 'color-dot bg-primary me-2';
 
-                dataContainer.appendChild(classDiv);
+                const textNode = document.createTextNode('Holiday');
+
+                strongElement.appendChild(spanDot);
+                strongElement.appendChild(textNode);
+
+                const spanTime = document.createElement('span');
+                spanTime.className = 'cardTime';
+                spanTime.textContent = '';
+
+                const lineBreak = document.createElement('br');
+
+                const spanTeacher = document.createElement('span');
+                spanTeacher.className = 'cardTeacher';
+                spanTeacher.textContent = 'Enjoy your Holidays';
+
+                boxDiv.appendChild(strongElement);
+                boxDiv.appendChild(spanTime);
+                boxDiv.appendChild(lineBreak);
+                boxDiv.appendChild(spanTeacher);
+
+                dataContainer.appendChild(boxDiv);
             } else if (weekend) {
-                const classDiv = document.createElement('div');
-                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
-                // Create color dot span
-                const colorDotSpan = document.createElement('span');
-                colorDotSpan.classList.add('color-dot', 'bg-success', 'me-2');
-                classDiv.appendChild(colorDotSpan);
+                // Weekend Div
+                const boxDiv = document.createElement('div');
+                boxDiv.className = 'box rounded';
 
-                // Create class name span
-                const classNameSpan = document.createElement('span');
-                classNameSpan.classList.add('class-name');
-                classNameSpan.textContent = "Weekend";
-                classDiv.appendChild(classNameSpan);
+                const strongElement = document.createElement('strong');
 
-                // Create teacher div
-                const teacherDiv = document.createElement('div');
-                teacherDiv.classList.add('teacher-name');
-                teacherDiv.textContent = `Enjoy your weekend! Here are your classes for Monday.`;
-                classDiv.appendChild(teacherDiv);
+                const spanDot = document.createElement('span');
+                spanDot.className = 'color-dot bg-primary me-2';
 
-                dataContainer.appendChild(classDiv);
+                const textNode = document.createTextNode('Weekend');
+
+                strongElement.appendChild(spanDot);
+                strongElement.appendChild(textNode);
+
+                const spanTime = document.createElement('span');
+                spanTime.className = 'cardTime';
+                spanTime.textContent = '';
+
+                const lineBreak = document.createElement('br');
+
+                const spanTeacher = document.createElement('span');
+                spanTeacher.className = 'cardTeacher';
+                spanTeacher.textContent = 'Enjoy your Weekend. Here are your classes for Monday.';
+
+                boxDiv.appendChild(strongElement);
+                boxDiv.appendChild(spanTime);
+                boxDiv.appendChild(lineBreak);
+                boxDiv.appendChild(spanTeacher);
+
+                dataContainer.appendChild(boxDiv);
+
             } else if (periods.length == 0) {
-                const timetableDayText = document.getElementById('timetableDay');
-                timetableDayText.textContent = 'Holiday'
-                const classDiv = document.createElement('div');
-                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                // HOLIDAY DIV
+                const boxDiv = document.createElement('div');
+                boxDiv.className = 'box rounded';
 
-                // Create color dot span
-                const colorDotSpan = document.createElement('span');
-                colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
-                classDiv.appendChild(colorDotSpan);
+                const strongElement = document.createElement('strong');
 
-                // Create class name span
-                const classNameSpan = document.createElement('span');
-                classNameSpan.classList.add('class-name');
-                classNameSpan.textContent = "No Classes";
-                classDiv.appendChild(classNameSpan);
+                const spanDot = document.createElement('span');
+                spanDot.className = 'color-dot bg-primary me-2';
 
-                // Create teacher div
-                const teacherDiv = document.createElement('div');
-                teacherDiv.classList.add('teacher-name');
-                teacherDiv.textContent = `Enjoy your holiday!`;
-                classDiv.appendChild(teacherDiv);
+                const textNode = document.createTextNode('Holiday');
 
-                dataContainer.appendChild(classDiv);
+                strongElement.appendChild(spanDot);
+                strongElement.appendChild(textNode);
+
+                const spanTime = document.createElement('span');
+                spanTime.className = 'cardTime';
+                spanTime.textContent = '';
+
+                const lineBreak = document.createElement('br');
+
+                const spanTeacher = document.createElement('span');
+                spanTeacher.className = 'cardTeacher';
+                spanTeacher.textContent = 'Enjoy your Holidays';
+
+                boxDiv.appendChild(strongElement);
+                boxDiv.appendChild(spanTime);
+                boxDiv.appendChild(lineBreak);
+                boxDiv.appendChild(spanTeacher);
+
+                dataContainer.appendChild(boxDiv);
             }
 
             let lastEndTime = null;
@@ -582,22 +1040,23 @@
 
                         if (timeGap === 20 || timeGap === 40) {
 
-                            const divider = document.createElement('div');
-                            divider.classList.add('gap-divider', 'mb-2');
-                            const lunchText = document.createElement('span');
-                            lunchText.classList.add('lunch-text');
-                            lunchText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
-                            lunchText.style.marginRight = '5px';
-                            divider.style.display = 'flex';
-                            divider.style.alignItems = 'center';
+                            const spanBreakText = document.createElement('span');
+                            spanBreakText.className = 'breakText';
+                            spanBreakText.style.marginRight = '5px';
+                            spanBreakText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
 
-                            const line = document.createElement('div');
-                            line.classList.add('break-line');
-                            line.style.flexGrow = '1';
-                            line.style.height = '2px';
-                            divider.appendChild(lunchText);
-                            divider.appendChild(line);
-                            dataContainer.appendChild(divider);
+                            // Create a div element with class "breakLine" and style attribute
+                            const divBreakLine = document.createElement('div');
+                            divBreakLine.className = 'breakLine mb-2';
+                            divBreakLine.style.flexGrow = '1';
+                            divBreakLine.style.height = '2px';
+
+                            // Append the span and div elements to a container div
+                            const containerDiv = document.createElement('div');
+                            containerDiv.appendChild(spanBreakText);
+                            containerDiv.appendChild(divBreakLine);
+
+                            dataContainer.appendChild(containerDiv);
 
                         }
                     }
@@ -607,29 +1066,29 @@
                     console.log(settingValue)
 
                     if (settingValue == 'true') {
-                        const sessionDiv = document.createElement('div');
+                        // const sessionDiv = document.createElement('div');
 
-                        const sessionSpan = document.createElement('span');
-                        sessionSpan.classList.add('session-name');
-                        sessionSpan.textContent = period.Description;
+                        // const sessionSpan = document.createElement('span');
+                        // sessionSpan.classList.add('session-name');
+                        // sessionSpan.textContent = period.Description;
 
-                        sessionSpan.setAttribute('data-bs-toggle', 'tooltip');
-                        sessionSpan.setAttribute('data-bs-html', 'true');
-                        sessionSpan.setAttribute('title', period.Description);
+                        // sessionSpan.setAttribute('data-bs-toggle', 'tooltip');
+                        // sessionSpan.setAttribute('data-bs-html', 'true');
+                        // sessionSpan.setAttribute('title', period.Description);
 
 
-                        sessionDiv.appendChild(sessionSpan);
-                        new bootstrap.Tooltip(sessionSpan);
-                        dataContainer.appendChild(sessionDiv);
+                        // sessionDiv.appendChild(sessionSpan);
+                        // new bootstrap.Tooltip(sessionSpan);
+                        // dataContainer.appendChild(sessionDiv);
                     }
 
                     const classDiv = document.createElement('div');
 
+                    const strongElement = document.createElement('strong');
                     const colorDotSpan = document.createElement('span');
-                    // Get Class Progress 
+
                     if (!weekend) {
 
-                        // Get Class Progress
                         let nowT = new Date();
 
                         let startParts = period['StartTime'].split(":");
@@ -641,9 +1100,9 @@
                         endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
                         if (dayInCycle == currentDayInCycle) {
                             if (nowT >= startTime && nowT < endTime) {
-                                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'border-timetable');
+                                classDiv.classList.add('box', 'rounded', 'border-timetable');
                             } else {
-                                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                                classDiv.classList.add('box', 'rounded');
                             }
 
 
@@ -656,43 +1115,46 @@
                             }
                         }
                         else {
-                            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                            classDiv.classList.add('box', 'rounded');
                             colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
                         }
 
 
                     } else {
-                        classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
+                        classDiv.classList.add('box', 'rounded');
                         colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
                     }
 
 
-                    classDiv.appendChild(colorDotSpan);
+                    strongElement.appendChild(colorDotSpan);
 
                     // Create class name span
-                    const classNameSpan = document.createElement('span');
-                    classNameSpan.classList.add('class-name');
-                    classNameSpan.textContent = period.Classes[0].TimeTableClass;
+                    const classNameSpan = document.createTextNode(period.Classes[0].TimeTableClass);
 
-                    classNameSpan.setAttribute('data-bs-toggle', 'tooltip');
-                    classNameSpan.setAttribute('data-bs-html', 'true');
-                    classNameSpan.setAttribute('title', period.Classes[0].Description);
+                    // classNameSpan.setAttribute('data-bs-toggle', 'tooltip');
+                    // classNameSpan.setAttribute('data-bs-html', 'true');
+                    // classNameSpan.setAttribute('title', period.Classes[0].Description);
 
-
-                    classDiv.appendChild(classNameSpan);
-                    new bootstrap.Tooltip(classNameSpan);
+                    strongElement.appendChild(classNameSpan);
+                    // new bootstrap.Tooltip(classNameSpan);
 
 
                     // Create time span
-                    const timeSpan = document.createElement('span');
-                    timeSpan.classList.add('time');
 
-                    timeSpan.textContent = `${convertToAMPM(period.StartTime)} - ${convertToAMPM(period.EndTime)}`;
-                    classDiv.appendChild(timeSpan);
+                    const spanTime = document.createElement('span');
+                    spanTime.className = 'cardTime';
+                    spanTime.textContent = `${convertToAMPM(period.StartTime)}-${convertToAMPM(period.EndTime)}`;
+
+                    // Create Line Break
+                    const lineBreak = document.createElement('br');
+
+                    // Create Teacher & Room
+
+
 
                     // Create teacher div
-                    const teacherDiv = document.createElement('div');
-                    teacherDiv.classList.add('teacher-name');
+                    const teacherDiv = document.createElement('span');
+                    teacherDiv.className = 'cardTeacher';
 
                     let teacherName = period.Classes[0].TeacherName;
                     let roomChange = period.Classes[0].HasRoomChange;
@@ -718,67 +1180,20 @@
                         }
                     }
                     // Append the created classDiv to the body or any other parent element
+
+                    classDiv.appendChild(strongElement);
+                    classDiv.appendChild(spanTime);
+                    classDiv.appendChild(lineBreak);
                     classDiv.appendChild(teacherDiv);
+
                     dataContainer.appendChild(classDiv);
-                } else if (period.IsTeachingPeriod === false &&
-                    period.Description !== "Recess Duty" &&
-                    period.Description !== "Lunch Duty 1" &&
-                    period.Description !== "Lunch Duty 2") {
-                    if (lastEndTime !== null) {
-                        const startTimeNextPeriod = period.StartTime;
-                        const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
-                        //Create Reccess/Lunch Divider if needed.
-                        if (timeGap === 20 || timeGap === 40) {
-                            // Create a divider
-                            const divider = document.createElement('div');
-                            divider.classList.add('gap-divider', 'mb-2');
-                            const lunchText = document.createElement('span');
-                            lunchText.classList.add('lunch-text'); // Add your CSS class for styling the text here
-                            lunchText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
-                            lunchText.style.marginRight = '5px';
-                            divider.style.display = 'flex';
-                            divider.style.alignItems = 'center';
-                            // Create a div for the horizontal line
-                            const line = document.createElement('div');
-                            line.classList.add('break-line'); // Add your CSS class for styling the line here
-                            line.style.flexGrow = '1'; // Allow the line to grow and fill available space
-                            line.style.height = '2px'; // Set the height of the line
-                            divider.appendChild(lunchText);
-                            divider.appendChild(line);
-                            dataContainer.appendChild(divider);
-                        }
-                        // Sets last end time for recess and lunch calculator
-                        lastEndTime = period.EndTime;
 
-                        // Create Box for Timetable
-                        const classDiv = document.createElement('div');
-                        classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2', 'specialbox');
-
-                        // Create class name span
-                        const classNameSpan = document.createElement('span');
-                        classNameSpan.classList.add('class-name');
-                        classNameSpan.setAttribute('data-bs-toggle', 'tooltip');
-                        classNameSpan.setAttribute('data-bs-html', 'true');
-                        classNameSpan.setAttribute('title', period.Description);
-                        classNameSpan.textContent = period.Description;
-
-                        // Create time span
-                        const timeSpan = document.createElement('span');
-                        timeSpan.classList.add('time');
-                        timeSpan.textContent = `${convertToAMPM(period.StartTime)} - ${convertToAMPM(period.EndTime)}`;
-
-                        // Append elements
-                        classDiv.appendChild(classNameSpan)
-                        classDiv.appendChild(timeSpan);
-                        dataContainer.appendChild(classDiv);
-                    }
                 }
 
             }
 
 
-            const divElement = document.getElementById('timetableLoading');
-            divElement.style.display = 'none';
+
             document.getElementById('prevDay').disabled = false
             document.getElementById('nextDay').disabled = false
         }
@@ -788,7 +1203,7 @@
 
         document.getElementById('prevDay').addEventListener('click', function () {
             const timetableDayText = document.getElementById('timetableDay');
-            timetableDayText.textContent = "LOADING"
+            timetableDayText.textContent = "Loading"
 
             document.getElementById('prevDay').disabled = true
             document.getElementById('nextDay').disabled = true
@@ -798,7 +1213,7 @@
 
         document.getElementById('nextDay').addEventListener('click', function () {
             const timetableDayText = document.getElementById('timetableDay');
-            timetableDayText.textContent = "LOADING"
+            timetableDayText.textContent = "Loading"
 
             document.getElementById('prevDay').disabled = true
             document.getElementById('nextDay').disabled = true
@@ -808,32 +1223,39 @@
 
         function fetchTimetable(date, today) {
 
-            document.getElementById('timetable').innerHTML = '';
+            document.getElementById('timetableHolder').innerHTML = '';
 
-            const classDiv = document.createElement('div');
-            classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-            classDiv.id = "timetableLoading"
+            const boxDiv = document.createElement('div');
+            boxDiv.className = 'box rounded';
 
-            const colorDotSpan = document.createElement('span');
-            colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
-            classDiv.appendChild(colorDotSpan);
+            const strongElement = document.createElement('strong');
 
-            // Create class name span
-            const classNameSpan = document.createElement('span');
-            classNameSpan.classList.add('class-name');
-            classNameSpan.textContent = "Loading";
+            const spanDot = document.createElement('span');
+            spanDot.className = 'color-dot bg-primary me-2';
 
-            classDiv.appendChild(classNameSpan);
+            const textNode = document.createTextNode('Loading');
+
+            strongElement.appendChild(spanDot);
+            strongElement.appendChild(textNode);
+
+            const spanTime = document.createElement('span');
+            spanTime.className = 'cardTime';
+            spanTime.textContent = '';
+
+            const lineBreak = document.createElement('br');
+
+            const spanTeacher = document.createElement('span');
+            spanTeacher.className = 'cardTeacher';
+            spanTeacher.textContent = 'Your classes are loading';
+
+            boxDiv.appendChild(strongElement);
+            boxDiv.appendChild(spanTime);
+            boxDiv.appendChild(lineBreak);
+            boxDiv.appendChild(spanTeacher);
 
 
-            const teacherDiv = document.createElement('div');
-            teacherDiv.classList.add('teacher-name');
-            teacherDiv.textContent = "Your classes are loading...";
 
-            classDiv.appendChild(teacherDiv);
-
-            const dataContainer = document.getElementById('timetable');
-            dataContainer.appendChild(classDiv);
+            const dataContainer = document.getElementById('timetableHolder');
 
             let dateString = date.toISOString();
             let dayOfWeekNumber = currentDate.getDay();
@@ -886,351 +1308,12 @@
 
         }
 
-        // currentDate.setDate(currentDate.getDate() + 1);
         fetchTimetable(currentDate, true, false);
 
     </script>
 
-
-
-
-
-
-
-    <script>
-        let today = new Date();
-        let yyyy = today.getFullYear();
-        let mm = String(today.getMonth() + 1).padStart(2, '0');  // January is 0!
-        let dd = String(today.getDate()).padStart(2, '0');
-
-        let formattedDate = `${yyyy} ${mm} ${dd}`;
-
-        function isNewMessage(unixTimestamp) {
-            newUnix = parseInt(unixTimestamp.replace(/\D/g, ''), 10);
-
-            dateUnix = new Date(newUnix);
-
-            yyyyUnix = dateUnix.getFullYear();
-            mmUnix = String(dateUnix.getMonth() + 1).padStart(2, '0');  // January is 0!
-            ddUnix = String(dateUnix.getDate()).padStart(2, '0');
-
-            formattedDateUnix = `${yyyyUnix} ${mmUnix} ${ddUnix}`;
-
-            if (formattedDateUnix == formattedDate) {
-                return true
-            } else {
-                return false
-            }
-        }
-    </script>
-    <!-- Daily Messages -->
-    <script>
-
-        let data = {
-            date: currentISOString
-        };
-
-        fetch(`/api/getDailyMessages`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(data => {
-                const dataContainer = document.getElementById('dailyMessages');
-
-                const periods = data.d.SchoolMessages;
-
-                let musicLessons
-
-                fetch('/api/getMusic', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => response.text())
-                    .then(theme => {
-                        const musicLessons = theme
-                        for (const message of periods) {
-                            if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
-                                if (musicLessons && musicLessons == 'no') {
-                                    messageTitle = message.MessageTitle
-                                    if (messageTitle.toLowerCase().includes('lesson')) {
-                                        continue
-                                    }
-                                }
-
-
-                                totalDailyMessages += 1
-
-
-                                // Create the <h6> element
-                                const classDiv = document.createElement('div');
-                                classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-
-                                if (isNewMessage(message['StartDateTime'])) {
-                                    // Create color dot span
-                                    const colorDotSpan = document.createElement('span');
-                                    colorDotSpan.classList.add('color-dot', 'bg-danger', 'me-2');
-                                    classDiv.appendChild(colorDotSpan);
-                                }
-
-                                const classNameSpan = document.createElement('span');
-                                classNameSpan.classList.add('class-name');
-                                classNameSpan.textContent = message.MessageTitle;
-                                classDiv.appendChild(classNameSpan);
-
-                                const teacherDiv = document.createElement('div');
-                                teacherDiv.classList.add('teacher-name');
-                                teacherDiv.innerHTML = removeColorStyles(message.MessageContent);
-                                classDiv.appendChild(teacherDiv);
-
-                                const timeSpan = document.createElement('span');
-                                timeSpan.classList.add('time');
-                                timeSpan.textContent = `By: ${message.SubmittedByUserName}`;
-                                classDiv.appendChild(timeSpan);
-
-                                dataContainer.appendChild(classDiv);
-
-                            }
-                        }
-                        const dailyMessageCountText = document.getElementById('totalDailyMessages');
-                        dailyMessageCountText.textContent = totalDailyMessages + " Messages"
-
-                        const divElement = document.getElementById('dailyMessagesLoading');
-                        divElement.style.display = 'none';
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
-
-
-    <!-- Weather -->
-    <script>
-        fetch(`/api/getWeather`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-
-                const weatherIcon = document.getElementById('weatherIcon');
-                weatherIcon.src = data.currentIcon;
-
-                const currentWeather = document.getElementById('currentWeather');
-                currentWeather.textContent = data.currentTemperature.toFixed(1) + '°';
-
-                const upcomingWeather = document.getElementById('minMax');
-                upcomingWeather.textContent = `⬇️ ${data.mininumTemperature.toFixed(1)}° | ⬆️ ${data.maximumTemperature.toFixed(1)}° | 🤔 ${data.currentFeelsLikeTemperature.toFixed(1)}°`;
-
-                const weatherInformation = document.getElementById('weatherInformation');
-                weatherInformation.textContent = `${data.currentDescription}`;
-
-                const weatherCampus = document.getElementById('weatherCampus');
-                weatherCampus.textContent = data.campus;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
-
-
-    <!-- Classes (Due, Results, Overdue) -->
-    <script>
-        fetch(`/api/getClasses`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-
-
-                // Due
-                const dueTasks = document.getElementById('dueTasks');
-                const dueContainer = document.getElementById('dueTasksExpand');
-                dueTasks.textContent = data.d.DueTasksStudent.length + ' Due'
-                for (const task of data.d.DueTasksStudent) {
-                    var spanElement = document.createElement('span');
-                    spanElement.className = 'ms-2';
-
-                    var boldElement = document.createElement('b');
-                    boldElement.textContent = task['TaskTitle'];
-                    spanElement.appendChild(boldElement);
-
-                    spanElement.append(` (${task['ClassCode']})`);
-
-                    var brElement = document.createElement('br');
-                    spanElement.append(brElement);
-
-                    dueContainer.appendChild(spanElement);
-                }
-
-                // Overdue
-                const overdueTasks = document.getElementById('overdueTasks');
-                const overdueContainer = document.getElementById('overdueTasksExpand');
-                overdueTasks.textContent = data.d.OverDueTasksStudent.length + ' Overdue'
-                for (const task of data.d.OverDueTasksStudent) {
-                    var spanElement = document.createElement('span');
-                    spanElement.className = 'ms-2';
-
-                    var boldElement = document.createElement('b');
-                    boldElement.textContent = task['TaskTitle'];
-                    spanElement.appendChild(boldElement);
-
-                    spanElement.append(` (${task['ClassCode']})`);
-
-                    var brElement = document.createElement('br');
-                    spanElement.append(brElement);
-
-                    overdueContainer.appendChild(spanElement);
-                }
-
-                const resultTasks = document.getElementById('resultTasks');
-                const resultContainer = document.getElementById('resultTasksExpand');
-                resultTasks.textContent = countTotalTasks(data) + ' Results'
-
-                for (const classF of data.d.ResultTasksStudent) {
-                    for (const task of classF.Tasks) {
-                        var spanElement = document.createElement('span');
-                        spanElement.className = 'ms-2';
-
-                        var boldElement = document.createElement('b');
-                        boldElement.textContent = task['Title'];
-                        spanElement.appendChild(boldElement);
-
-                        spanElement.append(` (${task['FinalResult']})`);
-
-                        var brElement = document.createElement('br');
-                        spanElement.append(brElement);
-
-                        resultContainer.appendChild(spanElement);
-                    }
-
-                }
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
-
-
-    <!-- Today -->
-    <script>
-        fetch(`/api/getToday`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                const dataContainer = document.getElementById('todayActivities');
-
-                const events = data.d.Events;
-
-                if (events.length == 0) {
-                    const classDiv = document.createElement('div');
-                    classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-
-
-                    // Create class name span
-                    const classNameSpan = document.createElement('span');
-                    classNameSpan.classList.add('class-name');
-                    classNameSpan.textContent = 'Nothing to see here.';
-                    classDiv.appendChild(classNameSpan);
-
-                    const teacherDiv = document.createElement('div');
-                    teacherDiv.classList.add('teacher-name');
-                    teacherDiv.textContent = `You have nothing on today.`;
-                    classDiv.appendChild(teacherDiv);
-
-
-                    // Append the created classDiv to the body or any other parent element
-                    dataContainer.appendChild(classDiv);
-
-
-                }
-
-
-                for (const event of events) {
-
-                    const classDiv = document.createElement('div');
-                    classDiv.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
-
-
-                    // Create class name span
-                    const classNameSpan = document.createElement('span');
-                    classNameSpan.classList.add('class-name');
-                    classNameSpan.textContent = event.EventTitle;
-                    classDiv.appendChild(classNameSpan);
-
-
-                    // Append the created classDiv to the body or any other parent element
-                    dataContainer.appendChild(classDiv);
-
-                }
-
-                const divElement = document.getElementById('timetableLoading');
-                divElement.style.display = 'none';
-
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
-    
-    <!-- Tooltips -->
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    </script>
-
-    <script>
-        // Function to calculate the day within a two-week cycle
-        function getDayInCycle(currentDate) {
-            const cycle = [
-                'Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Weekend', 'Weekend',
-                'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Weekend', 'Weekend'
-            ];
-
-            const referenceDate = moment('2023-10-16').startOf('day'); // Set the reference date at the start of the day
-            const localCurrentDate = moment(currentDate);
-            console.log(referenceDate, localCurrentDate)
-
-            const timeDiff = moment.duration(localCurrentDate.diff(referenceDate));
-            const daysInCycle = Math.floor(timeDiff.asDays()) % cycle.length;
-            return cycle[daysInCycle];
-        }
-
-        // Example usage:
-        const todays = moment(); // Use moment to create the current date
-        currentDayInCycle = getDayInCycle(todays);
-        currentDayInCycle = `Timetable ${currentDayInCycle}`;
-        console.log(currentDayInCycle);
-    </script>
-
-
-
-
-    <!-- Themes -->
     {% include "partials/themes.html" %}
+
 
 </body>
 

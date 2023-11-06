@@ -1,0 +1,33 @@
+.color-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+#prevDay {
+  color: var(--font-colour)
+}
+
+#prevDay:hover {
+  color: var(--card-hover)
+}
+
+#nextDay {
+  color: var(--font-colour)
+}
+
+#nextDay:hover {
+  color: var(--card-hover)
+}
+
+.box-button {
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.box-button:hover {
+  background-color: var(--card-hover);
+  transform: scale(1.01);
+}

@@ -27,7 +27,7 @@ flask_secret = config.get('Flask', 'secret')
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "1.3.9"
+VERSION = "2.0.0"
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
@@ -189,7 +189,29 @@ def getDashboardData():
     GUID = Simon.getUserInformation(cookie)["d"]["guid"]
 
     return jsonify(Simon.getDashboardData(cookie, GUID)), 200
-    
+
+
+#       --[[ getTaskRubric () ]]--
+@app.route("/api/getTaskRubric", methods=["POST"])
+def getTaskRubric():
+    cookie = request.cookies.get("adAuthCookie")
+
+    data = request.json
+    classID = data['classID']
+    taskID = data['taskID']
+
+    return jsonify(Simon.getTaskRubric(cookie, classID, taskID)), 200
+
+#       --[[ getResultInfo () ]]--
+@app.route("/api/getResultInfo", methods=["POST"])
+def getResultInfo():
+    cookie = request.cookies.get("adAuthCookie")
+
+    data = request.json
+    classID = data['classID']
+    taskID = data['taskID']
+
+    return jsonify(Simon.getTaskSubmission(cookie, classID, taskID)), 200
 
 
 #       --[[ getStudentProfileImage () ]]--
@@ -245,6 +267,7 @@ def getMusic():
     username = request.cookies.get("username")
 
     music = Database.databaseGetMusic(username)
+    print(music)
     return music
 
 #       --[[ setMusic () ]]--
@@ -252,6 +275,7 @@ def getMusic():
 def setMusic():
     username = request.cookies.get("username")
     music = request.json.get("music")  # Assuming the theme is passed in the request JSON
+    print(music)
 
     if music not in ["yes", "no"]:
         return "Invalid theme", 400  # Return a bad request response for invalid theme

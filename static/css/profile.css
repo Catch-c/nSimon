@@ -1,0 +1,54 @@
+
+
+
+
+.card-custom-general {
+  height: calc(35vh);
+  min-height: calc(35vh);
+}
+
+.card-custom-attendence {
+  height: calc(52vh);
+  min-height: calc(52vh);
+}
+
+
+
+.text-button {
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  color: var(--card-text-hover) !important;
+}
+
+
+/* Scroll Bar */
+.modal-body::-webkit-scrollbar {
+  display: block;
+  width: 4px;
+}
+
+.modal-body:hover::-webkit-scrollbar {
+  display: block;
+  width: 4px;
+}
+
+.modal-body:hover::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.modal-body:hover::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.modal-body:hover::-webkit-scrollbar-thumb:active {
+  background: #222;
+}
+
+.modal-body:hover {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
