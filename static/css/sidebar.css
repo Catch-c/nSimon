@@ -1,0 +1,74 @@
+
+
+
+
+.offcanvas-custom {
+    background-color: var(--sidebar-colour);
+    color: var(--sidebar-font-colour);
+
+}
+
+.offcanvas-close {
+    color: var(--sidebar-font-colour);
+}
+
+
+/* Size */
+@media (min-width: 992px) {
+    .offcanvas {
+        max-width: 25%;
+    }
+}
+
+@media (max-width: 991px) {
+    .offcanvas {
+        max-width: 95%;
+    }
+}
+
+
+/* Name/Time Visibility */
+
+#navbarNameHolder {
+    display: none;
+}
+
+#navbarTime {
+    font-weight: bold;
+}
+
+@media (min-width: 768px) {
+    #navbarNameHolder {
+        display: inline;
+    }
+
+    #navbarTime {
+        font-weight: normal;
+    }
+}
+
+
+/* Links */
+.sidebarLink,
+.sidebarSchoolLink {
+    text-decoration: none;
+    color: var(--sidebar-hover-colour);
+    transition: .1s;
+}
+
+
+.sidebarLink:hover,
+.sidebarSchoolLink:hover {
+    color: var(--sidebar-link-hover-colour);
+}
+
+.sidebarTitle {
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+
+.sidebarSubtitle {
+    text-decoration: none;
+    font-weight: 600;
+}

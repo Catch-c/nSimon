@@ -1,0 +1,17 @@
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  background-color: var(--bg-colour);
+  color: var(--font-colour);
+}
+
+.main-content {
+  height: 90.1; 
+}
+
+.col-custom {
+  padding: 0;
+  
+}

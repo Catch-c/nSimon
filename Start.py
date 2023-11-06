@@ -245,6 +245,7 @@ def getMusic():
     username = request.cookies.get("username")
 
     music = Database.databaseGetMusic(username)
+    print(music)
     return music
 
 #       --[[ setMusic () ]]--
@@ -252,6 +253,7 @@ def getMusic():
 def setMusic():
     username = request.cookies.get("username")
     music = request.json.get("music")  # Assuming the theme is passed in the request JSON
+    print(music)
 
     if music not in ["yes", "no"]:
         return "Invalid theme", 400  # Return a bad request response for invalid theme

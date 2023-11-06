@@ -1,98 +1,81 @@
-<nav class="navbar" style="border-bottom: 2px solid red;">
+<!-- Navbar -->
+<nav class="navbar navbar-custom navbar-dark">
     <div class="container-fluid">
-        <span class="navbar-brand h4">
+        <div class="navbar-brand" sr>
+            <strong id="navbarNameHolder">
+                <span id="navbarGreeting">Hi</span>,
+                <span id="navbarName">Guest</span>.
+            </strong>
+            <small id="navbarTime">6/11/2023 10:11AM</small>
+        </div>
 
-            <!-- This will be hidden on mobile -->
-            <a href="/" style="text-decoration: none; color: inherit;">
-                <div class="d-none d-md-inline greeting">
-                    Good evening, <span id="yourName">Guest</span><span style="margin-right: 10px;">.</span>
-                </div>
-            </a>
-
-            <!-- This will always be visible -->
-            <span class="greetingTime" style="font-size:large;">
-                <span id="currentDate">1/01/2023</span>
-                <span id="currentTime">0:00AM</span>
-            </span>
-
-        </span>
-
-        <button class="btn" id="hamburgerBtn" style="color: white;">
-            <i class="bi bi-list hamburgerMenu"></i>
-
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
+            aria-controls="sidebar">
+            <span class="navbar-toggler-icon"></span>
         </button>
     </div>
 </nav>
 
-<div class="sidebar">
-    <button class="closeBtn">&times;</button>
-
-    <div class="links-section">
-        <a href="/" class="sidebarLink">Home</a>
-        <a href="/profile" class="sidebarLink">Profile</a>
-        <a href="/settings" class="sidebarLink">Settings</a>
-        <a href="/calendar" class="sidebarLink">Calendar</a>
-        <a href="/classes" class="sidebarLink">Classes</a>
-        <a href="https://discord.gg/fh2ZbUe3hK" class="sidebarLink">Discord (Support)</a>
-        <a href="/support" class="sidebarLink">Support</a>
-        <a href="/logout" class="sidebarLink">Logout</a>
+<!-- Sidebar -->
+<div class="offcanvas offcanvas-custom offcanvas-end" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">
+            <strong>
+                <span id="sidebarGreeting">Good Morning</span>,
+                <span id="sidebarName">Guest</span>.
+            </strong>
+        </h5>
+        <button type="button" class="btn-close offcanvas-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
+    <div class="offcanvas-body">
 
-    <div class="school-links-section">
+        <!-- Quick Links -->
+        <div id="sidebarQuickLinks">
+            <span class="sidebarTitle">Quick Links</span><br>
+            <a href="/" class="sidebarLink"><i class="bi bi-house-fill"></i> Home</a><br>
+            <a href="/profile" class="sidebarLink"><i class="bi bi-person-fill"></i> Profile</a><br>
+            <a href="/settings" class="sidebarLink"><i class="bi bi-gear-fill"></i> Settings</a><br>
+            <a href="/calendar" class="sidebarLink"><i class="bi bi-calendar-fill"></i> Calendar</a><br>
+            <a href="/support" class="sidebarLink"><i class="bi bi-patch-question-fill"></i> Support</a><br>
+            <a href="/logout" class="sidebarLink"><i class="bi bi-box-arrow-right"></i> Logout</a><br>
+        </div>
+
         <br>
-        <span class="sidebarTitle">School Links</span><br>
 
-        <span class="sidebarSubtitle">General Resources</span><br>
-        <a href="https://simon.sfx.vic.edu.au/" class="sidebarSchoolLink">• SIMON</a><br>
-        <a href="https://www.sfxcareers.com.au/" class="sidebarSchoolLink">• Careers</a><br>
-        <a href="https://shop.sfx.vic.edu.au/mymonitor/" class="sidebarSchoolLink">• CDF Pay</a><br>
-        <a href="http://bea-v-print-01:9191/app" class="sidebarSchoolLink">• WebPrint</a><br><br>
+        <!-- School Links -->
+        <div id="sidebarSchoolLinks">
+            <span class="sidebarTitle">School Links</span><br>
 
-        <span class="sidebarSubtitle">College Links</span><br>
-        <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=19761&KBankID=11"
-            class="sidebarSchoolLink">• 2022 Yearbook</a><br>
-        <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=14283&KBankID=25&UserID=25"
-            class="sidebarSchoolLink">• College Awards/Colours</a><br>
-        <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=21040&KBankID=25&UserID=25"
-            class="sidebarSchoolLink">• 2024 Beaconsfield Leadership</a><br>
-        <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=18795&KBankID=25&UserID=25"
-            class="sidebarSchoolLink">• 2024 Berwick/Officer Leadership</a><br>
-        <a href="https://saml-in3.clickview.com.au/Shibboleth.sso/STF1792" class="sidebarSchoolLink">•
-            Clickview</a><br>
+            <!-- General Resources -->
+            <span class="sidebarSubtitle">General Resources</span><br>
+            <a href="https://www.sfxcareers.com.au/" class="sidebarSchoolLink" target="_blank">• Careers <i
+                    class="bi bi-box-arrow-up-right"></i></a><br>
+            <a href="https://shop.sfx.vic.edu.au/mymonitor/" class="sidebarSchoolLink" target="_blank">• CDFPay <i
+                    class="bi bi-box-arrow-up-right"></i></a><br>
+            <a href="http://bea-v-print-01:9191/app" class="sidebarSchoolLink" target="_blank">• WebPrint <i
+                    class="bi bi-box-arrow-up-right"></i></a><br>
+            <a href="https://saml-in3.clickview.com.au/Shibboleth.sso/STF1792" class="sidebarSchoolLink"
+                target="_blank">• ClickView <i class="bi bi-box-arrow-up-right"></i></a><br>
 
-    </div>
+            <span class="sidebarSubtitle">College Links</span><br>
+            <a href="https://simon.sfx.vic.edu.au/WebHandlers/DownloadKnowledgeBankDocument.ashx?DocID=19761&KBankID=11"
+                class="sidebarSchoolLink" target="_blank">• 2022 Yearbook <i
+                    class="bi bi-box-arrow-up-right"></i></a><br>
 
-    <div class="school-links-section">
+        </div>
+
         <br>
-        <span class="sidebarTitle">Version</span><br>
 
-        <span class="sidebarSubtitle">{{ VERSION }}</span><br>
+        <div id="sidebarSchoolLinks">
+            <span class="sidebarTitle">Version</span><br>
+
+            <!-- General Resources -->
+            <span class="sidebarSubtitle">{{VERSION}}</span><br>
 
 
+        </div>
     </div>
 </div>
-
-<script>
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const sidebar = document.querySelector('.sidebar');
-    const closeBtn = document.querySelector('.closeBtn');
-
-    hamburgerBtn.addEventListener('click', function () {
-        sidebar.style.right = "0";
-    });
-
-    closeBtn.addEventListener('click', function () {
-        sidebar.style.right = "-300px";
-    });
-
-    // If clicking outside the sidebar
-    document.addEventListener('click', function (event) {
-        if (!sidebar.contains(event.target) && !hamburgerBtn.contains(event.target)) {
-            sidebar.style.right = "-300px";
-        }
-    });
-
-</script>
 
 <script>
     fetch(`/api/getUserInfo`, {
@@ -103,11 +86,57 @@
     })
         .then(response => response.json())
         .then(data => {
-            const yourNameText = document.getElementById('yourName');
+            const yourNameText = document.getElementById('navbarName');
+            const yourNameTextSidebar = document.getElementById('sidebarName');
             yourNameText.textContent = data.d.name
+            yourNameTextSidebar.textContent = data.d.name
 
         })
         .catch(error => {
             console.error('Error:', error);
         });
+</script>
+<script>
+    function updateGreetingAndTime() {
+        let date = new Date();
+        let hours = date.getHours();
+
+        // Greeting
+        let greeting = "Hi";
+        if (hours >= 1 && hours < 5) {
+            greeting = "Hi";
+        } else if (hours >= 5 && hours < 12) {
+            greeting = "Good Morning";
+        } else if (hours >= 12 && hours < 17) {
+            greeting = "Good Afternoon";
+        } else if (hours >= 17 && hours < 20) {
+            greeting = "Good Evening";
+        } else {
+            greeting = "Good Night";
+        }
+
+        // Time
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+
+        const strMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+        const timeStr = hours + ':' + strMinutes + ampm;
+
+        // Date
+        var dd = String(date.getDate()).padStart(2, '0');
+        var mm = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = date.getFullYear();
+
+
+        // Update
+        document.getElementById('navbarGreeting').textContent = greeting;
+        document.getElementById('sidebarGreeting').textContent = greeting;
+        document.getElementById('navbarTime').textContent = `${timeStr} | ${dd}/${mm}/${yyyy}`;
+    }
+    setInterval(updateGreetingAndTime, 2000); // Every 2 Seconds
+    updateGreetingAndTime();
 </script>

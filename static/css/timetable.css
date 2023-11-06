@@ -1,0 +1,36 @@
+
+
+
+.cardTime {
+  font-weight: bold;
+  font-size: 70%;
+}
+
+.cardTeacher {
+  font-weight: bold;
+  font-size: 80%;
+}
+
+
+.sessionName {
+  font-size: 70%;
+}
+
+.breakLine {
+  background-color: var(--primary-colour);
+  vertical-align: middle;
+  height: 1em;
+}
+
+.breakText {
+  font-weight: 600;
+  font-size: 75%;
+}
+
+.border-timetable {
+  border-color: #f0ad4e !important;
+  border-width: 3px !important;
+  border-style: solid;
+}
+
+

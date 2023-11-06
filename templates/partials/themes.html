@@ -1,30 +1,27 @@
-<!-- Themes -->
-    <script>
-        let availableThemes = ['light', 'dark', 'blue', 'tiktok'];
-        let currentTheme = 0;
-        const cachedTheme = localStorage.getItem('theme');
-            if (cachedTheme && availableThemes.includes(cachedTheme)) {
-            document.documentElement.setAttribute('data-theme', cachedTheme);
-        }
+<script>
+    let availableThemes = ['light', 'dark', 'blue'];
+    let currentTheme = 0;
+    const cachedTheme = localStorage.getItem('theme');
+    if (cachedTheme && availableThemes.includes(cachedTheme)) {
+        document.documentElement.setAttribute('data-theme', cachedTheme);
+    }
 
-        function loadTheme() {
-            fetch('/api/getTheme', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+    function loadTheme() {
+        fetch('/api/getTheme', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.text())
             .then(theme => {
+                console.log(theme)
                 switch (theme) {
                     case 'dark':
                         setTheme('dark');
                         break;
                     case 'light':
                         setTheme('light');
-                        break;
-                    case 'tiktok':
-                        setTheme('tiktok');
                         break;
                     case 'blue':
                         setTheme('blue');
@@ -35,32 +32,31 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+    }
+
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        currentTheme = availableThemes.indexOf(theme);
+        updateThemeInServer(theme);
+    }
+
+    function updateThemeInServer(theme) {
+        const username = getCookie("username");
+
+        if (!username) {
+            console.log("Username not found in cookies.");
+            return;
         }
 
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            // Update the current theme index
-            currentTheme = availableThemes.indexOf(theme);
-            updateThemeInServer(theme);
-        }
-
-        function updateThemeInServer(theme) {
-            const username = getCookie("username");
-
-            if (!username) {
-                console.log("Username not found in cookies.");
-                return;
-            }
-
-            const data = { theme: theme };
-            localStorage.setItem('theme', theme);
-            fetch("/api/setTheme", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
+        const data = { theme: theme };
+        localStorage.setItem('theme', theme);
+        fetch("/api/setTheme", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
             .then(response => {
                 if (response.ok) {
                     console.log(`Theme set to ${theme}`);
@@ -71,38 +67,32 @@
             .catch(error => {
                 console.error('Error:', error);
             });
-        }
-
-        document.addEventListener('keydown', function (event) {
-            // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
-            if (event.ctrlKey && event.altKey && event.key === 'd') {
-                toggleTheme(); // Toggle dark mode when the shortcut is triggered
-            }
-        });
-
-        function toggleTheme() {
-            currentTheme = (currentTheme + 1) % availableThemes.length;
-            const nextTheme = availableThemes[currentTheme];
-            setTheme(nextTheme);
-        }
-
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-
-        loadTheme();
-    </script>
-    <script>
-        function checkNewLoginAndLogOut() {
-        // Check if the "username" cookie exists
-            const usernameCookie = getCookie("username");
-    
-            if (!usernameCookie) {
-                // Clear all cookies
-               window.location.href = "/logout";  // Adjust the URL as needed
-        }
     }
-    checkNewLoginAndLogOut();
-    </script>
+
+    document.addEventListener('keydown', function (event) {
+        if (event.ctrlKey && event.altKey && event.key === 'd') {
+            toggleTheme();
+        }
+    });
+
+    function toggleTheme() {
+        currentTheme = (currentTheme + 1) % availableThemes.length;
+        const nextTheme = availableThemes[currentTheme];
+        setTheme(nextTheme);
+        switch (nextTheme) {
+            case 'dark':
+                break;
+            case 'light':
+                break;
+
+            case 'blue':
+                break;
+            default:
+        }
+
+    }
+
+    loadTheme()
+
+
+</script>

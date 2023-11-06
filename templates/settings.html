@@ -1,25 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NSimon | Settings</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='favicon/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#3a3a3a">
+    <title>Settings | NSimon {{VERSION}}</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/colours.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/navbar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/sidebar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/cards.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/misc.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- FavIcon -->
+    <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
+        sizes="180x180" />
+    <link href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}" rel="icon" sizes="32x32"
+        type="image/png" />
+    <link href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}" rel="icon" sizes="16x16"
+        type="image/png" />
+    <link href="{{ url_for('static', filename='favicon/site.webmanifest') }}" rel="manifest" />
+    <link color="#5bbad5" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" rel="mask-icon" />
+    <meta content="#da532c" name="msapplication-TileColor" />
+    <meta content="#3a3a3a" name="theme-color" />
+
+    <!-- Session Setting -->
+    <script>
+        fetch('/api/getSessionSetting', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(sessionSetting => {
+                localStorage.setItem('sessionSetting', sessionSetting);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
 </head>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
-</style>
 
 <body>
 
@@ -39,56 +67,112 @@
     {% include "partials/navbar.html" %}
 
 
+    <!-- Content -->
+    <div class="container-fluid main-content">
+        <div class="row">
 
+            <!-- Left Column (Theme, Campus, Music Lessons) -->
+            <div class="col-12 col-sm-3 col-custom">
 
-    <div class="mainBody container-fluid h-100">
+                <!-- Theme -->
+                <div class="card card-custom-small mb-2">
 
-
-        <div class="row h-100 ps-2 pt-3">
-            <!-- Timetable -->
-            <div class="col-md-3 col-12p-3 order-1 order-md-1">
-                <h4 class="settingsPageSubtitle" style="font-weight: 600;">Settings
-                </h4>
-
-                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
-                        <button class="toggleDarkModeButton" onclick="toggleTheme()">Toggle Theme</span><br>
-                        <h6 id="currentTheme">Current Theme</h1>
-                    </div>
-                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
-                        <span class="class-name">Selected Campus</span><br>
-                        <select class="settingsSelect" id="campusSelection" name="campusSelection">
-                            <option value="Berwick" selected>BERWICK</option>
-                            <option value="Officer">OFFICER</option>
-                            <option value="Beaconsfield">BEACONSFIELD</option>
-                        </select>
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Theme</span>
+                            <span class="cardSubtitle"></span>
+                        </h5>
                     </div>
 
-                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
-                        <span class="class-name">Show Session Numbers on Timetable</span><br>
-                        <select class="settingsSelect" id="sessionSelection" name="sessionSelection">
-                            <option value="Hide">HIDE</option>
-                            <option value="Show" selected>SHOW</option>
-                        </select>
-                    </div>       
+                    <!-- Contents -->
+                    <div class="card-body">
+                        <div class="box rounded">
+                            <select class="form-select" id="themeSelection">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="blue">Blue</option>
+                            </select>
+                        </div>
+                    </div>
 
-                    <div class="big-box rounded p-3 mb-2" id="timetableLoading">
-                        <span class="class-name">Show Music Lessons on Daily Messages</span><br>
-                        <select class="settingsSelect" id="musicSelection" name="musicSelection">
-                            <option value="Hide">HIDE</option>
-                            <option value="Show" selected>SHOW</option>
-                        </select>
-                    </div>                
+                </div>
+
+                <!-- Campus -->
+                <div class="card card-custom-small mb-2">
+
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Campus</span>
+                            <span class="cardSubtitle"></span>
+                        </h5>
+                    </div>
+
+                    <!-- Contents -->
+                    <div class="card-body">
+                        <div class="box rounded">
+                            <select class="form-select" id="campusSelection">
+                                <option value="Beaconsfield">Beaconsfield</option>
+                                <option value="Berwick">Berwick</option>
+                                <option value="Officer">Officer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Music Lessons -->
+                <div class="card card-custom-small mb-2">
+
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Music Lessons</span>
+                            <span class="cardSubtitle"></span>
+                        </h5>
+                    </div>
+
+                    <!-- Contents -->
+                    <div class="card-body">
+                        <div class="box rounded">
+                            <select class="form-select" id="musicSelection">
+                                <option value="Show">Show</option>
+                                <option value="Hide">Hide</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Center Column (Daily Messages) -->
+            <div class="col-12 col-sm-6 col-custom">
+
 
 
             </div>
+
+            <!-- Right Column (Timetable) -->
+            <div class="col-12 col-sm-3 col-custom">
+
+
+
+            </div>
+
+
         </div>
+
     </div>
 
 
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    
     <!-- Get Cookie/Campus -->
     <script>
         function getCookie(cookieName) {
@@ -100,6 +184,16 @@
                 }
             }
             return null;
+        }
+        function setCookie(name, value, days) {
+            console.log(name, value)
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
 
         const authCookie = getCookie('adAuthCookie');
@@ -115,185 +209,25 @@
 
     </script>
 
-    <!-- Variables -->
-    <script>
 
-
-    
-
-
-        // Function to set a cookie
-        function setCookie(name, value, days) {
-            console.log(name, value)
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-
-    </script>
-
-
-    <!-- Time/Data Updated -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function updateDateAndTime() {
-                const today = new Date();
-
-                // Update Date
-                const day = String(today.getDate()).padStart(2, '0');
-                const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                const year = today.getFullYear();
-                const formattedDate = `${day}/${month}/${year}`;
-                document.getElementById("currentDate").textContent = formattedDate;
-
-                // Update Time
-                let hours = today.getHours();
-                const minutes = String(today.getMinutes()).padStart(2, '0');
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-
-                // Convert 24-hour time to 12-hour time format
-                hours = hours % 12;
-                // If hour is 0 (which would be 12 in 24-hour time), set it to 12
-                hours = hours ? hours : 12;
-                const formattedTime = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
-                document.getElementById("currentTime").textContent = formattedTime;
-            }
-
-            // Call the function to initialize the display
-            updateDateAndTime();
-
-            // Set an interval to update the time every minute
-            setInterval(updateDateAndTime, 60 * 1000); // 60 * 1000ms = 1 minute
-        });
-    </script>
-
-
-    <!-- Functions -->
-    <script>
-
-        function getNextMonday(currentISODate) {
-            const currentDate = new Date(currentISODate);
-            const dayOfWeek = currentDate.getDay();
-            const daysUntilMonday = (8 - dayOfWeek) % 7; // Calculate how many days until Monday
-            const nextMonday = new Date(currentDate);
-            nextMonday.setDate(currentDate.getDate() + daysUntilMonday);
-            return nextMonday.toISOString();
-        }
-
-
-        function convertToAMPM(timeString) {
-            // Split the input time string into hours and minutes
-            const [hours, minutes] = timeString.split(':');
-
-            // Convert hours to a number
-            const hour = parseInt(hours, 10);
-
-            // Determine whether it's AM or PM based on the hour
-            const period = hour >= 12 ? 'PM' : 'AM';
-
-            // Convert hours to 12-hour format
-            const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
-
-            // Create the formatted time string
-            const formattedTime = `${formattedHour}:${minutes}${period}`;
-
-            return formattedTime;
-        }
-
-        function removeFirstFourCharacters(inputString) {
-            if (inputString.length >= 4) {
-                return inputString.substring(4);
-            } else {
-                // Handle cases where the input string is less than 4 characters
-                return "Input string is too short";
-            }
-        }
-
-        function removeFirstThreeCharacters(inputString) {
-            if (inputString.length >= 3) {
-                return inputString.substring(3);
-            } else {
-                // Handle cases where the input string is less than 4 characters
-                return "Input string is too short";
-            }
-        }
-
-        function extractNumberFromString(text) {
-            // Use a regular expression to match the number inside the text
-            const regex = /(\d+)/;
-
-            // Use the match method to find the first occurrence of the number
-            const match = text.match(regex);
-
-            // Check if a match was found
-            if (match) {
-                // Convert the matched string to a number
-                const number = parseInt(match[0]);
-
-                return number;
-            }
-
-            // If no match was found, return null or an appropriate value
-            return null;
-        }
-
-        function countTotalTasks(data) {
-            let totalTasks = 0;
-
-            const classes = data.d.ResultTasksStudent;
-            for (let i = 0; i < classes.length; i++) {
-                totalTasks += classes[i].Tasks.length;
-            }
-
-            return totalTasks;
-        }
-    </script>
 
     <!-- Initialize Music-->
     <script>
         fetch('/api/getMusic', {
-               method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.text())
             .then(theme => {
+                console.log(theme)
                 switch (theme) {
                     case 'yes':
                         document.getElementById("musicSelection").value = 'Show';
                         break;
                     case 'no':
                         document.getElementById("musicSelection").value = 'Hide';
-                        break;
-                    default:
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
-
-    <!-- Initialize session Setting-->
-    <script>
-        fetch('/api/getSessionSetting', {
-               method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.text())
-            .then(theme => {
-                switch (theme) {
-                    case 'true':
-                        document.getElementById("sessionSelection").value = 'Show';
-                        break;
-                    case 'false':
-                        document.getElementById("sessionSelection").value = 'Hide';
                         break;
                     default:
                 }
@@ -310,45 +244,46 @@
             event.preventDefault();
 
             var value = document.getElementById("musicSelection").value;
-            
+            console.log(value)
+
             if (value == "Show") {
                 let data = { music: 'yes' };
                 fetch("/api/setMusic", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log(`music set to show`);
-                } else {
-                    console.error('Failed to set music');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log(`music set to show`);
+                        } else {
+                            console.error('Failed to set music');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             } else {
                 let data = { music: 'no' };
                 fetch("/api/setMusic", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log(`music set to hide`);
-                } else {
-                    console.error('Failed to set music');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log(`music set to hide`);
+                        } else {
+                            console.error('Failed to set music');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             }
 
             var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
@@ -357,67 +292,10 @@
 
     </script>
 
-    <!-- Change Session Setting-->
-    <script>
-
-        document.getElementById("sessionSelection").addEventListener("change", function (event) {
-            event.preventDefault();
-
-            var value = document.getElementById("sessionSelection").value;
-            
-            if (value == "Show") {
-                let data = { session: 'true' };
-                fetch("/api/setSessionSetting", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log(`Session set to show`);
-                } else {
-                    console.error('Failed to set Session');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-            } else {
-                let data = { session: 'false' };
-                fetch("/api/setSessionSetting", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log(`Session set to hide`);
-                } else {
-                    console.error('Failed to set Session');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-            }
-
-            var toastEl = new bootstrap.Toast(document.querySelector(".toast"));
-            toastEl.show();
-        });
-
-    </script>
-
-    <!-- Campus Selection -->
     <script>
         window.onload = function () {
-            // Get the value of the cookie named 'myCookie'
             var cookieValue = getCookie("campus");
 
-            // If the cookie has a value, set that value as the selected option in the dropdown
             if (cookieValue) {
                 document.getElementById("campusSelection").value = cookieValue;
             }
@@ -435,10 +313,10 @@
 
     <!-- Themes -->
     <script>
-        let availableThemes = ['light', 'dark', 'blue', 'tiktok'];
+        let availableThemes = ['light', 'dark', 'blue'];
         let currentTheme = 0;
         const cachedTheme = localStorage.getItem('theme');
-            if (cachedTheme && availableThemes.includes(cachedTheme)) {
+        if (cachedTheme && availableThemes.includes(cachedTheme)) {
             document.documentElement.setAttribute('data-theme', cachedTheme);
         }
 
@@ -449,32 +327,30 @@
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.text())
-            .then(theme => {
-                switch (theme) {
-                    case 'dark':
-                        setTheme('dark');
-                        break;
-                    case 'light':
-                        setTheme('light');
-                        break;
-                    case 'tiktok':
-                        setTheme('tiktok');
-                        break;
-                    case 'blue':
-                        setTheme('blue');
-                        break;
-                    default:
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => response.text())
+                .then(theme => {
+                    console.log(theme)
+                    switch (theme) {
+                        case 'dark':
+                            setTheme('dark');
+                            break;
+                        case 'light':
+                            setTheme('light');
+                            break;
+                        case 'blue':
+                            setTheme('blue');
+                            break;
+                        default:
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
 
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
-            // Update the current theme index
+            document.getElementById("themeSelection").value = theme
             currentTheme = availableThemes.indexOf(theme);
             updateThemeInServer(theme);
         }
@@ -496,101 +372,52 @@
                 },
                 body: JSON.stringify(data),
             })
-            .then(response => {
-                if (response.ok) {
-                    console.log(`Theme set to ${theme}`);
-                } else {
-                    console.error('Failed to set theme');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`Theme set to ${theme}`);
+                    } else {
+                        console.error('Failed to set theme');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
 
         document.addEventListener('keydown', function (event) {
-            // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
             if (event.ctrlKey && event.altKey && event.key === 'd') {
-                toggleTheme(); // Toggle dark mode when the shortcut is triggered
+                toggleTheme();
             }
         });
 
         function toggleTheme() {
-            const currentThemeText = document.getElementById('currentTheme');
+            const currentThemeText = document.getElementById('themeSelection');
             currentTheme = (currentTheme + 1) % availableThemes.length;
             const nextTheme = availableThemes[currentTheme];
             setTheme(nextTheme);
             switch (nextTheme) {
-                    case 'dark':
-                        currentThemeText.textContent = 'Current Theme: Dark Mode'
-                        break;
-                    case 'light':
-                        currentThemeText.textContent = 'Current Theme: Light Mode'
-                        break;
-                    case 'tiktok':
-                        currentThemeText.textContent = 'Current Theme: TikTok Style'
-                        break;
-                    case 'blue':
-                        currentThemeText.textContent = 'Current Theme: Blue Theme'
-                        break;
-                    default:
-                }
+                case 'dark':
+                    currentThemeText.value = 'dark'
+                    break;
+                case 'light':
+                    currentThemeText.value = 'light'
+                    break;
+                case 'blue':
+                    currentThemeText.value = 'blue'
+                    break;
+                default:
+            }
 
         }
 
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
+        loadTheme()
 
-        loadTheme();
+        document.getElementById("themeSelection").addEventListener("change", function (event) {
+            event.preventDefault();
+
+            setTheme(document.getElementById("themeSelection").value)
+        })
     </script>
-    <script>
-        function checkNewLoginAndLogOut() {
-        // Check if the "username" cookie exists
-            const usernameCookie = getCookie("username");
-    
-            if (!usernameCookie) {
-                // Clear all cookies
-               window.location.href = "/logout";  // Adjust the URL as needed
-        }
-    }
-    checkNewLoginAndLogOut();
-    </script>
-
-    <script>
-        const currentThemeText = document.getElementById('currentTheme');
-
-        fetch('/api/getTheme', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.text())
-            .then(theme => {
-                switch (theme) {
-                    case 'dark':
-                        currentThemeText.textContent = 'Current Theme: Dark Mode'
-                        break;
-                    case 'light':
-                        currentThemeText.textContent = 'Current Theme: Light Mode'
-                        break;
-                    case 'tiktok':
-                        currentThemeText.textContent = 'Current Theme: TikTok Style'
-                        break;
-                    case 'blue':
-                        currentThemeText.textContent = 'Current Theme: Blue Theme'
-                        break;
-                    default:
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    </script>
-
 
 
 
