@@ -1,0 +1,78 @@
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+
+
+    <div id="bigToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto" id="bigToastTitle">Loading</strong>
+            <small class="toast-subheader" id="bigToastSubtitle">Loading</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="bigToastContent">
+            Loading
+        </div>
+    </div>
+
+    <div id="smallToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="smallToastContent">
+                Hello, world! This is a toast message.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+
+
+    const bigToastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('bigToast'))
+    const smallToastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('smallToast'))
+
+
+
+    function showBigToast(title, subtitle, content) {
+        document.getElementById('bigToastTitle').textContent = title;
+        document.getElementById('bigToastSubtitle').textContent = subtitle;
+        document.getElementById('bigToastContent').textContent = content;
+
+        bigToastBootstrap.show();
+    }
+
+    function showSmallToast(content, colour) {
+        smallToastObject = document.getElementById('smallToast');
+        document.getElementById('smallToastContent').textContent = content;
+
+
+
+        // Define a list of valid color classes
+        const validColors = [
+            "text-bg-primary",
+            "text-bg-secondary",
+            "text-bg-success",
+            "text-bg-danger",
+            "text-bg-warning",
+            "text-bg-info",
+            "text-bg-light",
+            "text-bg-dark",
+            "text-bg-white"
+        ];
+
+        // Check if the provided color is valid, otherwise use a default class
+        if (validColors.includes(colour)) {
+            smallToastObject.className = "toast align-items-center " + colour + " border-0";
+        } else {
+            // Use a default class (e.g., primary) if the provided color is invalid
+            smallToastObject.className = "toast align-items-center text-bg-primary border-0";
+        }
+
+        smallToastObject.classList.add(colour);
+        smallToastBootstrap.show()
+    }
+
+
+</script>

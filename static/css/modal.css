@@ -1,3 +1,17 @@
 .modal-footer, .modal-body, .modal-header {
   background-color: var(--modal-bg);
 }
+
+.toast {
+  background-color: var(--modal-bg);
+}
+
+.toast-header {
+  background-color: var(--modal-bg);
+  color: var(--card-title-colour);
+}
+
+.toast-subheader {
+  color: var(--card-subtitle-colour);
+}
+

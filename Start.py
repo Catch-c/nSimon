@@ -14,6 +14,7 @@ import Database as Database
 import requests
 import configparser
 import logging
+import json
 
 # LOGS
 logging.basicConfig(level=logging.INFO)
@@ -21,13 +22,14 @@ logger = logging.getLogger(__name__)
 
 # --[[Import Config Values]]--
 config = configparser.ConfigParser()
-config.read('config.ini')
-flask_secret = config.get('Flask', 'secret')
+config.read("config.ini")
+flask_secret = config.get("Flask", "secret")
 
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "2.0.1"
+VERSION = "2.1.0"
+
 
 # --[[ API Routes ]]--
 #       --[[ getTimetable () ]]--
@@ -35,17 +37,17 @@ VERSION = "2.0.1"
 def getTimetable():
     cookie = request.cookies.get("adAuthCookie")
     data = request.json
-    date = data['date']
+    date = data["date"]
 
     return jsonify(Simon.getTimetable(cookie, date)), 200
+
 
 #       --[[ getCalendar () ]]--
 @app.route("/api/getCalendar", methods=["POST"])
 def getCalendar():
     cookie = request.cookies.get("adAuthCookie")
     data = request.json
-    date = data['date']
-
+    date = data["date"]
 
     return jsonify(Simon.getCalendar(cookie, f"{date}T14:00:00.000Z")), 200
 
@@ -55,7 +57,7 @@ def getCalendar():
 def getMessages():
     cookie = request.cookies.get("adAuthCookie")
     data = request.json
-    date = data['date']
+    date = data["date"]
 
     return jsonify(Simon.getDailyMessages(cookie, date)), 200
 
@@ -66,6 +68,48 @@ def getUserInfo():
     cookie = request.cookies.get("adAuthCookie")
 
     return jsonify(Simon.getUserInformation(cookie)), 200
+
+
+#       --[[ postSupport () ]]--
+@app.route("/api/postSupport", methods=["POST"])
+def postSupport():
+    try:
+        requestType = request.form.get("supportTypeSelect")
+        requestTitle = request.form.get("supportTitle")
+        requestDescription = request.form.get("supportDescription")
+        username = request.cookies.get("username")
+
+        webhookURL = "https://discord.com/api/webhooks/1171271021366607893/qmHqgQ18ohmo-SdfktiHVcFcrXUm7ltmvJxOnaeUT4aHV344LkuZpSHT2D52hZfPAMjx"
+
+        if requestType == "suggestion":
+            webhookURL = "https://discord.com/api/webhooks/1171271238224707745/DJ4i7XqCoOWazHsePotgIMgMdz1wEJGrVj6WlFVZNwdTxSt6TlY6yr2beBYlGFleKRqx"
+        elif requestType == "bug":
+            webhookURL = "https://discord.com/api/webhooks/1171271307875340319/GLtBfWOYVfvS8QSPwCEdKzUFiNvhTdQ5ZFoqedY0dPmA1xRzc34-6QVJL2ztBw1mPG8c"
+        else:
+            webhookURL = "https://discord.com/api/webhooks/1171271021366607893/qmHqgQ18ohmo-SdfktiHVcFcrXUm7ltmvJxOnaeUT4aHV344LkuZpSHT2D52hZfPAMjx"
+
+        embed = {
+            "title": "New Support Request",
+            "description": "",
+            "color": 3551903,
+            "fields": [
+                {"name": "Title", "value": requestTitle, "inline": False},
+                {"name": "Description", "value": requestDescription, "inline": False},
+                {"name": "Username", "value": username, "inline": False},
+            ],
+        }
+
+        message = {"content": "<@&1151349503203491840>", "embeds": [embed]}
+
+        data = json.dumps(message)
+
+        headers = {"Content-Type": "application/json"}
+
+        response = requests.post(webhookURL, data=data, headers=headers)
+
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({"error": "Form submission failed"}), 500
 
 
 #       --[[ getClasses () ]]--
@@ -82,7 +126,7 @@ def getClassTasks():
     cookie = request.cookies.get("adAuthCookie")
 
     data = request.json
-    classID = data['classID']
+    classID = data["classID"]
 
     return jsonify(Simon.getClassTasks(cookie, classID)), 200
 
@@ -117,15 +161,15 @@ def getWeather():
     data = response.json()
 
     if response.status_code == 200:
-
         currentTemperature = data["main"]["temp"]
         currentFeelsLikeTemperature = data["main"]["feels_like"]
         mininumTemperature = data["main"]["temp_min"]
         maximumTemperature = data["main"]["temp_max"]
 
-        currentDescription = data['weather'][0]['main']
-        currentIcon = f"http://openweathermap.org/img/wn/{data['weather'][0]['icon']}.png"
-
+        currentDescription = data["weather"][0]["main"]
+        currentIcon = (
+            f"http://openweathermap.org/img/wn/{data['weather'][0]['icon']}.png"
+        )
 
         return (
             jsonify(
@@ -197,10 +241,11 @@ def getTaskRubric():
     cookie = request.cookies.get("adAuthCookie")
 
     data = request.json
-    classID = data['classID']
-    taskID = data['taskID']
+    classID = data["classID"]
+    taskID = data["taskID"]
 
     return jsonify(Simon.getTaskRubric(cookie, classID, taskID)), 200
+
 
 #       --[[ getResultInfo () ]]--
 @app.route("/api/getResultInfo", methods=["POST"])
@@ -208,8 +253,8 @@ def getResultInfo():
     cookie = request.cookies.get("adAuthCookie")
 
     data = request.json
-    classID = data['classID']
-    taskID = data['taskID']
+    classID = data["classID"]
+    taskID = data["taskID"]
 
     return jsonify(Simon.getTaskSubmission(cookie, classID, taskID)), 200
 
@@ -228,11 +273,15 @@ def getStudentProfileImage():
 
     if image_data is not None:
         # If image data exists, return it as an image response
-        return image_data, 200, {"Content-Type": "image/jpeg"}  # Adjust the content type as needed
+        return (
+            image_data,
+            200,
+            {"Content-Type": "image/jpeg"},
+        )  # Adjust the content type as needed
     else:
         # If no image data is available, return a placeholder image or an error response
         return "Image not found", 404
-    
+
 
 #       --[[ getTheme () ]]--
 @app.route("/api/getTheme", methods=["POST"])
@@ -245,11 +294,14 @@ def getTheme():
     else:
         return jsonify({"error": "Theme not found"}, 404)  # Return an error response
 
+
 #       --[[ setTheme () ]]--
 @app.route("/api/setTheme", methods=["POST"])
 def setTheme():
     username = request.cookies.get("username")
-    theme = request.json.get("theme")  # Assuming the theme is passed in the request JSON
+    theme = request.json.get(
+        "theme"
+    )  # Assuming the theme is passed in the request JSON
 
     if theme not in ["dark", "light", "blue", "tiktok"]:
         return "Invalid theme", 400  # Return a bad request response for invalid theme
@@ -260,7 +312,8 @@ def setTheme():
         return "Theme updated", 200
     else:
         return "Failed to update theme", 500
-    
+
+
 #       --[[ getMusic () ]]--
 @app.route("/api/getMusic", methods=["POST"])
 def getMusic():
@@ -270,11 +323,14 @@ def getMusic():
     print(music)
     return music
 
+
 #       --[[ setMusic () ]]--
 @app.route("/api/setMusic", methods=["POST"])
 def setMusic():
     username = request.cookies.get("username")
-    music = request.json.get("music")  # Assuming the theme is passed in the request JSON
+    music = request.json.get(
+        "music"
+    )  # Assuming the theme is passed in the request JSON
     print(music)
 
     if music not in ["yes", "no"]:
@@ -287,6 +343,7 @@ def setMusic():
     else:
         return "Failed to update Music Choice", 500
 
+
 #       --[[ getSessionSetting () ]]--
 @app.route("/api/getSessionSetting", methods=["POST"])
 def getSession():
@@ -295,14 +352,20 @@ def getSession():
     session = Database.databaseGetSession(username)
     return session
 
+
 #       --[[ setSessionSetting () ]]--
 @app.route("/api/setSessionSetting", methods=["POST"])
 def setSession():
     username = request.cookies.get("username")
-    sessionSetting = request.json.get("session")  # Assuming the theme is passed in the request JSON
+    sessionSetting = request.json.get(
+        "session"
+    )  # Assuming the theme is passed in the request JSON
 
     if sessionSetting not in ["true", "false"]:
-        return "Invalid Session Setting", 400  # Return a bad request response for invalid theme
+        return (
+            "Invalid Session Setting",
+            400,
+        )  # Return a bad request response for invalid theme
 
     result = Database.databaseChangeSession(username, sessionSetting)
 
@@ -310,18 +373,17 @@ def setSession():
         return "Session updated", 200
     else:
         return "Failed to update Session Choice", 500
-    
 
 
 #       --[[ getCommendations () ]]--
 @app.route("/api/getCommendations", methods=["POST"])
 def getCommendations():
-    
     cookie = request.cookies.get("adAuthCookie")
 
     GUID = Simon.getUserInformation(cookie)["d"]["guid"]
 
     return jsonify(Simon.getCommendations(cookie, GUID)), 200
+
 
 #       --[[ getUserProfileInfo () ]]--
 @app.route("/api/getStudentProfileDetails", methods=["POST"])
@@ -330,13 +392,13 @@ def getStudentProfileDetails():
 
     return jsonify(Simon.getStudentProfileDetails(cookie)), 200
 
+
 #       --[[ getUserProfileInfo () ]]--
 @app.route("/api/getStudentProfileBehaviouralHistory", methods=["POST"])
 def getStudentProfileBehaviouralHistory():
     cookie = request.cookies.get("adAuthCookie")
 
     return jsonify(Simon.getStudentProfileBehaviouralHistory(cookie)), 200
-
 
 
 #       --[[ login () ]]--
@@ -349,22 +411,22 @@ def login():
     result = Database.databaseCheckUser(username, password)
 
     if result == 404:
-    # User doesn't exist in the database, so attempt to login using Simon
+        # User doesn't exist in the database, so attempt to login using Simon
         status, cookie = Simon.login(username, password)
 
         if status == 404:
-        # Simon.login also failed, show a flash message and redirect to the login page
-            flash('Incorrect password')
+            # Simon.login also failed, show a flash message and redirect to the login page
+            flash("Incorrect password")
             return redirect(url_for("home"))
 
-    # If Simon.login was successful, add the user to the database
+        # If Simon.login was successful, add the user to the database
         Database.databaseAddUser(username, password, cookie)
     elif result == 403:
-    # The password is incorrect in the database, so show a flash message and redirect to the login page
-        flash('Incorrect password')
+        # The password is incorrect in the database, so show a flash message and redirect to the login page
+        flash("Incorrect password")
         return redirect(url_for("home"))
     else:
-    # User exists in the database
+        # User exists in the database
         _, cookie = result
 
     # GETTING CAMPUS
@@ -386,14 +448,15 @@ def login():
         response.set_cookie("adAuthCookie", cookie, max_age=7776000)
         response.set_cookie("username", username, max_age=7776000)
         response.set_cookie("campus", campus, max_age=7776000)
-        response.set_cookie("loginVer", '1.1', max_age=7776000)
+        response.set_cookie("loginVer", "1.1", max_age=7776000)
     else:
         response.set_cookie("adAuthCookie", cookie)
         response.set_cookie("username", username)
         response.set_cookie("campus", campus)
-        response.set_cookie("loginVer", '1.1')
+        response.set_cookie("loginVer", "1.1")
 
     return response
+
 
 # --[[ Frontend Routes ]]--
 #       --[[ /logout ]]--
@@ -403,6 +466,7 @@ def logout():
     response.set_cookie("adAuthCookie", "", max_age=7776000)
     response.set_cookie("campus", "", max_age=7776000)
     return response
+
 
 #       --[[ /dashboard ]]--
 @app.route("/dashboard")
@@ -417,6 +481,7 @@ def dashboard():
 
     return render_template("dashboard.html", VERSION=VERSION)
 
+
 #       --[[ /profile ]]--
 @app.route("/profile")
 def profile():
@@ -429,6 +494,7 @@ def profile():
         return redirect(url_for("home"))
 
     return render_template("profile.html", VERSION=VERSION)
+
 
 #       --[[ /support ]]--
 @app.route("/support")
@@ -443,6 +509,7 @@ def support():
 
     return render_template("support.html", VERSION=VERSION)
 
+
 #       --[[ /settings ]]--
 @app.route("/settings")
 def settings():
@@ -456,6 +523,7 @@ def settings():
 
     return render_template("settings.html", VERSION=VERSION)
 
+
 #       --[[ / ]]--
 @app.route("/")
 def home():
@@ -463,6 +531,7 @@ def home():
     if cookie:
         return redirect(url_for("dashboard"))
     return render_template("home.html", VERSION=VERSION)
+
 
 #       --[[ /calendar ]]--
 @app.route("/calendar")
@@ -477,6 +546,7 @@ def calendar():
 
     return render_template("calendar.html", VERSION=VERSION)
 
+
 #       --[[ /classes ]]--
 @app.route("/classes")
 def classes():
@@ -489,7 +559,9 @@ def classes():
         return redirect(url_for("home"))
 
     return render_template("classes.html", VERSION=VERSION)
-@app.route('/classes/<classID>', methods=['GET'])
+
+
+@app.route("/classes/<classID>", methods=["GET"])
 def classesShow(classID):
     cookie = request.cookies.get("adAuthCookie")
 
@@ -500,11 +572,6 @@ def classesShow(classID):
         return redirect(url_for("home"))
 
     return render_template("classesShow.html", VERSION=VERSION, classID=classID)
-
-
-
-
-
 
 
 # --[[ Start ]]--
