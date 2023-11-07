@@ -42,6 +42,8 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 
+    {% include "partials/toasts.html" %}
+
     <!-- Modals -->
 
     <!-- Attendence Modals -->
@@ -75,10 +77,8 @@
                         <h1 class="modal-title fs-5" id="lateModalLabel">Late to School</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="box rounded">
-                            <strong>Coming Soon</strong>
-                        </div>
+                    <div class="modal-body" id="lateModalHolder">
+
 
 
                     </div>
@@ -97,10 +97,8 @@
                         <h1 class="modal-title fs-5" id="leaveModalLabel">Leave Passes</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="box rounded">
-                            <strong>Coming Soon</strong>
-                        </div>
+                    <div class="modal-body" id="leaveModalHolder">
+
 
 
                     </div>
@@ -119,10 +117,8 @@
                         <h1 class="modal-title fs-5" id="sickModalLabel">Sick Passes</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="box rounded">
-                            <strong>Coming Soon</strong>
-                        </div>
+                    <div class="modal-body" id="sickModalHolder">
+
 
 
                     </div>
@@ -235,10 +231,8 @@
                     <h1 class="modal-title fs-5" id="activitiesModalLabel">Upcoming Activities</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="box rounded">
-                        <strong>Coming Soon</strong>
-                    </div>
+                <div class="modal-body" id="profileActivitiesHolder">
+
 
 
 
@@ -459,22 +453,22 @@
 
                         <div class="box rounded">
                             <strong>Community and Culture:</strong>
-                            <span id="profileCommendationsCommunityCulture">??</span>
+                            <span id="profileCommendationsCommunityCulture">Loading</span>
                         </div>
 
                         <div class="box rounded">
                             <strong>Learning Partnerships:</strong>
-                            <span id="profileCommendationsLearningPartnerships">??</span>
+                            <span id="profileCommendationsLearningPartnerships">Loading</span>
                         </div>
 
                         <div class="box rounded">
                             <strong>Learning:</strong>
-                            <span id="profileCommendationsLearning">??</span>
+                            <span id="profileCommendationsLearning">Loading</span>
                         </div>
 
                         <div class="box rounded">
                             <strong>Faith & Service:</strong>
-                            <span id="profileCommendationsFaithService">??</span>
+                            <span id="profileCommendationsFaithService">Loading</span>
                         </div>
                     </div>
 
@@ -515,7 +509,7 @@
                         <!-- Activities -->
                         <div class="box rounded box-button" id="profileActivitiesButton">
                             <strong>Upcoming Activities:</strong>
-                            <span id="profileActivities">Coming Soon</span>
+                            <span id="profileActivities">Loading</span>
                         </div>
 
                         <script>
@@ -585,6 +579,31 @@
             return result;
         }
 
+        function countCommendationCategories(jsonData) {
+            const data = jsonData.d.Data;
+            const categoryCount = {
+                CommunityCulture: 0,
+                LearningPartnerships: 0,
+                Learning: 0,
+                FaithService: 0,
+            };
+
+            data.forEach((item) => {
+                const category = item.CategoryDescription;
+                if (category.includes("Leadership in Community and Culture") || category.includes("College Colour Award")) {
+                    categoryCount.CommunityCulture++;
+                } else if (category === "Leadership in Learning Partnerships") {
+                    categoryCount.LearningPartnerships++;
+                } else if (category === "Leadership in Learning") {
+                    categoryCount.Learning++;
+                } else if (category === "Leadership in Faith and Service") {
+                    categoryCount.FaithService++;
+                }
+            });
+
+            return categoryCount;
+        }
+
 
     </script>
 
@@ -631,12 +650,78 @@
                 element = document.getElementById('profileLatetoSchool');
                 element.innerText = data['d']['SemesterBasedData'][0]['LateToSchool'].length;
 
+                for (const absence of data['d']['SemesterBasedData'][0]['LateToSchool']) {
+                    var divElement = document.createElement("div");
+                    divElement.classList.add("box", "rounded");
+
+                    var strongElement = document.createElement("strong");
+                    var dateString = absence.RollDate;
+                    var timestamp = dateString.match(/\d+/)[0];
+                    var date = new Date(parseInt(timestamp));
+
+                    var day = date.getDate().toString().padStart(2, '0');
+                    var month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    var year = date.getFullYear();
+                    strongElement.textContent = `${day}/${month}/${year}: `;
+
+                    var spanElement = document.createElement("span");
+                    spanElement.textContent = absence.Reason;
+
+                    divElement.appendChild(strongElement);
+                    divElement.appendChild(spanElement);
+
+                    document.getElementById('lateModalHolder').appendChild(divElement);
+                }
+
                 element = document.getElementById('profileLeavePasses');
                 element.innerText = data['d']['SemesterBasedData'][0]['LeavePass'].length;
+                for (const absence of data['d']['SemesterBasedData'][0]['LeavePass']) {
+                    var divElement = document.createElement("div");
+                    divElement.classList.add("box", "rounded");
+
+                    var strongElement = document.createElement("strong");
+                    var dateString = absence.RollDate;
+                    var timestamp = dateString.match(/\d+/)[0];
+                    var date = new Date(parseInt(timestamp));
+
+                    var day = date.getDate().toString().padStart(2, '0');
+                    var month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    var year = date.getFullYear();
+                    strongElement.textContent = `${day}/${month}/${year}: `;
+
+                    var spanElement = document.createElement("span");
+                    spanElement.textContent = absence.Reason;
+
+                    divElement.appendChild(strongElement);
+                    divElement.appendChild(spanElement);
+
+                    document.getElementById('leaveModalHolder').appendChild(divElement);
+                }
 
                 element = document.getElementById('profileSickPasses');
                 element.innerText = data['d']['SemesterBasedData'][0]['SickPasses'].length;
+                for (const absence of data['d']['SemesterBasedData'][0]['SickPasses']) {
+                    var divElement = document.createElement("div");
+                    divElement.classList.add("box", "rounded");
 
+                    var strongElement = document.createElement("strong");
+                    var dateString = absence.RollDate;
+                    var timestamp = dateString.match(/\d+/)[0];
+                    var date = new Date(parseInt(timestamp));
+
+                    var day = date.getDate().toString().padStart(2, '0');
+                    var month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    var year = date.getFullYear();
+                    strongElement.textContent = `${day}/${month}/${year}: `;
+
+                    var spanElement = document.createElement("span");
+                    spanElement.textContent = absence.Reason;
+
+                    divElement.appendChild(strongElement);
+                    divElement.appendChild(spanElement);
+
+                    document.getElementById('sickModalHolder').appendChild(divElement);
+                }
 
                 attendance = getFirstTwoDecimalPlacesAsWholeNumber(data['d']['SemesterBasedData'][0]['AttendancePercentage'])
                 element = document.getElementById('attendenceProgress');
@@ -681,6 +766,35 @@
                 element = document.getElementById('profileReports');
                 element.innerText = data['d']['AssessmentReports'];
 
+                // Upcoming Activites
+                element = document.getElementById('profileActivities');
+                element.innerText = data['d']['UpcomingActivities'].length;
+
+                for (const event of data['d']['UpcomingActivities']) {
+
+                    var divElement = document.createElement("div");
+                    divElement.classList.add("box", "rounded");
+
+                    var strongElement = document.createElement("strong");
+                    var dateString = event.StartDate;
+                    var timestamp = dateString.match(/\d+/)[0];
+                    var date = new Date(parseInt(timestamp));
+
+                    var day = date.getDate().toString().padStart(2, '0');
+                    var month = (date.getMonth() + 1).toString().padStart(2, '0');
+                    var year = date.getFullYear();
+                    strongElement.textContent = `${day}/${month}/${year}: `;
+
+                    var spanElement = document.createElement("span");
+                    spanElement.textContent = event.Title;
+
+                    divElement.appendChild(strongElement);
+                    divElement.appendChild(spanElement);
+
+                    document.getElementById('profileActivitiesHolder').appendChild(divElement);
+
+
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -762,8 +876,24 @@
             .then(response => response.json())
             .then(data => {
 
+
                 let element = document.getElementById('profileCommendationsTotal');
                 element.textContent = `${data['d']['Total']}`
+
+                commendationCounts = countCommendationCategories(data)
+
+                element = document.getElementById('profileCommendationsCommunityCulture');
+                element.textContent = `${commendationCounts['CommunityCulture']}`
+
+                element = document.getElementById('profileCommendationsLearningPartnerships');
+                element.textContent = `${commendationCounts['LearningPartnerships']}`
+
+                element = document.getElementById('profileCommendationsLearning');
+                element.textContent = `${commendationCounts['Learning']}`
+
+                element = document.getElementById('profileCommendationsFaithService');
+                element.textContent = `${commendationCounts['FaithService']}`
+
 
                 let container = document.getElementById('commendationHolder');
 

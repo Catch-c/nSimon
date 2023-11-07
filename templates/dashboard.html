@@ -20,6 +20,7 @@
     <link href="{{ url_for('static', filename='css/cards.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/misc.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/timetable.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/modal.css') }}" rel="stylesheet" type="text/css">
 
     <!-- FavIcon -->
     <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
@@ -58,6 +59,59 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 
+    {% include "partials/toasts.html" %}
+
+
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="updateModalLabel">Changelog {{VERSION}}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <h6>Late to School, Leave Passes, and Sick Passes.</h6>
+                    <div>You can now click on these boxes on your <a href="/profile">Student Profile</a> to view a list of each individual absence.</div><br>
+
+                    <h6>Commendation Categories.</h6>
+                    <div>On your <a href="/profile">Student Profile</a>, commendation category counters now display the correct information. College Stars are counted as "Community and Culture".</div><br>
+
+                    <h6>Upcoming Activites.</h6>
+                    <div>On your <a href="/profile">Student Profile</a>, you can now view the amount of upcoming activities you have aswell as being able to click the box to view a list.</div><br>
+
+                    <h6>Sidebar Support.</h6>
+                    <div>Opening the sidebar and clicking Support will now open a menu with a form to fill out if you have a suggestion, bug report, or just need help.</div><br>
+
+                    <h6>Full School Links.</h6>
+                    <div>Opening the sidebar and clicking Support will now open a menu with a form to fill out if you have a suggestion, bug report, or just need help.</div><br>
+
+                    <h6>Sidebar Support.</h6>
+                    <div>Opening the sidebar and clicking School Links will now open a menu with a complete list of the College School Links apart from LRC and Newspaper resources (These will be added in a later update).</div><br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var changelogModal = new bootstrap.Modal(document.getElementById('updateModal'), {})
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var modalShown = localStorage.getItem("update_{{VERSION}}");
+
+            if (!modalShown) {
+                changelogModal.show();
+
+                // Set a flag in local storage to indicate that the modal has been shown
+                localStorage.setItem("update_{{VERSION}}", "true");
+            }
+        });
+    </script>
 
     <!-- Due Tasks -->
     <div class="modal fade" id="dueModal" tabindex="-1" aria-labelledby="dueModalLabel" aria-hidden="true">
@@ -204,7 +258,7 @@
 
             document.getElementById("resultTaskFeedback").textContent = "???"
 
-            
+
             const tbody = document.getElementById("rubricTable")
             tbody.innerHTML = ''
 
@@ -224,7 +278,7 @@
                 .then(data => {
 
 
-                    
+
 
 
                     data.d.MarkingRubricCriteria.forEach((criteria) => {
@@ -471,7 +525,7 @@
 
         if (campus == null) {
             window.location.href = '/logout';
-        } 
+        }
 
     </script>
 
@@ -1301,7 +1355,7 @@
                     classDiv.appendChild(spanTime);
                     classDiv.appendChild(lineBreak);
 
-                    dataContainer.appendChild(classDiv);                    
+                    dataContainer.appendChild(classDiv);
                 }
             }
 
