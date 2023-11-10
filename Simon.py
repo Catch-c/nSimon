@@ -1,5 +1,6 @@
 import requests, time, re
 from playwright.sync_api import sync_playwright, TimeoutError
+from bs4 import BeautifulSoup
 
 
 def login(username, password):
@@ -192,7 +193,6 @@ def getCommendations(cookie, GUID):
     url = f"https://simon.sfx.vic.edu.au/WebServices/BehaviouralTracking.asmx/GetWorkDeskCommendationsPaged"
     headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
 
-
     data = {
         "sort": [{"field": "CommendationDate", "dir": "desc"}],
         "filter": None,
@@ -209,6 +209,7 @@ def getCommendations(cookie, GUID):
     response = requests.post(url, headers=headers, json=data)
     return response.json()
 
+
 def getTaskSubmission(cookie, classID, taskID):
     unix_seconds = time.time()
 
@@ -217,20 +218,18 @@ def getTaskSubmission(cookie, classID, taskID):
     url = f"https://simon.sfx.vic.edu.au/WebModules/LearningAreas/LearningAreas.asmx/GetStudentTaskSubmissionInfo?{unix_milliseconds}"
     headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
 
-    data = {
-        "classId": classID,
-        "taskId": taskID,
-        "inactiveClassFlag": False
-    }
+    data = {"classId": classID, "taskId": taskID, "inactiveClassFlag": False}
 
     response = requests.post(url, headers=headers, json=data)
     responsejson = response.json()
 
-
     return responsejson
 
+
 def getTaskRubric(cookie, classID, taskID):
-    subID = getTaskSubmission(cookie, classID, taskID)['d']['TaskResult']['SubmissionID']
+    subID = getTaskSubmission(cookie, classID, taskID)["d"]["TaskResult"][
+        "SubmissionID"
+    ]
 
     url = f"https://simon.sfx.vic.edu.au/WebModules/LearningAreas/LearningAreas.asmx/GetSubmissionMarkingRubric"
     headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
@@ -238,9 +237,40 @@ def getTaskRubric(cookie, classID, taskID):
         "classId": classID,
         "taskId": taskID,
         "inactiveClassFlag": False,
-        "submissionID": subID
+        "submissionID": subID,
     }
 
     response = requests.post(url, headers=headers, json=data)
 
     return response.json()
+
+
+def getAssessmentReports(cookie, guid):
+    url = f"https://simon.sfx.vic.edu.au/WebModules/Profiles/Student/StudentAssessment/StudentProfileStudentReportsArchive.aspx?UserGUID={guid}"
+    headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
+
+    response = requests.get(url, headers=headers)
+
+    html_content = response.text
+
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    reportDivs = soup.find_all("div", class_="list-group-item clearfix")
+
+    reports = []
+
+    for div in reportDivs:
+        aElement = div.find("a")
+        spanElement = div.find("span")
+
+        report = {
+            "name": spanElement.text.strip() if spanElement else None,
+            "download": aElement.get("href") if aElement else None,
+        }
+
+        reports.append(report)
+
+    return reports
+
+
+

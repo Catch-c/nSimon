@@ -60,6 +60,32 @@
         crossorigin="anonymous"></script>
 
     {% include "partials/toasts.html" %}
+    <script>
+        function formatTimestamp(timestampString) {
+            var timestampddd = parseInt(timestampString.match(/\d+/)[0]);
+
+            var dateddd = new Date(timestampddd);
+
+            var dayddd = dateddd.getDate();
+            var monthddd = dateddd.getMonth() + 1;
+            var yearddd = dateddd.getFullYear();
+            var hoursddd = dateddd.getHours();
+            var minutesddd = dateddd.getMinutes();
+            var ampmddd = hoursddd >= 12 ? 'PM' : 'AM';
+
+            hoursddd = hoursddd % 12;
+            hoursddd = hoursddd ? hoursddd : 12;
+
+            dayddd = dayddd < 10 ? '0' + dayddd : dayddd;
+            monthddd = monthddd < 10 ? '0' + monthddd : monthddd;
+            minutesddd = minutesddd < 10 ? '0' + minutesddd : minutesddd;
+
+            // Format the date string
+            var formattedDate = `${dayddd}/${monthddd}/${yearddd} ${hoursddd}:${minutesddd} ${ampmddd}`;
+
+            return formattedDate;
+        }
+    </script>
 
 
     <!-- Update Modal -->
@@ -72,20 +98,18 @@
                 </div>
                 <div class="modal-body">
 
-                    <h6>Late to School, Leave Passes, and Sick Passes.</h6>
-                    <div>You can now click on these boxes on your <a href="/profile">Student Profile</a> to view a list of each individual absence.</div><br>
+                    <h6>Overdue Tasks.</h6>
+                    <div>You can now click the Overdue tasks button under "Class Resources" on the dashboard to get a list of your overdue task. You can also individually click a task to view more info.</div><br>
 
-                    <h6>Commendation Categories.</h6>
-                    <div>On your <a href="/profile">Student Profile</a>, commendation category counters now display the correct information. College Stars are counted as "Community and Culture".</div><br>
+                    <h6>Reports.</h6>
+                    <div>On your <a href="/profile">Student Profile</a>, you can now view a list of your reports by clicking the Reports button, including being able to click on individual ones to download them. Reports our found under the "Other" category.</div><br>
 
-                    <h6>Upcoming Activites.</h6>
-                    <div>On your <a href="/profile">Student Profile</a>, you can now view the amount of upcoming activities you have aswell as being able to click the box to view a list.</div><br>
+                    <h6>Daily Messages Info.</h6>
+                    <div>You can now click on a daily message to view information including who created it, when it was posted, and when it will end..</div><br>
 
-                    <h6>Sidebar Support.</h6>
-                    <div>Opening the sidebar and clicking Support will now open a menu with a form to fill out if you have a suggestion, bug report, or just need help.</div><br>
+                    <h6>Inbuilt Support.</h6>
+                    <div>Support is no longer done using a google form. You can now go to the sidebar, click Support and get a form which when sent will be sent directly to us with your username so we can contact you. You can select general support, bug reports, or suggestions will completing a request.</div><br>
 
-                    <h6>Full School Links.</h6>
-                    <div>Opening the sidebar and clicking School Links will now open a menu with a complete list of the College School Links apart from LRC and Newspaper resources (These will be added in a later update).</div><br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -314,6 +338,107 @@
 
     </script>
 
+    <!-- Overdue Tasks -->
+    <div class="modal fade" id="overdueModal" tabindex="-1" aria-labelledby="overdueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="overdueModalLabel">Overdue Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="overdueModalHolder">
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="overdueTaskModal" tabindex="-1" aria-labelledby="overdueTaskModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="overdueTaskModalLabel">Overdue Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box rounded">
+                        <strong>Class:</strong>
+                        <span id="overdueTaskClass">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Due Date:</strong>
+                        <span id="overdueTaskDueDate">???</span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var overdueTaskSpecificModal = new bootstrap.Modal(document.getElementById('overdueTaskModal'), {})
+
+        function openOverdueTask(title, classs, duedate) {
+            document.getElementById('overdueTaskModalLabel').textContent = title
+            document.getElementById('overdueTaskClass').textContent = classs
+            document.getElementById('overdueTaskDueDate').textContent = duedate
+            overdueTaskSpecificModal.show()
+        };
+    </script>
+
+    <!-- Daily Message Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="messageModalLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box rounded">
+                        <strong>Author:</strong>
+                        <span id="messageCreator">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>Start Date:</strong>
+                        <span id="messageStartDate">???</span>
+                    </div>
+                    <div class="box rounded">
+                        <strong>End Date:</strong>
+                        <span id="messageEndDate">???</span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var messagesModal = new bootstrap.Modal(document.getElementById('messageModal'), {})
+
+        function openDailyMessage(title, author, startDate, endDate, content) {
+            document.getElementById('messageModalLabel').textContent = title
+            document.getElementById('messageCreator').textContent = author
+            document.getElementById('messageStartDate').textContent = formatTimestamp(startDate)
+            document.getElementById('messageEndDate').textContent = formatTimestamp(endDate)
+            messagesModal.show()
+        };
+    </script>
+
     {% include "partials/navbar.html" %}
 
     <!-- Content -->
@@ -373,13 +498,20 @@
                             });
                         </script>
 
-                        <div class="box rounded">
+                        <div class="box rounded box-button" id="dashboardOverdueButton">
                             <strong>
                                 <span class="color-dot bg-danger me-2"></span>
                                 <span id="classResourcesOverdueCount">Loading</span>
                                 Overdue
                             </strong>
                         </div>
+
+                        <script>
+                            var overdueTasksModal = new bootstrap.Modal(document.getElementById('overdueModal'), {})
+                            document.getElementById("dashboardOverdueButton").addEventListener("click", function () {
+                                overdueTasksModal.show()
+                            });
+                        </script>
 
                         <div class="box rounded box-button" id="dashboardResultsButton">
                             <strong>
@@ -694,7 +826,21 @@
                 // Overdue
                 const overdueTasks = document.getElementById('classResourcesOverdueCount');
                 overdueTasks.textContent = data.d.OverDueTasksStudent.length
-
+                const overdueTaskHolder = document.getElementById('overdueModalHolder');
+                data.d.OverDueTasksStudent.forEach((task) => {
+                    const divElement = document.createElement('div');
+                    divElement.className = 'box rounded box-button';
+                    const strongElement = document.createElement('strong');
+                    const spanElement = document.createElement('span');
+                    strongElement.textContent = `${task['SubjectCode']}: `;
+                    spanElement.textContent = `${task['TaskTitle']}`;
+                    strongElement.appendChild(spanElement);
+                    divElement.appendChild(strongElement);
+                    divElement.addEventListener('click', function () {
+                        openOverdueTask(task['TaskTitle'], task['ClassCode'], task['DueDate'])
+                    });
+                    overdueTaskHolder.appendChild(divElement);
+                });
 
                 const resultTasks = document.getElementById('classResourcesResultsCount');
                 const resultTasksHolder = document.getElementById('resultsModalHolder');
@@ -864,12 +1010,12 @@
 
                                 totalDailyMessages += 1
 
-
+                                console.log(message)
 
 
 
                                 const cardDiv = document.createElement('div');
-                                cardDiv.className = 'card card-daily';
+                                cardDiv.className = 'card card-daily box-button';
 
                                 const cardBodyDiv = document.createElement('div');
                                 cardBodyDiv.className = 'card-body';
@@ -913,6 +1059,10 @@
                                 cardBodyDiv.appendChild(paragraphElement);
 
                                 cardDiv.appendChild(cardBodyDiv);
+
+                                cardDiv.addEventListener('click', function () {
+                                    openDailyMessage(message.MessageTitle, message.SubmittedByUserName, message.StartDateTime, message.EndDateTime, message.MessageContent)
+                                });
 
                                 dataContainer.appendChild(cardDiv);
 
@@ -982,7 +1132,7 @@
                 const strongElement = document.createElement('strong');
 
                 const spanDot = document.createElement('span');
-                spanDot.className = 'color-dot bg-primary me-2';
+                spanDot.className = 'color-dot bg-info me-2';
 
                 const textNode = document.createTextNode('Holiday');
 
@@ -1014,7 +1164,7 @@
                 const strongElement = document.createElement('strong');
 
                 const spanDot = document.createElement('span');
-                spanDot.className = 'color-dot bg-primary me-2';
+                spanDot.className = 'color-dot bg-info me-2';
 
                 const textNode = document.createTextNode('Weekend');
 
@@ -1046,7 +1196,7 @@
                 const strongElement = document.createElement('strong');
 
                 const spanDot = document.createElement('span');
-                spanDot.className = 'color-dot bg-primary me-2';
+                spanDot.className = 'color-dot bg-info me-2';
 
                 const textNode = document.createTextNode('Holiday');
 

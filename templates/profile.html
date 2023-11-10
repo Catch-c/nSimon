@@ -207,12 +207,7 @@
                     <h1 class="modal-title fs-5" id="reportsModalLabel">Reports</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="box rounded">
-                        <strong>Coming Soon</strong>
-                    </div>
-
-
+                <div class="modal-body" id="reportHolder">
 
                 </div>
                 <div class="modal-footer">
@@ -934,8 +929,46 @@
                 console.error('Error:', error);
             });
     </script>
-    {% include "partials/themes.html" %}
 
+    <!-- Reports -->
+    <script>
+
+        fetch(`/api/getReports`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                let container = document.getElementById('reportHolder');
+
+                for (var reportdata of data) {
+                    var divElement = document.createElement("div");
+                    divElement.classList.add("box", "rounded", "box-button");
+
+                    var strongElement = document.createElement("strong");
+
+                    strongElement.textContent = `${reportdata['name']}`;
+
+                    divElement.appendChild(strongElement);
+
+                    divElement.addEventListener('click', function () {
+                        var win = window.open(`https://simon.sfx.vic.edu.au${reportdata['download']}`, '_blank');
+                        win.focus();
+                    });
+
+                    container.appendChild(divElement);
+                }
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+    {% include "partials/themes.html" %}
 
 
 
