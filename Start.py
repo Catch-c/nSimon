@@ -28,7 +28,7 @@ flask_secret = config.get("Flask", "secret")
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "2.1.0"
+VERSION = "2.1.2"
 
 
 # --[[ API Routes ]]--
@@ -383,6 +383,16 @@ def getCommendations():
     GUID = Simon.getUserInformation(cookie)["d"]["guid"]
 
     return jsonify(Simon.getCommendations(cookie, GUID)), 200
+
+
+#       --[[ getReports () ]]--
+@app.route("/api/getReports", methods=["POST"])
+def getReports():
+    cookie = request.cookies.get("adAuthCookie")
+
+    GUID = Simon.getUserInformation(cookie)["d"]["guid"]
+
+    return jsonify(Simon.getAssessmentReports(cookie, GUID)), 200
 
 
 #       --[[ getUserProfileInfo () ]]--
