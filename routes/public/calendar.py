@@ -13,7 +13,6 @@ from flask import (
 )
 import Database as Database
 import Simon as Simon
-import VERSION as VERSION
 
 
 
@@ -36,4 +35,4 @@ def calendar():
     if not Simon.checkCookie(cookie):
         return redirect('/')
 
-    return render_template("main/calendar.html", VERSION=VERSION.VERSION)
+    return render_template("main/calendar.html", VERSION=current_app.config['VERSION'])
