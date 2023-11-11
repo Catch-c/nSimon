@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>NSimon | Login</title>
+  <!-- Bootstrap & CSS -->
+  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet" />
+  <script crossorigin="anonymous" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!--<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet"> -->
+  <link href="../static/css/styles.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet"/>
+  <!-- FavIcon -->
+  <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
+    sizes="180x180" />
+  <link href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}" rel="icon" sizes="32x32"
+    type="image/png" />
+  <link href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}" rel="icon" sizes="16x16"
+    type="image/png" />
+  <link href="{{ url_for('static', filename='favicon/site.webmanifest') }}" rel="manifest" />
+  <link color="#5bbad5" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" rel="mask-icon" />
+  <meta content="#da532c" name="msapplication-TileColor" />
+  <meta content="#3a3a3a" name="theme-color" />
+
+  <!-- Toggle Password -->
+  <script>
+    function togglePassword() {
+      var x = document.getElementById("floatingPassword");
+      var icon = document.getElementById('togglePasswordIcon');
+      if (x.type === "password") {
+          x.type = "text";
+          icon.classList.add('fa-eye'); // Add open eye icon class
+          icon.classList.remove('fa-eye-slash'); // Remove closed eye icon class
+      } else {
+          x.type = "password";
+          icon.classList.add('fa-eye-slash'); // Add closed eye icon class
+          icon.classList.remove('fa-eye'); // Remove open eye icon class
+      }
+    }
+  </script>
+
+</head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+</style>
+
+<body id="MainBody">
+  <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="firstTimeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Welcome to NSimon!</h5>
+          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+        </div>
+        <div class="modal-body">
+          <b>NSimon</b> is a custom version of SIMON for SFX that utilises their API to get your information.<br />
+          <b>Logging In</b><br />
+          You can login to NSimon using the same username (EG: JDoe21), and the same password that you would usually log
+          into SIMON or your Laptop using.
+          <br>
+          <b>Support/Suggestions</b><br />
+          If you have any suggestions, or need any support feel free to contact us on our Discord by clicking the button
+          below. You can also choose to contact us via a form found in the side bar once you are logged in. <b>It is
+            highly recommended to join our Discord to stay up to date, and get new information.</b>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-primary" href="https://discord.gg/fh2ZbUe3hK" role="button">Join Discord</a>
+          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      // Check if it's the user's first time by looking for a key in local storage
+      // Show the modal
+      var myModal = new bootstrap.Modal(document.getElementById('firstTimeModal'), {});
+      myModal.show();
+
+      // Set the key in local storage to mark the user as not a first-time visitor anymore
+      localStorage.setItem('firstTimeVisit', 'false');
+    });
+
+  </script>
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+      console.log("{{message}}")
+    </script>
+    <div aria-atomic="true" aria-live="assertive" class="toast align-items-center text-white bg-danger border-0"
+      role="alert">
+      <div class="d-flex">
+        <div class="toast-body">
+          Your login credentials are wrong!
+        </div>
+        <button aria-label="Close" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          type="button"></button>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+  <script>
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    var toastList = toastElList.map(function (toastEl) {
+      return new bootstrap.Toast(toastEl)
+    })
+
+    toastList.forEach(toast => toast.show());
+
+  </script>
+  <div class="container-fluid text-center hero-section pt-5">
+    <h1 class="display-2" style="font-weight: 600;">NSimon</h1>
+      <span>These are the same login details you use for actual SIMON and to login to your laptop!</span>
+      <br><br>
+
+      <main class="form-signin" style="color: black">
+        <form action="/login" method="post">
+          <div class="form-floating">
+            <input type="text" class="form-control textInput" id="floatingInput" placeholder="SIMON Username" name="username">
+            <label for="floatingInput">Username</label>
+          </div>
+          <div class="form-floating password-container">
+            <input type="password" class="form-control passwordInput" id="floatingPassword" placeholder="Password" name="password">
+            <label for="floatingPassword">Password</label>
+            <span class="password-toggle" onclick="togglePassword()">
+                <i class="fa fa-eye-slash" id="togglePasswordIcon"></i>
+            </span>
+          </div>
+          <div class="checkbox mb-3">
+            <input type="checkbox" class="greeting" id="floatingrememberme" name="rememberme"> <span>Remember Me</span>
+          </div>
+
+          <br>
+
+          <button class="btn btn-dark" id="loginButton" type="submit">Login</button>
+          
+        </form>
+        <br>
+        <span>{{VERSION}}</span>
+        
+      </main>
+
+
+
+  </div>
+  <h5 class="creditTag">Made by Catch & Kavenci</h5>
+  <div id="dmt-button">
+    <button class="dmt" onclick="toggleTheme()"> Toggle Light Mode
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const loginButton = document.getElementById('loginButton');
+
+      loginButton.addEventListener('click', function (event) {
+        setTimeout(() => {
+          this.disabled = true;
+          this.textContent = "Logging you in..."
+        }, 100);  // 100 milliseconds delay
+      });
+    });
+  </script>
+  <script>
+    let setDarkMode = localStorage.getItem('dark');
+    if(setDarkMode === 'on') {
+      var element = document.body;
+      document.documentElement.setAttribute('data-theme', 'dark');
+      console.log('Dark mode is on')
+    }
+  </script>
+  <script>
+    function toggleTheme() {
+      setDarkMode = localStorage.getItem('dark');
+      if(setDarkMode !== "on") {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        // Set the value of the itwm to "on" when dark mode is on
+        setDarkMode = localStorage.setItem('dark', 'on');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        // Set the value of the item to  "null" when dark mode if off
+        setDarkMode = localStorage.setItem('dark', null);
+      }
+    }
+    document.addEventListener('keydown', function(event) {
+        // Check if the key combination is "Ctrl + D" (or "Command + D" on Mac)
+            if (event.ctrlKey && event.altKey && event.key === 'd') {
+                toggleTheme(); // Toggle dark mode when the shortcut is triggered
+            }
+        });
+  </script>
+</body>
+
+</html>
