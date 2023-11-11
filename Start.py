@@ -73,6 +73,8 @@ flask_secret = config.get("Flask", "secret")
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
+app.config['VERSION'] = '2.2.1'
+
 
 
 

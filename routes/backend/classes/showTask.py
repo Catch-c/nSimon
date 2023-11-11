@@ -13,7 +13,6 @@ from flask import (
 )
 import Database as Database
 import Simon as Simon
-import VERSION as VERSION
 
 
 
@@ -35,4 +34,4 @@ def classesTaskShow(classID, taskID):
     if not Simon.checkCookie(cookie):
         return redirect('/')
 
-    return render_template("classes/classesShowTask.html", VERSION=VERSION.VERSION, classID=classID, taskID=taskID)
+    return render_template("classes/classesShowTask.html", VERSION=current_app.config['VERSION'], classID=classID, taskID=taskID)

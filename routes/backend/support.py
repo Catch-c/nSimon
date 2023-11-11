@@ -13,7 +13,6 @@ from flask import (
 )
 import Database as Database
 import Simon as Simon
-import VERSION as VERSION
 import requests, json
 
 

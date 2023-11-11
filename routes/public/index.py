@@ -13,7 +13,6 @@ from flask import (
 )
 import Database as Database
 import Simon as Simon
-import VERSION as VERSION
 
 
 
@@ -32,4 +31,4 @@ def index():
     if cookie:
         return redirect('/dashboard')
 
-    return render_template('main/index.html', VERSION=VERSION.VERSION)
+    return render_template('main/index.html', VERSION=current_app.config['VERSION'])

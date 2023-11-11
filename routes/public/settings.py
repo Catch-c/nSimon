@@ -13,7 +13,6 @@ from flask import (
 )
 import Database as Database
 import Simon as Simon
-import VERSION as VERSION
 
 
 
@@ -35,4 +34,4 @@ def settings():
     if not Simon.checkCookie(cookie):
         return redirect('/')
 
-    return render_template("main/settings.html", VERSION=VERSION.VERSION)
+    return render_template("main/settings.html", VERSION=current_app.config['VERSION'])
