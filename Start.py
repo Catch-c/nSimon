@@ -28,7 +28,7 @@ flask_secret = config.get("Flask", "secret")
 # --[[ Flask Setup ]]--
 app = Flask(__name__)
 app.secret_key = flask_secret
-VERSION = "2.1.2"
+VERSION = "2.2.0"
 
 
 # --[[ API Routes ]]--
@@ -582,6 +582,18 @@ def classesShow(classID):
         return redirect(url_for("home"))
 
     return render_template("classesShow.html", VERSION=VERSION, classID=classID)
+
+@app.route("/classes/<classID>/task/<taskID>", methods=["GET"])
+def classesTaskShow(classID, taskID):
+    cookie = request.cookies.get("adAuthCookie")
+
+    if not cookie:
+        return redirect(url_for("home"))
+
+    if not Simon.checkCookie(cookie):
+        return redirect(url_for("home"))
+
+    return render_template("classesShowTask.html", VERSION=VERSION, classID=classID, taskID=taskID)
 
 
 # --[[ Start ]]--

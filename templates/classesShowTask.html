@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes | NSimon {{VERSION}}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/colours.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/navbar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/sidebar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/cards.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/misc.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/modal.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- FavIcon -->
+    <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
+        sizes="180x180" />
+    <link href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}" rel="icon" sizes="32x32"
+        type="image/png" />
+    <link href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}" rel="icon" sizes="16x16"
+        type="image/png" />
+    <link href="{{ url_for('static', filename='favicon/site.webmanifest') }}" rel="manifest" />
+    <link color="#5bbad5" href="{{ url_for('static', filename='favicon/safari-pinned-tab.svg') }}" rel="mask-icon" />
+    <meta content="#da532c" name="msapplication-TileColor" />
+    <meta content="#3a3a3a" name="theme-color" />
+
+    <!-- Session Setting -->
+    <script>
+        fetch('/api/getSessionSetting', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(sessionSetting => {
+                localStorage.setItem('sessionSetting', sessionSetting);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+</head>
+
+<body>
+
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    {% include "partials/toasts.html" %}
+
+
+    {% include "partials/navbar.html" %}
+
+    <!-- Content -->
+    <div class="container-fluid main-content">
+        <div class="row">
+
+            <!-- Left Column (List of classes) -->
+            <div class="col-12 col-sm-2 col-custom order-2 order-sm-first">
+
+                <!-- Class List -->
+                <div class="card card-custom-large">
+
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Classes</span>
+                            <span class="cardSubtitle"></span>
+                        </h5>
+                    </div>
+
+                    <!-- Contents -->
+                    <div class="card-body" id='classSideHolder'>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-sm-10 col-custom order-2">
+
+                <!-- Class List -->
+                <div class="card card-custom-large">
+
+
+
+                    <!-- Contents -->
+                    <div class="card-body" id="taskInfoHolder">
+
+                        <div class="box rounded box-button" id="backToClass">
+                            <strong>Back to Class</strong>
+                        </div>
+
+
+                        <script>
+                            document.getElementById("backToClass").addEventListener("click", function () {
+                                window.location.href = `https://nsimon.kavenci.com/classes/{{classID}}`;
+                            });
+                        </script>
+
+                        <div class="box rounded">
+                            <strong>
+                                Status:
+                            </strong>
+                            <span id="taskStatus"></span>
+                        </div>
+
+                        <div class="box rounded">
+                            <strong>
+                                Title:
+                            </strong>
+                            <span id="taskTitle"></span>
+                        </div>
+
+                        <div class="box rounded">
+                            <strong>
+                                Topic:
+                            </strong>
+                            <span id="taskTopic"></span>
+                        </div>
+
+                        <div class="box rounded">
+                            <strong>
+                                Description:
+                            </strong>
+                            <span id="taskDescription"></span>
+                        </div>
+
+                        <div class="box rounded">
+                            <strong>
+                                Start Date:
+                            </strong>
+                            <span id="taskStartDate"></span>
+                        </div>
+
+                        <div class="box rounded">
+                            <strong>
+                                Due Date:
+                            </strong>
+                            <span id="taskDueDate"></span>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+    <!-- Script Initialisations -->
+
+    <!-- Cookie Handler -->
+    <script>
+        function getCookie(cookieName) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(cookieName + '=')) {
+                    return cookie.substring(cookieName.length + 1);
+                }
+            }
+            return null;
+        }
+
+        const authCookie = getCookie('adAuthCookie');
+        const campus = getCookie('campus');
+        const outdatedLogin = getCookie('loginVer');
+
+        if (authCookie == null) {
+            window.location.href = '/logout';
+        }
+        if (outdatedLogin != '1.1') {
+            window.location.href = '/logout';
+        }
+
+        if (campus == null) {
+            window.location.href = '/logout';
+        }
+
+    </script>
+
+    <!-- Variables -->
+    <script>
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        let currentDate = new Date();
+        let currentISOString = currentDate.toISOString();
+        let unixTimestamp = currentDate.getTime();
+        let unixTimestampInSeconds = Math.floor(unixTimestamp / 1000);
+        var totalDailyMessages = 0
+        var totalNewDailyMessages = 0
+    </script>
+
+    <!-- Functions -->
+
+
+
+
+    <!-- Weather -->
+
+
+
+
+    <!-- Get Classes -->
+    <script>
+
+        function createRubricContent(criteria) {
+            let contentHtml = '';
+
+            criteria.RubricContent.forEach(content => {
+                contentHtml += `<strong>${content.Score}:</strong> ${content.Content}<br>`;
+            });
+
+            return contentHtml;
+        }
+
+        // Function to create HTML elements for each row in the table
+        function createTableRow(criteria) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${criteria.Criteria}</td>
+                <td>${criteria.MaxScore}</td>
+                <td>${criteria.CriteriaMark}</td>
+                <td>${createRubricContent(criteria)}</td>
+            `;
+
+            return row;
+        }
+
+        // Function to create the rubric table
+        function createRubricTable(data) {
+            const table = document.createElement('table');
+
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <th>Criteria</th>
+                <th>Max Score</th>
+                <th>Criteria Mark</th>
+                <th>Rubric Content</th>
+            `;
+            table.appendChild(headerRow);
+
+            // Create table rows
+            data.d.MarkingRubricCriteria.forEach(criteria => {
+                console.log(criteria)
+                const row = createTableRow(criteria);
+                table.appendChild(row);
+            });
+
+            return table;
+        }
+
+        function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+
+        fetch(`/api/getClasses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+
+                const classContainer = document.getElementById('classSideHolder');
+                for (const classS of data.d.Types[0].TimetabledClasses) {
+
+
+
+                    const divElement = document.createElement('div');
+                    divElement.className = 'box rounded box-button';
+                    const strongElement = document.createElement('strong');
+                    strongElement.textContent = `${classS['ClassCode']}`;
+                    divElement.appendChild(strongElement);
+                    divElement.addEventListener('click', function () {
+                        window.location.href = `/classes/${classS['ClassID']}`;
+                    });
+                    classContainer.appendChild(divElement);
+                }
+
+                let sentData = {
+                    taskID: "{{taskID}}",
+                    classID: "{{classID}}",
+                };
+                fetch(`/api/getResultInfo`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(sentData)
+                })
+                    .then(response => response.json())
+                    .then(taskData => {
+                        const taskInfoHolder = document.getElementById('taskInfoHolder')
+
+
+                        document.getElementById('taskTitle').textContent = taskData['d']['TaskInfo']['Title'];
+                        document.getElementById('taskTopic').textContent = taskData['d']['TaskInfo']['Topic'];
+                        document.getElementById('taskDescription').textContent = taskData['d']['TaskInfo']['Description'];
+                        document.getElementById('taskStartDate').textContent = formatTimestamp(taskData['d']['TaskInfo']['StartDate']);
+                        document.getElementById('taskDueDate').textContent = formatTimestamp(taskData['d']['TaskInfo']['EndDate']);
+
+                        data.d.ResultTasksStudent.forEach((classs) => {
+                            classs['Tasks'].forEach((task) => {
+                                if (task['TaskID'] == "{{taskID}}") {
+                                    document.getElementById('taskStatus').textContent = "Submitted"
+                                }
+                            });
+                        });
+
+                        data.d.OverDueTasksStudent.forEach((task) => {
+                            if (task['TaskID'] == "{{taskID}}") {
+                                document.getElementById('taskStatus').textContent = "Overdue"
+                            }
+                        });
+
+                        data.d.DueTasksStudent.forEach((task) => {
+                            if (task['TaskID'] == "{{taskID}}") {
+                                document.getElementById('taskStatus').textContent = "Due"
+                            }
+                        });
+
+                        if (taskData['d']['TaskResult']['FinalResult']) {
+                            const divElement = document.createElement('div');
+                            divElement.className = 'box rounded';
+                            const strongElement = document.createElement('strong');
+                            const spanElement = document.createElement('span');
+                            strongElement.textContent = `Final Result: `;
+                            spanElement.textContent = `${taskData['d']['TaskResult']['FinalResult']}`;
+                            divElement.appendChild(strongElement);
+                            divElement.appendChild(spanElement);
+
+                            taskInfoHolder.appendChild(divElement);
+                        }
+
+                        if (taskData['d']['MarkingSummaryInfo']['MarkingNotes']) {
+                            const divElement = document.createElement('div');
+                            divElement.className = 'box rounded';
+                            const strongElement = document.createElement('strong');
+                            const spanElement = document.createElement('span');
+                            strongElement.textContent = `Feedback: `;
+                            spanElement.textContent = `${taskData['d']['MarkingSummaryInfo']['MarkingNotes']}`;
+                            divElement.appendChild(strongElement);
+                            divElement.appendChild(spanElement);
+
+                            taskInfoHolder.appendChild(divElement);
+                        }
+
+                        fetch(`/api/getTaskRubric`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(sentData)
+                        })
+                            .then(response => response.json())
+                            .then(taskRubricData => {
+
+
+                            })
+                            .catch(error => {
+                            });
+
+
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+    <script>
+        function formatTimestamp(timestampString) {
+            var timestampddd = parseInt(timestampString.match(/\d+/)[0]);
+
+            var dateddd = new Date(timestampddd);
+
+            var dayddd = dateddd.getDate();
+            var monthddd = dateddd.getMonth() + 1;
+            var yearddd = dateddd.getFullYear();
+            var hoursddd = dateddd.getHours();
+            var minutesddd = dateddd.getMinutes();
+            var ampmddd = hoursddd >= 12 ? 'PM' : 'AM';
+
+            hoursddd = hoursddd % 12;
+            hoursddd = hoursddd ? hoursddd : 12;
+
+            dayddd = dayddd < 10 ? '0' + dayddd : dayddd;
+            monthddd = monthddd < 10 ? '0' + monthddd : monthddd;
+            minutesddd = minutesddd < 10 ? '0' + minutesddd : minutesddd;
+
+            // Format the date string
+            var formattedDate = `${dayddd}/${monthddd}/${yearddd} ${hoursddd}:${minutesddd} ${ampmddd}`;
+
+            return formattedDate;
+        }
+    </script>
+
+
+    <script>
+
+
+    </script>
+
+
+
+
+    {% include "partials/themes.html" %}
+
+
+</body>
+
+</html>

@@ -1,19 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>NSimon | Student Classes</title>
-    <!-- Bootstrap & CSS -->
-    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet" />
-    <script crossorigin="anonymous" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes | NSimon {{VERSION}}</title>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 
-    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/colours.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/navbar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/sidebar.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/cards.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/misc.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/modal.css') }}" rel="stylesheet" type="text/css">
 
     <!-- FavIcon -->
     <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
@@ -27,227 +33,220 @@
     <meta content="#da532c" name="msapplication-TileColor" />
     <meta content="#3a3a3a" name="theme-color" />
 
+    <!-- Session Setting -->
+    <script>
+        fetch('/api/getSessionSetting', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(sessionSetting => {
+                localStorage.setItem('sessionSetting', sessionSetting);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
 </head>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
-</style>
 
-<body id="MainBody">
+<body>
+
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    {% include "partials/toasts.html" %}
+
+    <!-- Due Tasks -->
+    <div class="modal fade" id="dueModal" tabindex="-1" aria-labelledby="dueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dueModalLabel">Due Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="dueModalHolder">
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Result Tasks -->
+    <div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="resultsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="resultsModalLabel">Results Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="resultsModalHolder">
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overdue Tasks -->
+    <div class="modal fade" id="overdueModal" tabindex="-1" aria-labelledby="overdueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="overdueModalLabel">Overdue Tasks</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="overdueModalHolder">
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% include "partials/navbar.html" %}
 
+    <!-- Content -->
+    <div class="container-fluid main-content">
+        <div class="row">
 
-    <div class="mainBody container-fluid h-100">
-        <div class="row h-100 pt-3">
-            <!-- General Information -->
+            <!-- Left Column (List of classes) -->
+            <div class="col-12 col-sm-2 col-custom order-2 order-sm-first">
 
-            <!-- Monday -->
-            <div class="col-md-2 col-12p-3 order-2 order-md-1">
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Classes</h4>
+                <!-- Class List -->
+                <div class="card card-custom-large">
 
-                    <!-- Events  -->
-                    <div id="classList">
-                        <div class="small-box rounded p-3 mb-2" id="classesLOADING">
-                            <span class="class-name">Classes Loading...</span>
-                        </div>
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Classes</span>
+                            <span class="cardSubtitle"></span>
+                        </h5>
+                    </div>
 
+                    <!-- Contents -->
+                    <div class="card-body" id='classSideHolder'>
 
                     </div>
 
                 </div>
+
             </div>
 
-            <div class="col-md-10 col-12p-3 order-2 order-md-1">
-                <div class="big-box rounded p-3 mb-2">
-                    <h4 class="pageSubtitle" style="font-weight: 600;">Class Information</h4>
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name">Class: <span style="font-weight: normal" id="className">LOADING</span>
-                    </div>
-                    <div class="small-box rounded p-3 mb-2">
-                        <span class="class-name">Teacher: <span style="font-weight: normal"
-                                id="classTeacher">LOADING</span>
-                    </div>
+            <div class="col-12 col-sm-10 col-custom order-2">
 
-                    <!-- Due -->
-                    <div class="small-box rounded p-3 mb-2" id="dueTasksBox" style="position: relative;">
-                        <span class="color-dot bg-primary me-2"></span>
-                        <span class="class-name" id="dueTasks">0 Due</span>
-                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
-                        <div style="display: none" id="dueTasksExpand">
+                <!-- Class List -->
+                <div class="card card-custom-large">
+
+
+
+                    <!-- Contents -->
+                    <div class="card-body">
+
+                        <div class="box rounded">
+                            <strong>Class Info</strong><br>
+                            <span>Class: <span id="classDescription"></span> (<span id="classCode"></span>)</span><br>
+                            <span>Teacher(s): <span id="classTeacher"></span></span>
                         </div>
-                    </div>
-                    <script>
-                        $(document).ready(function () {
-                            $('#dueTasksBox').on('click', function () {
-                                var dueTasksExpand = $('#dueTasksExpand');
-                                var arrow = $(this).find('.arrow');
 
-                                if (dueTasksExpand.css('display') === 'none') {
-                                    dueTasksExpand.css('display', 'block');
-
-                                    arrow.removeClass('bi-arrow-down-circle');
-                                    arrow.addClass('bi-arrow-up-circle');
-
-                                    setTimeout(() => {
-                                        dueTasksExpand.addClass('visible');
-                                    }, 1); // small delay to allow for display:block to take effect
-                                } else {
-                                    dueTasksExpand.removeClass('visible');
-                                    arrow.removeClass('bi-arrow-up-circle');
-                                    arrow.addClass('bi-arrow-down-circle');
-                                    setTimeout(() => {
-                                        dueTasksExpand.css('display', 'none');
-                                    }, 300); // delay to allow for the fade out transition to complete
-                                }
-                            });
-                        });
-
-
-                    </script>
-
-                    <!-- Overdue -->
-                    <div class="small-box rounded p-3 mb-2" id="overdueTasksBox" style="position: relative;">
-                        <span class="color-dot bg-danger me-2"></span>
-                        <span class="class-name" id="overdueTasks">0 Overdue</span>
-                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
-                        <div style="display: none" id="overdueTasksExpand">
+                        <div class="box rounded box-button" id="dashboardDueButton">
+                            <strong>
+                                <span class="color-dot bg-primary me-2"></span>
+                                <span id="classResourcesDueCount">Loading</span>
+                                Due
+                            </strong>
                         </div>
-                    </div>
-                    <script>
-                        $(document).ready(function () {
-                            $('#overdueTasksBox').on('click', function () {
-                                var dueTasksExpand = $('#overdueTasksExpand');
-                                var arrow = $(this).find('.arrow');
 
-                                if (dueTasksExpand.css('display') === 'none') {
-                                    dueTasksExpand.css('display', 'block');
-
-                                    arrow.removeClass('bi-arrow-down-circle');
-                                    arrow.addClass('bi-arrow-up-circle');
-
-                                    setTimeout(() => {
-                                        dueTasksExpand.addClass('visible');
-                                    }, 1); // small delay to allow for display:block to take effect
-                                } else {
-                                    dueTasksExpand.removeClass('visible');
-                                    arrow.removeClass('bi-arrow-up-circle');
-                                    arrow.addClass('bi-arrow-down-circle');
-                                    setTimeout(() => {
-                                        dueTasksExpand.css('display', 'none');
-                                    }, 300); // delay to allow for the fade out transition to complete
-                                }
+                        <script>
+                            var dueTasksModal = new bootstrap.Modal(document.getElementById('dueModal'), {})
+                            document.getElementById("dashboardDueButton").addEventListener("click", function () {
+                                dueTasksModal.show()
                             });
-                        });
+                        </script>
 
-
-                    </script>
-
-                    <!-- Results -->
-                    <div class="small-box rounded p-3 mb-2" id="resultTasksBox" style="position: relative;">
-                        <span class="color-dot bg-success me-2"></span>
-                        <span class="class-name" id="resultTasks">Results are coming soon...</span>
-                        <i class="arrow bi bi-arrow-down-circle" style="position: absolute; right: 10px;"></i>
-                        <div style="display: none" id="resultTasksExpand">
-                            <
+                        <div class="box rounded box-button" id="dashboardOverdueButton">
+                            <strong>
+                                <span class="color-dot bg-danger me-2"></span>
+                                <span id="classResourcesOverdueCount">Loading</span>
+                                Overdue
+                            </strong>
                         </div>
-                    </div>
-                    <script>
-                        $(document).ready(function () {
-                            $('#resultTasksBox').on('click', function () {
-                                var dueTasksExpand = $('#resultTasksExpand');
-                                var arrow = $(this).find('.arrow');
 
-                                if (dueTasksExpand.css('display') === 'none') {
-                                    dueTasksExpand.css('display', 'block');
-
-                                    arrow.removeClass('bi-arrow-down-circle');
-                                    arrow.addClass('bi-arrow-up-circle');
-
-                                    setTimeout(() => {
-                                        dueTasksExpand.addClass('visible');
-                                    }, 1); // small delay to allow for display:block to take effect
-                                } else {
-                                    dueTasksExpand.removeClass('visible');
-                                    arrow.removeClass('bi-arrow-up-circle');
-                                    arrow.addClass('bi-arrow-down-circle');
-                                    setTimeout(() => {
-                                        dueTasksExpand.css('display', 'none');
-                                    }, 300); // delay to allow for the fade out transition to complete
-                                }
+                        <script>
+                            var overdueTasksModal = new bootstrap.Modal(document.getElementById('overdueModal'), {})
+                            document.getElementById("dashboardOverdueButton").addEventListener("click", function () {
+                                overdueTasksModal.show()
                             });
-                        });
+                        </script>
 
+                        <div class="box rounded box-button" id="dashboardResultsButton">
+                            <strong>
+                                <span class="color-dot bg-success me-2"></span>
+                                <span id="classResourcesResultsCount">Loading</span>
+                                Results
+                            </strong>
+                        </div>
 
-                    </script>
+                        <script>
+                            var resultTasksModal = new bootstrap.Modal(document.getElementById('resultsModal'), {})
+                            document.getElementById("dashboardResultsButton").addEventListener("click", function () {
+                                resultTasksModal.show()
+                            });
+                        </script>
+
+                    </div>
 
                 </div>
+
             </div>
-
-
-
-
 
         </div>
 
+
+
+
     </div>
     </div>
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
-    <!-- Variables -->
-    <script>
-        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Days of the Week
-        let currentDate = new Date(); // Current Date
-        let currentISOString = currentDate.toISOString();
-        let unixTimestamp = currentDate.getTime(); // Current UNIX Timestamp
-        let unixTimestampInSeconds = Math.floor(unixTimestamp / 1000); // Current UNIX Timestamp in Seconds
-        var totalDailyMessages = 0
-    </script>
 
 
-    <!-- Time/Data Updated -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function updateDateAndTime() {
-                const today = new Date();
-
-                // Update Date
-                const day = String(today.getDate()).padStart(2, '0');
-                const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                const year = today.getFullYear();
-                const formattedDate = `${day}/${month}/${year}`;
-                document.getElementById("currentDate").textContent = formattedDate;
-
-                // Update Time
-                let hours = today.getHours();
-                const minutes = String(today.getMinutes()).padStart(2, '0');
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-
-                // Convert 24-hour time to 12-hour time format
-                hours = hours % 12;
-                // If hour is 0 (which would be 12 in 24-hour time), set it to 12
-                hours = hours ? hours : 12;
-                const formattedTime = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
-                document.getElementById("currentTime").textContent = formattedTime;
-            }
-
-            // Call the function to initialize the display
-            updateDateAndTime();
-
-            // Set an interval to update the time every minute
-            setInterval(updateDateAndTime, 60 * 1000); // 60 * 1000ms = 1 minute
-        });
-    </script>
+    <!-- Bootstrap JS & Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 
 
-    <!-- Functions -->
 
-    <!-- Get Cookie/Campus -->
+
+
+
+
+
+    <!-- Script Initialisations -->
+
+    <!-- Cookie Handler -->
     <script>
         function getCookie(cookieName) {
             const cookies = document.cookie.split(';');
@@ -262,8 +261,12 @@
 
         const authCookie = getCookie('adAuthCookie');
         const campus = getCookie('campus');
+        const outdatedLogin = getCookie('loginVer');
 
         if (authCookie == null) {
+            window.location.href = '/logout';
+        }
+        if (outdatedLogin != '1.1') {
             window.location.href = '/logout';
         }
 
@@ -273,10 +276,35 @@
 
     </script>
 
-
-
-    <!-- Classes -->
+    <!-- Variables -->
     <script>
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        let currentDate = new Date();
+        let currentISOString = currentDate.toISOString();
+        let unixTimestamp = currentDate.getTime();
+        let unixTimestampInSeconds = Math.floor(unixTimestamp / 1000);
+        var totalDailyMessages = 0
+        var totalNewDailyMessages = 0
+    </script>
+
+    <!-- Functions -->
+
+
+
+
+    <!-- Weather -->
+
+
+
+
+    <!-- Get Classes -->
+    <script>
+
+        function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+
         fetch(`/api/getClasses`, {
             method: 'POST',
             headers: {
@@ -286,96 +314,106 @@
             .then(response => response.json())
             .then(data => {
 
-
-                // GETTING CLASSES
-                const classContainer = document.getElementById('classList');
+                const classContainer = document.getElementById('classSideHolder');
                 for (const classS of data.d.Types[0].TimetabledClasses) {
 
-                    const smallBox = document.createElement('div');
-                    smallBox.classList.add('small-box', 'rounded', 'p-3', 'mb-2');
 
-                    const spanElement = document.createElement('span');
-                    spanElement.classList.add('class-name');
 
-                    spanElement.textContent = classS['ClassCode'];
-
-                    smallBox.appendChild(spanElement);
-
-                    smallBox.addEventListener('click', function () {
+                    const divElement = document.createElement('div');
+                    divElement.className = 'box rounded box-button';
+                    const strongElement = document.createElement('strong');
+                    strongElement.textContent = `${classS['ClassCode']}`;
+                    divElement.appendChild(strongElement);
+                    divElement.addEventListener('click', function () {
                         window.location.href = `/classes/${classS['ClassID']}`;
                     });
+                    classContainer.appendChild(divElement);
 
-
-                    classContainer.appendChild(smallBox)
 
                 }
 
-                const divElement = document.getElementById('classesLOADING');
-                divElement.style.display = 'none';
-
-
-                // GETTING CLASS INFORMATION
-                document.title = "New Title";
                 for (const classS of data.d.Types[0].TimetabledClasses) {
                     if (classS['ClassID'] == "{{classID}}") {
-                        document.title = `NSimon | ${classS['ClassCode']}`;
-
-                        let editElement = document.getElementById('className');
-                        editElement.textContent = `${classS['SubjectDescription']} (${classS['ClassCode']})`;
-
-                        editElement = document.getElementById('classTeacher');
-                        editElement.textContent = classS['Teachers'];
-
-                        // Due
-                        const dueTasks = document.getElementById('dueTasks');
-                        const dueContainer = document.getElementById('dueTasksExpand');
-                        let dueAmount = 0
-                        for (const task of data.d.DueTasksStudent) {
-                            if (task['ClassCode'] == classS['ClassCode']) {
-                                dueAmount += 1
-                                var spanElement = document.createElement('span');
-                                spanElement.className = 'ms-2';
-
-                                var boldElement = document.createElement('b');
-                                boldElement.textContent = task['TaskTitle'];
-                                spanElement.appendChild(boldElement);
-
-
-                                var brElement = document.createElement('br');
-                                spanElement.append(brElement);
-
-                                dueContainer.appendChild(spanElement);
-                            }
-
-                        }
-                        dueTasks.textContent = dueAmount + ' Due'
-
-                        // Overdue
-                        const overdueTasks = document.getElementById('overdueTasks');
-                        const overdueContainer = document.getElementById('overdueTasksExpand');
-                        let overdueAmount = 0
-                        for (const task of data.d.OverDueTasksStudent) {
-                            if (task['ClassCode'] == classS['ClassCode']) {
-                                overdueAmount += 1
-                                var spanElement = document.createElement('span');
-                                spanElement.className = 'ms-2';
-
-                                var boldElement = document.createElement('b');
-                                boldElement.textContent = task['TaskTitle'];
-                                spanElement.appendChild(boldElement);
-
-
-                                var brElement = document.createElement('br');
-                                spanElement.append(brElement);
-
-                                overdueContainer.appendChild(spanElement);
-                            }
-                        }
-
-                        overdueTasks.textContent = overdueAmount + ' Overdue'
-
+                        console.log(classS)
+                        document.getElementById('classDescription').textContent = classS['SubjectDescription'];
+                        document.getElementById('classCode').textContent = classS['ClassCode'];
+                        document.getElementById('classTeacher').textContent = classS['Teachers'];
                     }
                 }
+
+                let dueTaskNumber = 0
+                const dueTasks = document.getElementById('classResourcesDueCount');
+                const dueTaskHolder = document.getElementById('dueModalHolder');
+                data.d.DueTasksStudent.forEach((task) => {
+                    if (task['SubjectClassID'] == "{{classID}}") {
+                        console.log(task)
+                        dueTaskNumber += 1
+                        const divElement = document.createElement('div');
+                        divElement.className = 'box rounded box-button';
+                        const strongElement = document.createElement('strong');
+                        const spanElement = document.createElement('span');
+                        strongElement.textContent = `${task['SubjectCode']}: `;
+                        spanElement.textContent = `${task['TaskTitle']}`;
+                        strongElement.appendChild(spanElement);
+                        divElement.appendChild(strongElement);
+                        divElement.addEventListener('click', function () {
+                            var urlToOpen = `https://nsimon.kavenci.com/classes/{{classID}}/task/${task['TaskID']}`;
+                            openInNewTab(urlToOpen);
+                        });
+                        dueTaskHolder.appendChild(divElement);
+
+                    }
+                });
+                dueTasks.textContent = dueTaskNumber
+
+                let overdueTaskNumber = 0
+                const overdueTasks = document.getElementById('classResourcesOverdueCount');
+                const overdueTaskHolder = document.getElementById('overdueModalHolder');
+                data.d.OverDueTasksStudent.forEach((task) => {
+                    if (task['SubjectClassID'] == "{{classID}}") {
+                        overdueTaskNumber += 1
+                        const divElement = document.createElement('div');
+                        divElement.className = 'box rounded box-button';
+                        const strongElement = document.createElement('strong');
+                        const spanElement = document.createElement('span');
+                        strongElement.textContent = `${task['SubjectCode']}: `;
+                        spanElement.textContent = `${task['TaskTitle']}`;
+                        strongElement.appendChild(spanElement);
+                        divElement.appendChild(strongElement);
+                        divElement.addEventListener('click', function () {
+                            var urlToOpen = `https://nsimon.kavenci.com/classes/{{classID}}/task/${task['TaskID']}`;
+                            openInNewTab(urlToOpen);
+                        });
+                        overdueTaskHolder.appendChild(divElement);
+                    }
+                });
+                overdueTasks.textContent = overdueTaskNumber
+
+                let resultTaskNumber = 0
+                const resultTasks = document.getElementById('classResourcesResultsCount');
+                const resultTasksHolder = document.getElementById('resultsModalHolder');
+                data.d.ResultTasksStudent.forEach((classs) => {
+                    if (classs['ID'] == "{{classID}}") {
+                        classs['Tasks'].forEach((task) => {
+                            resultTaskNumber += 1
+                            const divElement = document.createElement('div');
+                            divElement.className = 'box rounded box-button';
+                            const strongElement = document.createElement('strong');
+                            const spanElement = document.createElement('span');
+                            strongElement.textContent = `${classs['SubjectCode']}: `;
+                            spanElement.textContent = `${task['Title']}`;
+                            strongElement.appendChild(spanElement);
+                            divElement.appendChild(strongElement);
+                            divElement.addEventListener('click', function () {
+                                var urlToOpen = `https://nsimon.kavenci.com/classes/{{classID}}/task/${task['TaskID']}`;
+                                openInNewTab(urlToOpen);
+                            });
+                            resultTasksHolder.appendChild(divElement);
+                        });
+                    }
+                });
+                resultTasks.textContent = resultTaskNumber
+
 
 
             })
@@ -387,15 +425,8 @@
 
 
 
-    <!-- Tooltips -->
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    </script>
-    <!-- Themes -->
     {% include "partials/themes.html" %}
+
 
 </body>
 
