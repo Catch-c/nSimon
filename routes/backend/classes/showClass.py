@@ -34,4 +34,4 @@ def classesShow(classID):
     if not Simon.checkCookie(cookie):
         return redirect('/')
 
-    return render_template("classes/classesShow.html", VERSION=current_app.config['VERSION'], classID=classID)
+    return render_template("classes/classesShow.html", classID=classID)

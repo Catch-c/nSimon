@@ -34,4 +34,4 @@ def settings():
     if not Simon.checkCookie(cookie):
         return redirect('/')
 
-    return render_template("main/settings.html", VERSION=current_app.config['VERSION'])
+    return render_template("main/settings.html")
