@@ -96,13 +96,13 @@
 <!-- Navbar -->
 <nav class="navbar navbar-custom navbar-dark">
     <div class="container-fluid">
-        <div class="navbar-brand" sr>
+        <a href="/dashboard" class="navbar-brand" sr>
             <strong id="navbarNameHolder">
                 <span id="navbarGreeting">Hi</span>,
                 <span id="navbarName">Guest</span>.
             </strong>
             <small id="navbarTime">6/11/2023 10:11AM</small>
-        </div>
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
             aria-controls="sidebar">
@@ -182,13 +182,28 @@
             <span class="sidebarTitle">Version</span><br>
 
             <!-- General Resources -->
-            <span class="sidebarSubtitle">{{VERSION}}</span><br>
+            <span class="sidebarSubtitle" id="navbarVersion">??.??.??</span><br>
 
 
         </div>
     </div>
 </div>
 
+<script>
+    fetch('/api/getVersion', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.text())
+        .then(version => {
+            document.getElementById('navbarVersion').textContent = version
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+</script>
 
 <!-- Support Modal -->
 <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
@@ -213,8 +228,8 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" placeholder="Leave a comment here"
-                            id="supportTitle" name="supportTitle" required></textarea>
+                        <textarea class="form-control" placeholder="Leave a comment here" id="supportTitle"
+                            name="supportTitle" required></textarea>
                         <label for="supportTitle">Request Title</label>
                     </div>
 

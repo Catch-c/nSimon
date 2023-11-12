@@ -19,25 +19,25 @@ import Simon as Simon
 
 
 # --[[ Blueprint Setup ]]--
-setMusicBlueprint = Blueprint('setMusicBlueprint', __name__)
+setChangelogBlueprint = Blueprint('setChangelogBlueprint', __name__)
 
 
 
 
 # --[[ Route ]]--
-@setMusicBlueprint.route("/api/setMusic", methods=["POST"])
-def setMusic():
+@setChangelogBlueprint.route("/api/setChangelog", methods=["POST"])
+def setChangelog():
     username = request.cookies.get("username")
-    music = request.json.get(
-        "music"
+    changelog = request.json.get(
+        "changelog"
     )
 
-    if music not in ["true", "false"]:
+    if changelog not in ["true", "false"]:
         return "Invalid theme", 400
 
-    result = Database.databaseChangeMusic(username, music)
+    result = Database.databaseChangeChangelog(username, changelog)
 
     if result == 200:
-        return "Music updated", 200
+        return "Changelog updated", 200
     else:
-        return "Failed to update Music Choice", 500
+        return "Failed to update Changelog Choice", 500

@@ -1,4 +1,4 @@
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastHolder">
 
 
 
@@ -13,16 +13,7 @@
         </div>
     </div>
 
-    <div id="smallToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
-        aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body" id="smallToastContent">
-                Hello, world! This is a toast message.
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                aria-label="Close"></button>
-        </div>
-    </div>
+
 
 </div>
 
@@ -31,46 +22,96 @@
 
 
     const bigToastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('bigToast'))
-    const smallToastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('smallToast'))
 
 
+    function getUID() {
+        var min = 11111111111;
+        var max = 99999999999;
+
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
     function showBigToast(title, subtitle, content) {
-        document.getElementById('bigToastTitle').textContent = title;
-        document.getElementById('bigToastSubtitle').textContent = subtitle;
-        document.getElementById('bigToastContent').textContent = content;
+        const toastID = getUID()
+        const bigToast = document.createElement('div');
+        bigToast.id = toastID;
+        bigToast.className = 'toast';
+        bigToast.setAttribute('role', 'alert');
+        bigToast.setAttribute('aria-live', 'assertive');
+        bigToast.setAttribute('aria-atomic', 'true');
+
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'toast-header';
+
+        const titleStrong = document.createElement('strong');
+        titleStrong.className = 'me-auto';
+        titleStrong.id = 'bigToastTitle';
+        titleStrong.textContent = title;
+
+        const subtitleSmall = document.createElement('small');
+        subtitleSmall.className = 'toast-subheader';
+        subtitleSmall.id = subtitle;
+        subtitleSmall.textContent = 'Loading';
+
+        const closeButtonHeader = document.createElement('button');
+        closeButtonHeader.type = 'button';
+        closeButtonHeader.className = 'btn-close';
+        closeButtonHeader.setAttribute('data-bs-dismiss', 'toast');
+        closeButtonHeader.setAttribute('aria-label', 'Close');
+
+        headerDiv.appendChild(titleStrong);
+        headerDiv.appendChild(subtitleSmall);
+        headerDiv.appendChild(closeButtonHeader);
+
+        const bodyDiv = document.createElement('div');
+        bodyDiv.className = 'toast-body';
+        bodyDiv.id = 'bigToastContent';
+        bodyDiv.textContent = content;
+
+        bigToast.appendChild(headerDiv);
+        bigToast.appendChild(bodyDiv);
+
+        document.getElementById('toastHolder').appendChild(bigToast);
+
+        const bigToastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById(toastID))
+
 
         bigToastBootstrap.show();
     }
 
     function showSmallToast(content, colour) {
-        smallToastObject = document.getElementById('smallToast');
-        document.getElementById('smallToastContent').textContent = content;
+        const toastID = getUID()
+        const smallToast = document.createElement('div');
+        smallToast.id = toastID;
+        smallToast.classList.add('toast', 'align-items-center', colour, 'border-0');
+        smallToast.setAttribute('role', 'alert');
+        smallToast.setAttribute('aria-live', 'assertive');
+        smallToast.setAttribute('aria-atomic', 'true');
+
+        const dFlexDiv = document.createElement('div');
+        dFlexDiv.className = 'd-flex';
+
+        const toastBody = document.createElement('div');
+        toastBody.className = 'toast-body';
+        toastBody.id = 'smallToastContent';
+        toastBody.textContent = content;
+
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close btn-close-white me-2 m-auto';
+        closeButton.setAttribute('data-bs-dismiss', 'toast');
+        closeButton.setAttribute('aria-label', 'Close');
+
+        dFlexDiv.appendChild(toastBody);
+        dFlexDiv.appendChild(closeButton);
+        smallToast.appendChild(dFlexDiv);
+
+        document.getElementById('toastHolder').appendChild(smallToast);
 
 
+        const smallToastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById(toastID))
 
-        // Define a list of valid color classes
-        const validColors = [
-            "text-bg-primary",
-            "text-bg-secondary",
-            "text-bg-success",
-            "text-bg-danger",
-            "text-bg-warning",
-            "text-bg-info",
-            "text-bg-light",
-            "text-bg-dark",
-            "text-bg-white"
-        ];
 
-        // Check if the provided color is valid, otherwise use a default class
-        if (validColors.includes(colour)) {
-            smallToastObject.className = "toast align-items-center " + colour + " border-0";
-        } else {
-            // Use a default class (e.g., primary) if the provided color is invalid
-            smallToastObject.className = "toast align-items-center text-bg-primary border-0";
-        }
-
-        smallToastObject.classList.add(colour);
         smallToastBootstrap.show()
     }
 
