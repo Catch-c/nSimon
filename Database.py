@@ -72,7 +72,7 @@ def databaseCheckUser(username, password):
                 cookie = decrypt_cookie(cookie)
                 return 200, cookie
             else:
-                return 403  # Unauthorized
+                return 403
         else:
             return 404
     except mysql.connector.Error as e:
@@ -88,7 +88,7 @@ def databaseAddUser(username, password, cookie):
         cursor = conn.cursor()
         hashed_password = hash_password(password)
         encrypted_cookie = encrypt_cookie(cookie)
-        cursor.execute("INSERT INTO users (username, password, cookie, studentImage, theme, music, showSessionNames) VALUES (%s, %s, %s, %s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, '', 'light', 'yes', 'false'))
+        cursor.execute("INSERT INTO users (username, password, cookie, studentImage, theme, showMusicLessons, showSessionNames, showChangelog) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, '', 'light', 'true', 'false', 'true'))
         conn.commit()
         logger.info(f"User '{username}' added to the database.")
         cursor.execute("UPDATE statistics SET users = users + 1")
@@ -136,20 +136,16 @@ def databaseAddImage(username, cookie):
         conn = db_pool.get_connection()
         cursor = conn.cursor()
 
-        # Check if an image already exists in the database
         cursor.execute("SELECT studentImage FROM users WHERE username = %s", (username,))
         result = cursor.fetchone()
 
-        # Get the image URL using Simon.getUserProfileImageURL
         cookies = {'adAuthCookie': cookie}
         image_url = Simon.getSimonStudentImageURL(cookie)
 
         if image_url:
-            # Download the image from the URL
             cookies = {'adAuthCookie': cookie}
             image_data = requests.get(image_url, cookies=cookies).content
 
-            # Store the downloaded image in the database
             cursor.execute("UPDATE users SET studentImage = %s WHERE username = %s", (image_data, username))
             conn.commit()
             return image_data
@@ -166,11 +162,9 @@ def databaseGetTheme(username):
         conn = db_pool.get_connection()
         cursor = conn.cursor()
 
-        # Check if an image already exists in the database
         cursor.execute("SELECT theme FROM users WHERE username = %s", (username,))
         result = cursor.fetchone()
 
-        # Get the image URL using Simon.getUserProfileImageURL
         theme = result[0] if result else None
 
         return theme
@@ -187,11 +181,9 @@ def databaseChangeTheme(username, theme):
         conn = db_pool.get_connection()
         cursor = conn.cursor()
 
-        # Check if an image already exists in the database
         cursor.execute("UPDATE users SET theme = %s WHERE username = %s", (theme, username))
         conn.commit()
 
-        # Get the image URL using Simon.getUserProfileImageURL
 
         return 200
 
@@ -207,17 +199,15 @@ def databaseGetMusic(username):
         conn = db_pool.get_connection()
         cursor = conn.cursor()
 
-        # fetch music setting from database
-        cursor.execute("SELECT music FROM users WHERE username = %s", (username,))
+        cursor.execute("SELECT showMusicLessons FROM users WHERE username = %s", (username,))
         result = cursor.fetchone()
 
-        # Get the image URL using Simon.getUserProfileImageURL
-        music = result[0] if result else 'yes'
+        music = result[0] if result else 'true'
 
         return music
 
     except mysql.connector.Error as e:
-        logger.error(f"Error finding music setting in the database: {e}")
+        logger.error(f"Error finding showMusicLessons setting in the database: {e}")
         return None
     finally:
         cursor.close()
@@ -228,11 +218,9 @@ def databaseChangeMusic(username, music):
         conn = db_pool.get_connection()
         cursor = conn.cursor()
 
-        # change music setting in database
-        cursor.execute("UPDATE users SET music = %s WHERE username = %s", (music, username))
+        cursor.execute("UPDATE users SET showMusicLessons = %s WHERE username = %s", (music, username))
         conn.commit()
 
-        # Get the image URL using Simon.getUserProfileImageURL
 
         return 200
 
@@ -248,7 +236,6 @@ def databaseGetSession(username):
         conn = db_pool.get_connection()
         cursor = conn.cursor()
 
-        # fetch music setting from database
         cursor.execute("SELECT showSessionNames FROM users WHERE username = %s", (username,))
         result = cursor.fetchone()
 
@@ -268,7 +255,6 @@ def databaseChangeSession(username, sessionName):
         conn = db_pool.get_connection()
         cursor = conn.cursor()
 
-        # change music setting in database
         cursor.execute("UPDATE users SET showSessionNames = %s WHERE username = %s", (sessionName, username))
         conn.commit()
 
@@ -276,6 +262,43 @@ def databaseChangeSession(username, sessionName):
 
     except mysql.connector.Error as e:
         logger.error(f"Error storing Session setting in the database: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+def databaseGetChangelog(username):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT showChangelog FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
+
+        changelog = result[0] if result else 'true'
+
+        return changelog
+
+    except mysql.connector.Error as e:
+        logger.error(f"Error finding showChangelog setting in the database: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+def databaseChangeChangelog(username, changelog):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("UPDATE users SET showChangelog = %s WHERE username = %s", (changelog, username))
+        conn.commit()
+
+
+        return 200
+
+    except mysql.connector.Error as e:
+        logger.error(f"Error storing changelog setting in the database: {e}")
         return None
     finally:
         cursor.close()

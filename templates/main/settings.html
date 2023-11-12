@@ -134,20 +134,42 @@
                     <div class="card-body">
                         <div class="box rounded">
                             <select class="form-select" id="musicSelection">
-                                <option value="Show">Show</option>
-                                <option value="Hide">Hide</option>
+                                <option value="true">Show</option>
+                                <option value="false">Hide</option>
                             </select>
                         </div>
                     </div>
 
                 </div>
 
+
             </div>
 
-            <!-- Center Column (Daily Messages) -->
-            <div class="col-12 col-sm-6 col-custom">
+            <!-- Center Column (Changelog) -->
+            <div class="col-12 col-sm-3 col-custom">
 
+                <!-- Changelog -->
+                <div class="card card-custom-small mb-2">
 
+                    <!-- Title -->
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <span class="cardTitle">Show Changelog</span>
+                            <span class="cardSubtitle"></span>
+                        </h5>
+                    </div>
+
+                    <!-- Contents -->
+                    <div class="card-body">
+                        <div class="box rounded">
+                            <select class="form-select" id="changelogSelection">
+                                <option value="true">Show</option>
+                                <option value="false">Hide</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
 
@@ -215,11 +237,11 @@
             .then(response => response.text())
             .then(theme => {
                 switch (theme) {
-                    case 'yes':
-                        document.getElementById("musicSelection").value = 'Show';
+                    case 'true':
+                        document.getElementById("musicSelection").value = 'true';
                         break;
-                    case 'no':
-                        document.getElementById("musicSelection").value = 'Hide';
+                    case 'false':
+                        document.getElementById("musicSelection").value = 'false';
                         break;
                     default:
                 }
@@ -237,8 +259,8 @@
 
             var value = document.getElementById("musicSelection").value;
 
-            if (value == "Show") {
-                let data = { music: 'yes' };
+            if (value == "true") {
+                let data = { music: 'true' };
                 fetch("/api/setMusic", {
                     method: 'POST',
                     headers: {
@@ -257,7 +279,7 @@
                         console.error('Error:', error);
                     });
             } else {
-                let data = { music: 'no' };
+                let data = { music: 'false' };
                 fetch("/api/setMusic", {
                     method: 'POST',
                     headers: {
@@ -268,6 +290,84 @@
                     .then(response => {
                         if (response.ok) {
                             showSmallToast("Music lessons set to hide.", "text-bg-success");
+                        } else {
+                            showSmallToast("There was an issue.", "text-bg-danger");
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+        });
+
+    </script>
+
+    <!-- Initialize Changelog-->
+    <script>
+        fetch('/api/getChangelog', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(theme => {
+                switch (theme) {
+                    case 'true':
+                        document.getElementById("changelogSelection").value = 'true';
+                        break;
+                    case 'false':
+                        document.getElementById("changelogSelection").value = 'false';
+                        break;
+                    default:
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+    <!-- Change Changelog-->
+    <script>
+
+        document.getElementById("changelogSelection").addEventListener("change", function (event) {
+            event.preventDefault();
+
+            var value = document.getElementById("changelogSelection").value;
+
+            if (value == "true") {
+                let data = { changelog: 'true' };
+                fetch("/api/setChangelog", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            showSmallToast("Changelog set to show.", "text-bg-success");
+                        } else {
+                            showSmallToast("There was an issue.", "text-bg-danger");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                let data = { changelog: 'false' };
+                fetch("/api/setChangelog", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            showSmallToast("Changelog set to hide.", "text-bg-success");
                         } else {
                             showSmallToast("There was an issue.", "text-bg-danger");
 

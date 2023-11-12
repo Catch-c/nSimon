@@ -98,8 +98,11 @@
                 </div>
                 <div class="modal-body">
 
-                    <h6>Classes.</h6>
-                    <div>Classes are back! You can now go to the <a href="/classes">Classes Page</a>, found on your sidebar, and view a list of each of your classes. You can then select a class to view more information including teachers, as well as tasks. You can click on tasks to view them in a full page view which shows their description, title, result, status, and more.</div><br>
+                    <h6>Versions Fixed.</h6>
+                    <div>Version numbers have been fixed and now show properly in changelog message, and sidebar.</div><br>
+
+                    <h6>Changelog Setting.</h6>
+                    <div>You can now go to <a href="/settings">Settings</a> and disable "Show Changelog". If set to "Hide" then when there is an update, the popup message will not appear.</div><br>
 
                 </div>
                 <div class="modal-footer">
@@ -114,14 +117,48 @@
         var changelogModal = new bootstrap.Modal(document.getElementById('updateModal'), {})
 
         document.addEventListener("DOMContentLoaded", function () {
-            var modalShown = localStorage.getItem("update_{{VERSION}}");
 
-            if (!modalShown) {
-                changelogModal.show();
+            fetch('/api/getChangelog', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.text())
+                .then(theme => {
+                    if (theme && theme == 'true') {
 
-                // Set a flag in local storage to indicate that the modal has been shown
-                localStorage.setItem("update_{{VERSION}}", "true");
-            }
+                        fetch('/api/getVersion', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => response.text())
+                            .then(version => {
+                                document.getElementById('updateModalLabel').textContent = `Changelog ${version}`
+
+                                var modalShown = localStorage.getItem(`update_${version}`);
+
+                                if (!modalShown) {
+                                    changelogModal.show();
+
+                                    localStorage.setItem(`update_${version}`, "true");
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+
+
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+
         });
     </script>
 
@@ -991,7 +1028,7 @@
                         const musicLessons = theme
                         for (const message of periods) {
                             if (unixTimestampInSeconds < extractNumberFromString(message.StartDateTime)) {
-                                if (musicLessons && musicLessons == 'no') {
+                                if (musicLessons && musicLessons == 'false') {
                                     messageTitle = message.MessageTitle
                                     if (messageTitle.toLowerCase().includes('lesson')) {
                                         continue

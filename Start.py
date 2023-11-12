@@ -43,6 +43,8 @@ from routes.backend.settings.setMusic import setMusicBlueprint
 from routes.backend.settings.getSessionSetting import getSessionSettingBlueprint
 from routes.backend.settings.getTheme import getThemeBlueprint
 from routes.backend.settings.setTheme import setThemeBlueprint
+from routes.backend.settings.getChangelog import getChangelogBlueprint
+from routes.backend.settings.setChangelog import setChangelogBlueprint
 
 from routes.backend.profile.getCommendations import getCommendationsBlueprint
 from routes.backend.profile.getDashboardData import getDashboardDataBlueprint
@@ -122,6 +124,8 @@ app.register_blueprint(setMusicBlueprint)
 app.register_blueprint(getSessionSettingBlueprint)
 app.register_blueprint(getThemeBlueprint)
 app.register_blueprint(setThemeBlueprint)
+app.register_blueprint(getChangelogBlueprint)
+app.register_blueprint(setChangelogBlueprint)
 
 # --[[ Profile APIs ]]--
 app.register_blueprint(getCommendationsBlueprint)
@@ -132,6 +136,11 @@ app.register_blueprint(getReportsBlueprint)
 
 # --[[ Support API ]]--
 app.register_blueprint(supportBlueprint)
+
+# --[[ Get Version API ]]--
+@app.route("/api/getVersion", methods=["GET"])
+def getVersion():
+    return '2.2.2'
 
 # --[[ Start ]]--
 #       --[[ PRODUCTION ]]--
