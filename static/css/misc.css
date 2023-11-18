@@ -31,3 +31,9 @@
   background-color: var(--card-hover);
   transform: scale(1.01);
 }
+
+.noteInput {
+  background-color: var(--input-colour);
+  color: var(--input-text-colour);
+  border-color: var(--input-border-colour);
+}

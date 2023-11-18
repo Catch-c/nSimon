@@ -25,6 +25,10 @@
     --box-shadow: #c9c9c9;
 
     --modal-bg:#fafafa;
+
+    --input-colour: #eaeaea;
+    --input-border-colour: #cccccc;
+    --input-text-colour: #232323;
 }
 
 [data-theme="dark"] {
@@ -55,6 +59,10 @@
     --box-shadow: #363636;
 
     --modal-bg:#1b1b1b;
+
+    --input-colour: #313131;
+    --input-border-colour: #464646;
+    --input-text-colour: #e5e5e5;
 }
 
 [data-theme="blue"] {
@@ -86,6 +94,10 @@
 
 
     --modal-bg:#bbdefb;
+
+    --input-colour: #bdd6eb;
+    --input-border-colour: #a7bed0;
+    --input-text-colour: #454545;
 }
 
 

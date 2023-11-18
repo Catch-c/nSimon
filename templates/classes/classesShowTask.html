@@ -113,17 +113,30 @@
 
                         <div class="box rounded">
                             <strong>
+                                Title:
+                            </strong>
+                            <span id="taskTitle"></span>
+                        </div>
+
+                        <div class="box rounded">
+                            <strong>Task Notes</strong><br>
+                            <div class="mb-3">
+                                <textarea class="form-control noteInput" id="classNotesHolder" rows="4"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="classNotesSave">Save Note</button>
+                            <button type="button" class="btn btn-danger" id="classNotesDelete"><i
+                                    class="bi bi-trash-fill"></i></button>
+
+
+                        </div>
+
+                        <div class="box rounded">
+                            <strong>
                                 Status:
                             </strong>
                             <span id="taskStatus"></span>
                         </div>
 
-                        <div class="box rounded">
-                            <strong>
-                                Title:
-                            </strong>
-                            <span id="taskTitle"></span>
-                        </div>
 
                         <div class="box rounded">
                             <strong>
@@ -445,9 +458,135 @@
     </script>
 
 
+    <!-- Note Handler -->
+    <script>
+        saveNoteButton = document.getElementById("classNotesSave")
+        deleteNoteButton = document.getElementById("classNotesDelete")
+        inputNoteHolder = document.getElementById("classNotesHolder")
+
+        saveNoteButton.addEventListener("click", function () {
+            saveNoteButton.disabled = true
+            deleteNoteButton.disabled = true
+            inputNoteHolder.disabled = true
+
+            newNote = inputNoteHolder.value
+
+            var jsonData = {
+                noteType: 'tasks',
+                typeID: '{{taskID}}',
+                note: newNote
+            };
+
+
+            fetch(`/api/setNotes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        showSmallToast("There was an issue.", "text-bg-danger");
+                    } else {
+                        showSmallToast("Class note updated.", "text-bg-success");
+                        setTimeout(function () {
+                            saveNoteButton.disabled = false
+                            deleteNoteButton.disabled = false
+                            inputNoteHolder.disabled = false
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                    showSmallToast("There was an issue.", "text-bg-danger");
+
+                });
+        });
+
+
+        deleteNoteButton.addEventListener("click", function () {
+            saveNoteButton.disabled = true
+            deleteNoteButton.disabled = true
+            inputNoteHolder.disabled = true
+
+            inputNoteHolder.value = ''
+
+            var jsonData = {
+                noteType: 'tasks',
+                typeID: '{{taskID}}',
+                note: ''
+            };
+
+
+            fetch(`/api/setNotes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        showSmallToast("There was an issue.", "text-bg-danger");
+                    } else {
+                        showSmallToast("Class note updated.", "text-bg-success");
+                        setTimeout(function () {
+                            saveNoteButton.disabled = false
+                            deleteNoteButton.disabled = false
+                            inputNoteHolder.disabled = false
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                    showSmallToast("There was an issue.", "text-bg-danger");
+
+                });
+        });
+    </script>
+
+    <!-- Get Notes -->
     <script>
 
+        function checkAndGetJsonValue(jsonObj, path) {
+            try {
+                for (const key of path) {
+                    jsonObj = jsonObj[key];
+                }
+                return jsonObj;
+            } catch (error) {
+                return null;
+            }
+        }
 
+        fetch(`/api/getNotes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+
+
+                const pathToCheck = ['tasks', '{{taskID}}'];
+
+                const result = checkAndGetJsonValue(data, pathToCheck);
+
+                if (result == null || result == 'undefined') {
+                    inputNoteHolder.value = ''
+                } else {
+                    inputNoteHolder.value = result
+                }
+
+
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     </script>
 
 

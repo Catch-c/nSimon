@@ -37,6 +37,8 @@ from routes.backend.dashboard.getWeather import getWeatherBlueprint
 from routes.backend.classes.getClasses import getClassesBlueprint
 from routes.backend.classes.getTaskRubric import getTaskRubricBlueprint
 from routes.backend.classes.getResultInfo import getResultInfoBlueprint
+from routes.backend.classes.getNotes import getNotesBlueprint
+from routes.backend.classes.setNotes import setNotesBlueprint
 
 from routes.backend.settings.getMusic import getMusicBlueprint
 from routes.backend.settings.setMusic import setMusicBlueprint
@@ -104,6 +106,8 @@ app.register_blueprint(calendarBlueprint)
 app.register_blueprint(classesBlueprint)
 app.register_blueprint(showClassBlueprint)
 app.register_blueprint(showTaskBlueprint)
+app.register_blueprint(getNotesBlueprint)
+app.register_blueprint(setNotesBlueprint)
 
 # --[[ Dashboard APIs ]]--
 app.register_blueprint(getCalendarBlueprint)
@@ -140,7 +144,7 @@ app.register_blueprint(supportBlueprint)
 # --[[ Get Version API ]]--
 @app.route("/api/getVersion", methods=["GET"])
 def getVersion():
-    return '2.2.2-1'
+    return '2.2.3'
 
 # --[[ Start ]]--
 #       --[[ PRODUCTION ]]--
