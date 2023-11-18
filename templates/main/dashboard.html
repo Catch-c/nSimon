@@ -98,12 +98,14 @@
                 </div>
                 <div class="modal-body">
 
-                    <h6>Versions Fixed.</h6>
-                    <div>Version numbers have been fixed and now show properly in changelog message, and sidebar.</div><br>
+                    <h6>Class Notes.</h6>
+                    <div>You can now add notes to each of your classes. In here you can put reminders for yourself, or just pretty much whatever you want. These sync across wherever you are logged in.</div><br>
 
-                    <h6>Changelog Setting.</h6>
-                    <div>You can now go to <a href="/settings">Settings</a> and disable "Show Changelog". If set to "Hide" then when there is an update, the popup message will not appear.</div><br>
+                    <h6>Task Notes.</h6>
+                    <div>You can now add notes to each task you have (Due, Overdue, and Results). This is the same as class notes, just for tasks.</div><br>
 
+                    <h6>Database Fixes.</h6>
+                    <div>Database now properly adds you once you login. This fixes setting sync issues, and a few others. If there is no database entry for you, you are also automatically logged out now.</div><br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -917,6 +919,8 @@
         })
             .then(response => response.json())
             .then(data => {
+
+                console.log(data)
                 const dataContainer = document.getElementById('dashboardTodayHolder');
                 const todayDate = document.getElementById('dashboardTodayDate');
 
