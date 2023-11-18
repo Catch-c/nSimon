@@ -29,6 +29,11 @@ def dashboard():
 
     cookie = request.cookies.get("adAuthCookie")
 
+    username = request.cookies.get("username")
+    if Database.databaseFindUser(username) == 404:
+        return redirect('/logout')
+
+
     if not cookie:
         return redirect('/')
 

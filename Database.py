@@ -82,13 +82,31 @@ def databaseCheckUser(username, password):
         cursor.close()
         conn.close()
 
+def databaseFindUser(username):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT username, password, cookie FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
+
+        if result is not None:
+            return 200
+        else:
+            return 404
+    except mysql.connector.Error as e:
+        logger.error(f"Error checking user in the database: {e}")
+        return 404
+    finally:
+        cursor.close()
+        conn.close()
+
 def databaseAddUser(username, password, cookie):
     try:
         conn = db_pool.get_connection()
         cursor = conn.cursor()
         hashed_password = hash_password(password)
         encrypted_cookie = encrypt_cookie(cookie)
-        cursor.execute("INSERT INTO users (username, password, cookie, studentImage, theme, showMusicLessons, showSessionNames, showChangelog) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, '', 'light', 'true', 'false', 'true'))
+        cursor.execute("INSERT INTO users (username, password, cookie, studentImage, theme, showMusicLessons, showSessionNames, showChangelog, notifications, notes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (username, hashed_password, encrypted_cookie, '', 'light', 'true', 'false', 'true', '{}', '{}'))
         conn.commit()
         logger.info(f"User '{username}' added to the database.")
         cursor.execute("UPDATE statistics SET users = users + 1")
