@@ -1,0 +1,16 @@
+.password-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px; /* Adjust the right position as needed */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.password-toggle i {
+  font-size: 20px; /* Adjust the font size as needed */
+  color: #555; /* Adjust the color as needed */
+}
