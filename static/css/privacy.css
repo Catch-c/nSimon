@@ -1,0 +1,42 @@
+body {
+  background: lightgrey;
+  display: flex;
+  justify-content: center;
+}
+
+.page {
+  padding: 50px 80px;
+  margin: 50px;
+  background: white;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);
+  max-width: 800px;
+  min-width: 500px;
+}
+
+#terms-and-conditions {
+  font-size: 14px;
+
+  h1 {
+    font-size: 34px;
+  }
+
+  ol {
+    counter-reset: item;
+  }
+
+  li {
+    display: block;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  li:before {
+    position: absolute;
+    top: 0;
+    margin-left: -50px;
+    color: magenta;
+    content: counters(item, ".") "    ";
+    counter-increment: item;
+  }
+
+}

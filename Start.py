@@ -22,6 +22,7 @@ from routes.public.profile import profileBlueprint
 from routes.public.settings import settingsBlueprint
 from routes.public.calendar import calendarBlueprint
 from routes.public.classes import classesBlueprint
+from routes.public.privacy import privacyBlueprint
 
 from routes.backend.login import loginBlueprint
 from routes.backend.logout import logoutBlueprint
@@ -84,6 +85,9 @@ app.secret_key = flask_secret
 # --[[ Index Route ]]--
 app.register_blueprint(indexBlueprint)
 
+# --[[ Privacy Route ]]--
+app.register_blueprint(privacyBlueprint)
+
 # --[[ Login Route ]]--
 app.register_blueprint(loginBlueprint)
 
@@ -144,7 +148,7 @@ app.register_blueprint(supportBlueprint)
 # --[[ Get Version API ]]--
 @app.route("/api/getVersion", methods=["GET"])
 def getVersion():
-    return '2.3.0'
+    return '2.3.1'
 
 # --[[ Start ]]--
 #       --[[ PRODUCTION ]]--
