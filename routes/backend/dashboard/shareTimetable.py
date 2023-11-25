@@ -14,7 +14,7 @@ from flask import (
 import Database as Database
 import Simon as Simon
 import random, string, time, json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 
 
@@ -32,9 +32,10 @@ def shareTimetable():
     username = request.cookies.get("username")
     data = request.json
     timetable = data["timetableData"]
+    DDMMYYYY = data["timetableDate"]
 
-    dtObject = datetime.utcfromtimestamp(int(time.time()))
-    DDMMYYYY = dtObject.strftime('%d%m%Y')
+
+
 
     currentSharedTimetables = Database.databaseGetSharedTimetables(username)
 
