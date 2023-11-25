@@ -16,7 +16,14 @@
 
   <!-- Custom CSS -->
   <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet" type="text/css">
-
+  <link href="{{ url_for('static', filename='css/colours.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/navbar.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/sidebar.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/cards.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/misc.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/timetable.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/modal.css') }}" rel="stylesheet" type="text/css">
 
   <!-- FavIcon -->
   <link href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" rel="apple-touch-icon"
@@ -68,6 +75,7 @@
   {% endwith %}
 
 
+  <!-- Info Modal -->
   <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="firstTimeModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -93,18 +101,272 @@
       </div>
     </div>
   </div>
+
+  <!-- Shared Timetable -->
+  <div aria-hidden="true" aria-labelledby="shareTimetableModalLabel" class="modal fade" id="shareTimetableModal"
+    tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="shareTimetableModalLabel">Viewing PLACEHOLDER Timetable</h5>
+          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="box rounded">
+            <strong>Date:</strong>
+            <span id="shareTimetableDate">PLACEHOLDER |</span> <span id="shareTimetableDay"></span>
+          </div>
+
+
+
+          <div id="timetableHolder"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
   <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-      // Check if it's the user's first time by looking for a key in local storage
-      // Show the modal
-      var myModal = new bootstrap.Modal(document.getElementById('firstTimeModal'), {});
-      myModal.show();
 
-      // Set the key in local storage to mark the user as not a first-time visitor anymore
-      localStorage.setItem('firstTimeVisit', 'false');
-    });
+    function convertToAMPM(timeString) {
+      const [hours, minutes] = timeString.split(':');
 
+      const hour = parseInt(hours, 10);
+
+      const period = hour >= 12 ? 'PM' : 'AM';
+
+      const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+
+      const formattedTime = `${formattedHour}:${minutes}${period}`;
+
+      return formattedTime;
+    }
+
+    function filterTimetable(str) {
+      const patterns = ["_", "BEA", "BER", "OFF"];
+      let result = str;
+
+      for (let pattern of patterns) {
+        const regex = new RegExp(pattern, 'g');
+        result = result.replace(regex, '');
+      }
+
+      return result;
+    }
+
+    function timeToMinutes(time) {
+      const [hours, minutes] = time.split(':').map(Number);
+      return hours * 60 + minutes;
+    }
+
+    function addTimetable(data) {
+
+      timetableData = data
+
+      let currentUnixTimestamp = Math.floor(Date.now() / 1000);
+
+      let dayInCycle = data.d.Info;
+      const dataContainer = document.getElementById('timetableHolder');
+      const timetableDayText = document.getElementById('shareTimetableDay');
+
+
+      timetableDayText.textContent = data.d.Info.replace(/^Timetable\s+/, '');
+
+
+      const periods = data.d.Periods;
+
+
+      let lastEndTime = null;
+      for (const period of periods) {
+
+        if (period.IsTeachingPeriod) {
+          if (lastEndTime !== null) {
+            const startTimeNextPeriod = period.StartTime;
+            const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
+
+            if (timeGap === 20 || timeGap === 40) {
+
+              const spanBreakText = document.createElement('span');
+              spanBreakText.className = 'breakText';
+              spanBreakText.style.marginRight = '5px';
+              spanBreakText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
+
+              // Create a div element with class "breakLine" and style attribute
+              const divBreakLine = document.createElement('div');
+              divBreakLine.className = 'breakLine mb-2';
+              divBreakLine.style.flexGrow = '1';
+              divBreakLine.style.height = '2px';
+
+              // Append the span and div elements to a container div
+              const containerDiv = document.createElement('div');
+              containerDiv.appendChild(spanBreakText);
+              containerDiv.appendChild(divBreakLine);
+
+              dataContainer.appendChild(containerDiv);
+
+            }
+          }
+          lastEndTime = period.EndTime;
+
+          settingValue = localStorage.getItem('sessionSetting');
+
+
+
+          const classDiv = document.createElement('div');
+
+          const strongElement = document.createElement('strong');
+          const colorDotSpan = document.createElement('span');
+
+
+          let nowT = new Date();
+
+          let startParts = period['StartTime'].split(":");
+          let startTime = new Date();
+          startTime.setHours(parseInt(startParts[0]), parseInt(startParts[1]), 0, 0);
+
+          let endParts = period['EndTime'].split(":");
+          let endTime = new Date();
+          endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
+
+
+          classDiv.classList.add('box', 'rounded', 'classBox');
+          colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+
+
+
+
+
+          strongElement.appendChild(colorDotSpan);
+
+          // Create class name span
+
+          if (period.Classes[0]) {
+
+            // Class Name
+            const classNameSpan = document.createTextNode(period.Classes[0].TimeTableClass);
+            strongElement.appendChild(classNameSpan);
+
+            // Class Time
+            const spanTime = document.createElement('span');
+            spanTime.className = 'cardTime';
+            spanTime.textContent = `${convertToAMPM(period.StartTime)}-${convertToAMPM(period.EndTime)}`;
+            const lineBreak = document.createElement('br');
+
+            // Class Teacher
+            const teacherDiv = document.createElement('span');
+            teacherDiv.className = 'cardTeacher';
+            let teacherName = period.Classes[0].TeacherName;
+
+            // Class Room
+            let roomChange = period.Classes[0].HasRoomChange;
+            let roomInfo
+            roomInfo = filterTimetable(period.Classes[0].Room);
+            if (roomChange == true) {
+              if (teacherName.includes("CRT")) {
+                teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | <span style="color: red;">${teacherName}</span>`;
+              } else {
+                console.log('RoomChange Regular')
+                teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | ${teacherName}`;
+              }
+            } else {
+              if (teacherName.includes("CRT")) {
+                teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
+              } else {
+                teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
+              }
+            }
+
+
+
+            // Adding
+            classDiv.appendChild(strongElement);
+            classDiv.appendChild(spanTime);
+            classDiv.appendChild(lineBreak);
+            classDiv.appendChild(teacherDiv);
+
+            dataContainer.appendChild(classDiv);
+
+          }
+
+
+        }
+      }
+
+
+
+    }
   </script>
+  <script>
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var shareCode = getParameterByName('share');
+      if (shareCode !== null) {
+
+        let dataB = {
+          code: shareCode
+        };
+
+        fetch(`/api/getShare`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataB)
+        })
+          .then(response => response.json())
+          .then(data => {
+
+            returnData = JSON.parse(data);
+            document.getElementById('shareTimetableModalLabel').textContent = `Viewing ${returnData['owner']}'s Timetable`
+
+            var day = returnData['date'].substring(0, 2);
+            var month = returnData['date'].substring(2, 4);
+            var year = returnData['date'].substring(4, 8);
+            var formattedDate = new Date(`${year}-${month}-${day}`);
+            var formattedDay = formattedDate.getDate();
+            var formattedMonth = formattedDate.getMonth() + 1;
+            var formattedYear = formattedDate.getFullYear();
+            formattedDay = formattedDay < 10 ? '0' + formattedDay : formattedDay;
+            formattedMonth = formattedMonth < 10 ? '0' + formattedMonth : formattedMonth;
+            document.getElementById('shareTimetableDate').textContent = `${formattedDay}/${formattedMonth}/${formattedYear}`
+
+            console.log(1)
+            addTimetable(returnData['data'])
+
+            var myModal = new bootstrap.Modal(document.getElementById('shareTimetableModal'), {});
+            myModal.show();
+          })
+          .catch(error => {
+          });
+      } else {
+        var myModal = new bootstrap.Modal(document.getElementById('firstTimeModal'), {});
+        myModal.show();
+
+        // Set the key in local storage to mark the user as not a first-time visitor anymore
+        localStorage.setItem('firstTimeVisit', 'false');
+      }
+    });
+  </script>
+
+
+
+
+
 
   <section class="vh-100" style="background-color: #116aa4;">
     <div class="container py-5 h-100">

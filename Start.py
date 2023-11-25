@@ -23,6 +23,7 @@ from routes.public.settings import settingsBlueprint
 from routes.public.calendar import calendarBlueprint
 from routes.public.classes import classesBlueprint
 from routes.public.privacy import privacyBlueprint
+from routes.public.viewShare import viewShareBlueprint
 
 from routes.backend.login import loginBlueprint
 from routes.backend.logout import logoutBlueprint
@@ -34,6 +35,8 @@ from routes.backend.dashboard.getTimetable import getTimetableBlueprint
 from routes.backend.dashboard.getToday import getTodayBlueprint
 from routes.backend.dashboard.getUserInfo import getUserInfoBlueprint
 from routes.backend.dashboard.getWeather import getWeatherBlueprint
+from routes.backend.dashboard.shareTimetable import shareTimetableBlueprint
+from routes.backend.dashboard.getShare import getShareBlueprint
 
 from routes.backend.classes.getClasses import getClassesBlueprint
 from routes.backend.classes.getTaskRubric import getTaskRubricBlueprint
@@ -84,6 +87,7 @@ app.secret_key = flask_secret
 
 # --[[ Index Route ]]--
 app.register_blueprint(indexBlueprint)
+app.register_blueprint(viewShareBlueprint)
 
 # --[[ Privacy Route ]]--
 app.register_blueprint(privacyBlueprint)
@@ -120,6 +124,8 @@ app.register_blueprint(getTimetableBlueprint)
 app.register_blueprint(getTodayBlueprint)
 app.register_blueprint(getUserInfoBlueprint)
 app.register_blueprint(getWeatherBlueprint)
+app.register_blueprint(shareTimetableBlueprint)
+app.register_blueprint(getShareBlueprint)
 
 # --[[ Class APIs ]]--
 app.register_blueprint(getClassesBlueprint)
@@ -148,7 +154,7 @@ app.register_blueprint(supportBlueprint)
 # --[[ Get Version API ]]--
 @app.route("/api/getVersion", methods=["GET"])
 def getVersion():
-    return '2.3.2'
+    return '2.4.0'
 
 # --[[ Start ]]--
 #       --[[ PRODUCTION ]]--

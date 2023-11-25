@@ -47,7 +47,7 @@ def login():
     else:
         _, cookie = result
 
-    timetableData = Simon.getTimetable(cookie, "2023-08-09T21:02:04.085Z")
+    timetableData = Simon.getTimetable(cookie, "2023-08-09T21:02:04.085Z", None)
     campusCode = timetableData["d"]["DefaultTimeTableGroup"]
 
     if campusCode == "BER":

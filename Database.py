@@ -125,7 +125,7 @@ def databaseAddUser(username, password, cookie):
         hashed_password = hash_password(password)
         encrypted_cookie = encrypt_cookie(cookie)
         cursor.execute(
-            "INSERT INTO users (username, password, cookie, studentImage, theme, showMusicLessons, showSessionNames, showChangelog, notifications, notes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            "INSERT INTO users (username, password, cookie, studentImage, theme, showMusicLessons, showSessionNames, showChangelog, notifications, notes, sharedTimetables) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (
                 username,
                 hashed_password,
@@ -135,6 +135,7 @@ def databaseAddUser(username, password, cookie):
                 "true",
                 "false",
                 "true",
+                "{}",
                 "{}",
                 "{}",
             ),
@@ -426,11 +427,88 @@ def databaseChangeNotes(username, notes):
         cursor.close()
         conn.close()
 
+def databaseGetSharedTimetables(username):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT sharedTimetables FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
+
+        sharedTimetables = result[0] if result else "{}"
+
+        return json.loads(sharedTimetables)
+
+    except mysql.connector.Error as e:
+        logger.error(f"Error find user sharedTimetables in the database: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+def databaseChangeSharedTimetables(username, newData):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "UPDATE users SET sharedTimetables = %s WHERE username = %s",
+            (json.dumps(newData), username),
+        )
+        conn.commit()
+
+        return 200
+
+    except mysql.connector.Error as e:
+        logger.error(f"Error storing sharedTimetables in the database: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+def databaseCreateShare(code, shareData):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO shares (code, dataInfo) VALUES (%s, %s)",
+            (
+                code,
+                json.dumps(shareData),
+            ),
+        )
+        conn.commit()
+        conn.commit()
+    except mysql.connector.Error as e:
+        logger.error(f"Error adding share to the database: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+def databaseGetShareData(code):
+    try:
+        conn = db_pool.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT dataInfo FROM shares WHERE code = %s", (code,)
+        )
+        result = cursor.fetchone()
+
+        returnData = result[0] if result else 404
+
+        return returnData
+
+    except mysql.connector.Error as e:
+        return 404
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
 
 # Create a connection pool
 db_pool = pooling.MySQLConnectionPool(pool_name="main_pool", pool_size=10, **db_config)
-
-
-
 
 

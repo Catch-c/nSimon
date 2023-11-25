@@ -88,6 +88,276 @@
     </script>
 
 
+    <script>
+        function timeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function convertToAMPM(timeString) {
+            const [hours, minutes] = timeString.split(':');
+
+            const hour = parseInt(hours, 10);
+
+            const period = hour >= 12 ? 'PM' : 'AM';
+
+            const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+
+            const formattedTime = `${formattedHour}:${minutes}${period}`;
+
+            return formattedTime;
+        }
+
+        function filterTimetable(str) {
+            const patterns = ["_", "BEA", "BER", "OFF"];
+            let result = str;
+
+            for (let pattern of patterns) {
+                const regex = new RegExp(pattern, 'g');
+                result = result.replace(regex, '');
+            }
+
+            return result;
+        }
+    </script>
+
+    <!-- Shared Timetable -->
+    <div aria-hidden="true" aria-labelledby="shareTimetableModalViewLabel" class="modal fade"
+        id="shareTimetableModalView" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shareTimetableModalViewLabel">Viewing PLACEHOLDER Timetable</h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="box rounded">
+                        <strong>Date:</strong>
+                        <span id="shareTimetableDate">PLACEHOLDER |</span> <span id="shareTimetableDay"></span>
+                    </div>
+
+
+
+                    <div id="timetableHolderShare"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <script>
+        function shareAddTimetable(data) {
+
+            timetableData = data
+
+            let currentUnixTimestamp = Math.floor(Date.now() / 1000);
+
+            let dayInCycle = data.d.Info;
+            const dataContainer = document.getElementById('timetableHolderShare');
+
+
+
+
+            const periods = data.d.Periods;
+
+
+            let lastEndTime = null;
+            for (const period of periods) {
+
+                if (period.IsTeachingPeriod) {
+                    if (lastEndTime !== null) {
+                        const startTimeNextPeriod = period.StartTime;
+                        const timeGap = timeToMinutes(startTimeNextPeriod) - timeToMinutes(lastEndTime);
+
+                        if (timeGap === 20 || timeGap === 40) {
+
+                            const spanBreakText = document.createElement('span');
+                            spanBreakText.className = 'breakText';
+                            spanBreakText.style.marginRight = '5px';
+                            spanBreakText.textContent = timeGap === 20 ? 'Recess' : 'Lunch';
+
+                            // Create a div element with class "breakLine" and style attribute
+                            const divBreakLine = document.createElement('div');
+                            divBreakLine.className = 'breakLine mb-2';
+                            divBreakLine.style.flexGrow = '1';
+                            divBreakLine.style.height = '2px';
+
+                            // Append the span and div elements to a container div
+                            const containerDiv = document.createElement('div');
+                            containerDiv.appendChild(spanBreakText);
+                            containerDiv.appendChild(divBreakLine);
+
+                            dataContainer.appendChild(containerDiv);
+
+                        }
+                    }
+                    lastEndTime = period.EndTime;
+
+                    settingValue = localStorage.getItem('sessionSetting');
+
+
+
+                    const classDiv = document.createElement('div');
+
+                    const strongElement = document.createElement('strong');
+                    const colorDotSpan = document.createElement('span');
+
+
+                    let nowT = new Date();
+
+                    let startParts = period['StartTime'].split(":");
+                    let startTime = new Date();
+                    startTime.setHours(parseInt(startParts[0]), parseInt(startParts[1]), 0, 0);
+
+                    let endParts = period['EndTime'].split(":");
+                    let endTime = new Date();
+                    endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]), 0, 0);
+
+
+                    classDiv.classList.add('box', 'rounded', 'classBox');
+                    colorDotSpan.classList.add('color-dot', 'bg-primary', 'me-2');
+
+
+
+
+
+                    strongElement.appendChild(colorDotSpan);
+
+                    // Create class name span
+
+                    if (period.Classes[0]) {
+
+                        // Class Name
+                        const classNameSpan = document.createTextNode(period.Classes[0].TimeTableClass);
+                        strongElement.appendChild(classNameSpan);
+
+                        // Class Time
+                        const spanTime = document.createElement('span');
+                        spanTime.className = 'cardTime';
+                        spanTime.textContent = `${convertToAMPM(period.StartTime)}-${convertToAMPM(period.EndTime)}`;
+                        const lineBreak = document.createElement('br');
+
+                        // Class Teacher
+                        const teacherDiv = document.createElement('span');
+                        teacherDiv.className = 'cardTeacher';
+                        let teacherName = period.Classes[0].TeacherName;
+
+                        // Class Room
+                        let roomChange = period.Classes[0].HasRoomChange;
+                        let roomInfo
+                        roomInfo = filterTimetable(period.Classes[0].Room);
+                        if (roomChange == true) {
+                            if (teacherName.includes("CRT")) {
+                                teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | <span style="color: red;">${teacherName}</span>`;
+                            } else {
+                                console.log('RoomChange Regular')
+                                teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | ${teacherName}`;
+                            }
+                        } else {
+                            if (teacherName.includes("CRT")) {
+                                teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
+                            } else {
+                                teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
+                            }
+                        }
+
+
+
+                        // Adding
+                        classDiv.appendChild(strongElement);
+                        classDiv.appendChild(spanTime);
+                        classDiv.appendChild(lineBreak);
+                        classDiv.appendChild(teacherDiv);
+
+                        dataContainer.appendChild(classDiv);
+
+                    }
+
+
+                }
+            }
+
+
+
+        }
+    </script>
+
+
+    <!-- Share Modal -->
+    <div class="modal fade" id="shareTimetableModal" tabindex="-1" aria-labelledby="shareTimetableModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="shareTimetableModalLabel">Share Timetable</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <h6>Below is a link which you can share to anyone to share your timetable for today.</h6>
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="Generating..." readonly
+                            id="shareTimetableCodeInput">
+                        <button class="btn btn-outline-secondary" type="button" onclick="copyShareCode()">Copy</button>
+                    </div>
+
+                    <script>
+                        function copyShareCode() {
+                            var inputField = document.getElementById("shareTimetableCodeInput");
+
+                            inputField.select();
+                            inputField.setSelectionRange(0, 99999);
+
+                            document.execCommand("copy");
+
+                            inputField.blur();
+
+                        }
+                    </script>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function shareTimetable(data) {
+
+            let dataB = {
+                timetableData: data
+            };
+            fetch(`/api/shareTimetable`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataB)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data['error']) {
+                        shareTimetableCodeInput.value = `https://nsimon.kavenci.com/s/${data['code']}`
+                    } else {
+                        shareTimetableCodeInput.value = `https://nsimon.kavenci.com/s/${data['code']}`
+                    }
+
+
+                })
+                .catch(error => {
+                });
+        }
+    </script>
+
+
+
     <!-- Update Modal -->
     <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
@@ -104,7 +374,14 @@
                         9 -> 10 where your SIMON default is set as Berwick or Officer, so when it gets the timetable
                         there is nothing there as your classes are in Beaconsfield. </div><br>
 
-
+                    <h6>Sharing Timetables.</h6>
+                    <div>You are now able to share your timetable to other users, whether they use NSimon or don't.
+                        Simply go to your dashboard, select the day, click the arrow and a link will be generated for
+                        you to send to others. When this link is accessed, if they are logged in it will display the day
+                        you shareds timetable in a popup on the dashboard page, otherwise it will display on the login
+                        page. While this feature is still in testing, you will only be able to generate 1 link every
+                        day. This will be changed eventually to make it so you can share different days at the same
+                        time.</div><br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -117,49 +394,100 @@
 
         var changelogModal = new bootstrap.Modal(document.getElementById('updateModal'), {})
 
+
+    </script>
+
+    <script>
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
+            var shareCode = getParameterByName('share');
+            if (shareCode !== null) {
 
-            fetch('/api/getChangelog', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.text())
-                .then(theme => {
-                    if (theme && theme == 'true') {
+                let dataB = {
+                    code: shareCode
+                };
 
-                        fetch('/api/getVersion', {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                            .then(response => response.text())
-                            .then(version => {
-                                document.getElementById('updateModalLabel').textContent = `Changelog ${version}`
+                fetch(`/api/getShare`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dataB)
+                })
+                    .then(response => response.json())
+                    .then(data => {
 
-                                var modalShown = localStorage.getItem(`update_${version}`);
+                        returnData = JSON.parse(data);
+                        document.getElementById('shareTimetableModalViewLabel').textContent = `Viewing ${returnData['owner']}'s Timetable`
 
-                                if (!modalShown) {
-                                    changelogModal.show();
+                        var day = returnData['date'].substring(0, 2);
+                        var month = returnData['date'].substring(2, 4);
+                        var year = returnData['date'].substring(4, 8);
+                        var formattedDate = new Date(`${year}-${month}-${day}`);
+                        var formattedDay = formattedDate.getDate();
+                        var formattedMonth = formattedDate.getMonth() + 1;
+                        var formattedYear = formattedDate.getFullYear();
+                        formattedDay = formattedDay < 10 ? '0' + formattedDay : formattedDay;
+                        formattedMonth = formattedMonth < 10 ? '0' + formattedMonth : formattedMonth;
+                        document.getElementById('shareTimetableDate').textContent = `${formattedDay}/${formattedMonth}/${formattedYear}`
 
-                                    localStorage.setItem(`update_${version}`, "true");
+                        shareAddTimetable(returnData['data'])
+
+                        var myModal = new bootstrap.Modal(document.getElementById('shareTimetableModalView'), {});
+                        myModal.show();
+                    })
+                    .catch(error => {
+                    });
+            } else {
+                fetch('/api/getChangelog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.text())
+                    .then(theme => {
+                        if (theme && theme == 'true') {
+
+                            fetch('/api/getVersion', {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json'
                                 }
                             })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
+                                .then(response => response.text())
+                                .then(version => {
+                                    document.getElementById('updateModalLabel').textContent = `Changelog ${version}`
+
+                                    var modalShown = localStorage.getItem(`update_${version}`);
+
+                                    if (!modalShown) {
+                                        changelogModal.show();
+
+                                        localStorage.setItem(`update_${version}`, "true");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
 
 
-                    }
+                        }
 
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
-
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
         });
     </script>
 
@@ -615,8 +943,16 @@
                                 </span>
 
                                 <button id="nextDay" class="btn btn-sm"><i class="bi bi-arrow-right"></i></button>
-                                <button class="btn btn-sm"><i class="bi bi-send"></i></button>
-                                <button class="btn btn-sm"><i class="bi bi-download"></i></button>
+                                <button id="shareTimetableButton" class="btn btn-sm"><i class="bi bi-send"></i></button>
+                                <script>
+                                    let timetableData = {}
+
+                                    var shareTimetableModalD = new bootstrap.Modal(document.getElementById('shareTimetableModal'), {})
+                                    document.getElementById("shareTimetableButton").addEventListener("click", function () {
+                                        shareTimetableModalD.show()
+                                        shareTimetable(timetableData)
+                                    });
+                                </script>
 
                             </span>
                         </h5>
@@ -741,36 +1077,7 @@
 
         }
 
-        function timeToMinutes(time) {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours * 60 + minutes;
-        }
 
-        function convertToAMPM(timeString) {
-            const [hours, minutes] = timeString.split(':');
-
-            const hour = parseInt(hours, 10);
-
-            const period = hour >= 12 ? 'PM' : 'AM';
-
-            const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
-
-            const formattedTime = `${formattedHour}:${minutes}${period}`;
-
-            return formattedTime;
-        }
-
-        function filterTimetable(str) {
-            const patterns = ["_", "BEA", "BER", "OFF"];
-            let result = str;
-
-            for (let pattern of patterns) {
-                const regex = new RegExp(pattern, 'g');
-                result = result.replace(regex, '');
-            }
-
-            return result;
-        }
 
         function extractNumberFromString(text) {
             const regex = /(\d+)/;
@@ -1140,6 +1447,7 @@
 
         let shownMissingTimetable = false
         function addTimetable(data, weekend, today) {
+            timetableData = data
 
             let currentUnixTimestamp = Math.floor(Date.now() / 1000);
 
