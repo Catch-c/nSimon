@@ -44,16 +44,17 @@ def checkCookie(cookie):
     response = requests.post(url, headers=headers)
 
     if response.status_code == 401:
-        return False
+        return False 
     else:
         return True
 
 
-def getTimetable(cookie, time):
+def getTimetable(cookie, time, campus):
     url = "https://simon.sfx.vic.edu.au/Default.asmx/GetTimetable"
     headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
 
-    data = {"selectedDate": time, "selectedGroup": None}
+    data = {"selectedDate": time, "selectedGroup": campus}
+
 
     response = requests.post(url, headers=headers, json=data)
 
