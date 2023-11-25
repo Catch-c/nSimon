@@ -98,14 +98,13 @@
                 </div>
                 <div class="modal-body">
 
-                    <h6>Class Notes.</h6>
-                    <div>You can now add notes to each of your classes. In here you can put reminders for yourself, or just pretty much whatever you want. These sync across wherever you are logged in.</div><br>
+                    <h6>Timetable uses campus preference.</h6>
+                    <div>The timetable now uses your campus preference (set in settings, or automatically when you login
+                        for the first time) instead of the default. This is mainly for commencement if moving from year
+                        9 -> 10 where your SIMON default is set as Berwick or Officer, so when it gets the timetable
+                        there is nothing there as your classes are in Beaconsfield. </div><br>
 
-                    <h6>Task Notes.</h6>
-                    <div>You can now add notes to each task you have (Due, Overdue, and Results). This is the same as class notes, just for tasks.</div><br>
 
-                    <h6>Database Fixes.</h6>
-                    <div>Database now properly adds you once you login. This fixes setting sync issues, and a few others. If there is no database entry for you, you are also automatically logged out now.</div><br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -616,6 +615,8 @@
                                 </span>
 
                                 <button id="nextDay" class="btn btn-sm"><i class="bi bi-arrow-right"></i></button>
+                                <button class="btn btn-sm"><i class="bi bi-send"></i></button>
+                                <button class="btn btn-sm"><i class="bi bi-download"></i></button>
 
                             </span>
                         </h5>
@@ -632,9 +633,6 @@
         </div>
 
 
-
-
-    </div>
     </div>
 
 
@@ -920,7 +918,6 @@
             .then(response => response.json())
             .then(data => {
 
-                console.log(data)
                 const dataContainer = document.getElementById('dashboardTodayHolder');
                 const todayDate = document.getElementById('dashboardTodayDate');
 
@@ -1141,6 +1138,7 @@
     <script>
 
 
+        let shownMissingTimetable = false
         function addTimetable(data, weekend, today) {
 
             let currentUnixTimestamp = Math.floor(Date.now() / 1000);
@@ -1282,22 +1280,7 @@
 
                     settingValue = localStorage.getItem('sessionSetting');
 
-                    if (settingValue == 'true') {
-                        // const sessionDiv = document.createElement('div');
 
-                        // const sessionSpan = document.createElement('span');
-                        // sessionSpan.classList.add('session-name');
-                        // sessionSpan.textContent = period.Description;
-
-                        // sessionSpan.setAttribute('data-bs-toggle', 'tooltip');
-                        // sessionSpan.setAttribute('data-bs-html', 'true');
-                        // sessionSpan.setAttribute('title', period.Description);
-
-
-                        // sessionDiv.appendChild(sessionSpan);
-                        // new bootstrap.Tooltip(sessionSpan);
-                        // dataContainer.appendChild(sessionDiv);
-                    }
 
                     const classDiv = document.createElement('div');
 
@@ -1346,64 +1329,81 @@
                     strongElement.appendChild(colorDotSpan);
 
                     // Create class name span
-                    const classNameSpan = document.createTextNode(period.Classes[0].TimeTableClass);
 
-                    // classNameSpan.setAttribute('data-bs-toggle', 'tooltip');
-                    // classNameSpan.setAttribute('data-bs-html', 'true');
-                    // classNameSpan.setAttribute('title', period.Classes[0].Description);
+                    if (period.Classes[0]) {
 
-                    strongElement.appendChild(classNameSpan);
-                    // new bootstrap.Tooltip(classNameSpan);
+                        // Class Name
+                        const classNameSpan = document.createTextNode(period.Classes[0].TimeTableClass);
+                        strongElement.appendChild(classNameSpan);
 
+                        // Class Time
+                        const spanTime = document.createElement('span');
+                        spanTime.className = 'cardTime';
+                        spanTime.textContent = `${convertToAMPM(period.StartTime)}-${convertToAMPM(period.EndTime)}`;
+                        const lineBreak = document.createElement('br');
 
-                    // Create time span
+                        // Class Teacher
+                        const teacherDiv = document.createElement('span');
+                        teacherDiv.className = 'cardTeacher';
+                        let teacherName = period.Classes[0].TeacherName;
 
-                    const spanTime = document.createElement('span');
-                    spanTime.className = 'cardTime';
-                    spanTime.textContent = `${convertToAMPM(period.StartTime)}-${convertToAMPM(period.EndTime)}`;
-
-                    // Create Line Break
-                    const lineBreak = document.createElement('br');
-
-                    // Create Teacher & Room
-
-
-
-                    // Create teacher div
-                    const teacherDiv = document.createElement('span');
-                    teacherDiv.className = 'cardTeacher';
-
-                    let teacherName = period.Classes[0].TeacherName;
-                    let roomChange = period.Classes[0].HasRoomChange;
-                    let roomInfo
-                    roomInfo = filterTimetable(period.Classes[0].Room);
-                    // Check if the there is a room change
-                    if (roomChange == true) {
-                        if (teacherName.includes("CRT")) {
-                            // If it does, set the text content and change the color to red
-                            teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | <span style="color: red;">${teacherName}</span>`;
+                        // Class Room
+                        let roomChange = period.Classes[0].HasRoomChange;
+                        let roomInfo
+                        roomInfo = filterTimetable(period.Classes[0].Room);
+                        if (roomChange == true) {
+                            if (teacherName.includes("CRT")) {
+                                teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | <span style="color: red;">${teacherName}</span>`;
+                            } else {
+                                console.log('RoomChange Regular')
+                                teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | ${teacherName}`;
+                            }
                         } else {
-                            // Otherwise, set the text content without any styling
-                            console.log('RoomChange Regular')
-                            teacherDiv.innerHTML = `<span style="color: red;">${roomInfo}</span> | ${teacherName}`;
+                            if (teacherName.includes("CRT")) {
+                                teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
+                            } else {
+                                teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
+                            }
                         }
+
+
+                        // Adding
+                        classDiv.appendChild(strongElement);
+                        classDiv.appendChild(spanTime);
+                        classDiv.appendChild(lineBreak);
+                        classDiv.appendChild(teacherDiv);
+
+                        dataContainer.appendChild(classDiv);
                     } else {
-                        if (teacherName.includes("CRT")) {
-                            // If it does, set the text content and change the color to red
-                            teacherDiv.innerHTML = `${roomInfo} | <span style="color: red;">${teacherName}</span>`;
-                        } else {
-                            // Otherwise, set the text content without any styling
-                            teacherDiv.textContent = `${roomInfo} | ${teacherName}`;
+                        if (!shownMissingTimetable) {
+                            shownMissingTimetable = true
+
+                            const classNameSpan = document.createTextNode('No Classes Found');
+                            strongElement.appendChild(classNameSpan);
+
+                            // Class Time
+                            const spanTime = document.createElement('span');
+                            spanTime.className = 'cardTime';
+                            spanTime.textContent = ``;
+                            const lineBreak = document.createElement('br');
+
+                            // Class Teacher
+                            const teacherDiv = document.createElement('span');
+                            teacherDiv.className = 'cardTeacher';
+                            teacherDiv.innerHTML = `If you are in year 9 and going into commencement, please go to your NSimon settings (Right hand side menu) and change your campus to Beaconsfield for your timetable to work.`;
+
+
+
+                            // Adding
+                            classDiv.appendChild(strongElement);
+                            classDiv.appendChild(spanTime);
+                            classDiv.appendChild(lineBreak);
+                            classDiv.appendChild(teacherDiv);
+
+                            dataContainer.appendChild(classDiv);
                         }
+
                     }
-                    // Append the created classDiv to the body or any other parent element
-
-                    classDiv.appendChild(strongElement);
-                    classDiv.appendChild(spanTime);
-                    classDiv.appendChild(lineBreak);
-                    classDiv.appendChild(teacherDiv);
-
-                    dataContainer.appendChild(classDiv);
 
                 } else if (period.IsTeachingPeriod === false && period.Description !== "Recess Duty" && period.Description !== "Lunch Duty 1" && period.Description !== "Lunch Duty 2") {
                     if (lastEndTime !== null) {
@@ -1543,6 +1543,7 @@
         currentDate = new Date();
 
         document.getElementById('prevDay').addEventListener('click', function () {
+            shownMissingTimetable = false
             const timetableDayText = document.getElementById('timetableDay');
             timetableDayText.textContent = "Loading"
 
@@ -1553,6 +1554,7 @@
         });
 
         document.getElementById('nextDay').addEventListener('click', function () {
+            shownMissingTimetable = false
             const timetableDayText = document.getElementById('timetableDay');
             timetableDayText.textContent = "Loading"
 

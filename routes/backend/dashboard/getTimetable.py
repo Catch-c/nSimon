@@ -28,7 +28,20 @@ getTimetableBlueprint = Blueprint('getTimetableBlueprint', __name__)
 @getTimetableBlueprint.route("/api/getTimetable", methods=["POST"])
 def getTimetable():
     cookie = request.cookies.get("adAuthCookie")
+    campus = request.cookies.get("campus")
+
+    campusCode = None
+
+    if campus == "Berwick":
+        campusCode = "BER"
+    elif campus == "Beaconsfield":
+        campusCode = "BEA"
+    elif campus == "Officer":
+        campusCode = "OFF"
+
+
+
     data = request.json
     date = data["date"]
 
-    return jsonify(Simon.getTimetable(cookie, date)), 200
+    return jsonify(Simon.getTimetable(cookie, date, campusCode)), 200
