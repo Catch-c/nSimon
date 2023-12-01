@@ -37,6 +37,8 @@ from routes.backend.dashboard.getUserInfo import getUserInfoBlueprint
 from routes.backend.dashboard.getWeather import getWeatherBlueprint
 from routes.backend.dashboard.shareTimetable import shareTimetableBlueprint
 from routes.backend.dashboard.getShare import getShareBlueprint
+from routes.backend.dashboard.downloadTimetable import downloadTimetableBlueprint
+from routes.backend.downloadTimetableD import downloadTimetableDBlueprint
 
 from routes.backend.classes.getClasses import getClassesBlueprint
 from routes.backend.classes.getTaskRubric import getTaskRubricBlueprint
@@ -126,6 +128,8 @@ app.register_blueprint(getUserInfoBlueprint)
 app.register_blueprint(getWeatherBlueprint)
 app.register_blueprint(shareTimetableBlueprint)
 app.register_blueprint(getShareBlueprint)
+app.register_blueprint(downloadTimetableBlueprint)
+app.register_blueprint(downloadTimetableDBlueprint)
 
 # --[[ Class APIs ]]--
 app.register_blueprint(getClassesBlueprint)
@@ -154,7 +158,7 @@ app.register_blueprint(supportBlueprint)
 # --[[ Get Version API ]]--
 @app.route("/api/getVersion", methods=["GET"])
 def getVersion():
-    return '2.4.0'
+    return '2.5.0'
 
 # --[[ Start ]]--
 #       --[[ PRODUCTION ]]--

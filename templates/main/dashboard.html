@@ -334,7 +334,7 @@
             const dateObject = currentDate;
 
             const day = dateObject.getDate().toString().padStart(2, '0');
-            const month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); 
+            const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
             const year = dateObject.getFullYear().toString();
 
             const formattedDate = day + month + year;
@@ -367,7 +367,72 @@
         }
     </script>
 
+    <!-- Download Modal -->
+    <div class="modal fade" id="downloadTimetableModal" tabindex="-1" aria-labelledby="downloadTimetableModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="downloadTimetableModalLabel">Download Timetable</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
 
+                    <h6>Below is a link which you can download to view a copy of your timetable. Alternatively you can
+                        also share this link with others to let them download your timetable.</h6>
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="Generating..." readonly
+                            id="downloadTimetableCodeInput">
+                        <button class="btn btn-outline-secondary" type="button"
+                            onclick="downloadTimetableCode()">Download</button>
+                    </div>
+
+                    <script>
+                        function downloadTimetableCode() {
+                            var inputField = document.getElementById("downloadTimetableCodeInput");
+                            window.open(inputField.value, '_blank');
+                        }
+                    </script>
+                    <h6>If it says "There was an issue." this is most likely because it cannot fetch your timetable for
+                        the next 2 weeks. This could be because you are in the Summer Holidays. Try again once school
+                        starts.</h6>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function downloadTimetable() {
+
+            fetch(`/api/downloadTimetable`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data["Error"]) {
+                        document.getElementById("downloadTimetableCodeInput").value = "There was an issue."
+                    } else {
+                        document.getElementById("downloadTimetableCodeInput").value = `https://nsimon.kavenci.com/d/${data["Success"]}`
+                    }
+
+
+
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
 
     <!-- Update Modal -->
     <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
@@ -379,18 +444,9 @@
                 </div>
                 <div class="modal-body">
 
-                    <h6>Timetable uses campus preference.</h6>
-                    <div>The timetable now uses your campus preference (set in settings, or automatically when you login
-                        for the first time) instead of the default. This is mainly for commencement if moving from year
-                        9 -> 10 where your SIMON default is set as Berwick or Officer, so when it gets the timetable
-                        there is nothing there as your classes are in Beaconsfield. </div><br>
+                    <h6>Timetable Download.</h6>
+                    <div>If you are at Beaconsfield campus, you can now download your timetable in word doc form to print out to have a physical copy. Simply click the down arrow on your timetable tab on the main dashboard. </div><br>
 
-                    <h6>Sharing Timetables.</h6>
-                    <div>You are now able to share your timetable to other users, whether they use NSimon or don't.
-                        Simply go to your dashboard, select the day, click the arrow and a link will be generated for
-                        you to send to others. When this link is accessed, if they are logged in it will display the day
-                        you shareds timetable in a popup on the dashboard page, otherwise it will display on the login
-                        page.</div><br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -962,6 +1018,45 @@
                                         shareTimetable(timetableData)
                                     });
                                 </script>
+                                <button id="downloadTimetableButton" class="btn btn-sm"><i
+                                        class="bi bi-download"></i></button>
+
+                                <script>
+
+                                    function checkCookie(cookieName, expectedValue) {
+                                        var cookies = document.cookie.split(';');
+
+                                        for (var i = 0; i < cookies.length; i++) {
+                                            var cookie = cookies[i].trim();
+
+                                            if (cookie.indexOf(cookieName + '=') === 0) {
+                                                var cookieValue = cookie.substring(cookieName.length + 1);
+
+                                                if (cookieValue === expectedValue) {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+
+                                        return false;
+                                    }
+
+                                    var cookieName = 'campus';
+                                    var expectedValue = 'Beaconsfield';
+
+                                    if (checkCookie('campus', 'Beaconsfield')) {
+                                        document.getElementById("downloadTimetableButton").style.visibility = 'visible';
+                                    } else {
+                                        document.getElementById("downloadTimetableButton").style.visibility = 'hidden';
+                                    }
+
+                                    var downloadTimetableModalD = new bootstrap.Modal(document.getElementById('downloadTimetableModal'), {})
+                                    document.getElementById("downloadTimetableButton").addEventListener("click", function () {
+                                        downloadTimetableModalD.show()
+                                        downloadTimetable()
+                                    });
+                                </script>
+
 
                             </span>
                         </h5>
