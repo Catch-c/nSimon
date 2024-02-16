@@ -47,4 +47,12 @@
   border-style: solid;
 }
 
+#shareTimetableButton {
+  color: var(--font-colour)
+}
+
+#downloadTimetableButton {
+  color: var(--font-colour)
+}
+
 

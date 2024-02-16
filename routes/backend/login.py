@@ -47,7 +47,7 @@ def login():
     else:
         _, cookie = result
 
-    timetableData = Simon.getTimetable(cookie, "2023-08-09T21:02:04.085Z", None)
+    timetableData = Simon.getTimetable(cookie, "2024-08-09T21:02:04.085Z", None)
     campusCode = timetableData['d']['DefaultTimeTableGroup']
 
     if campusCode == "BER":
@@ -65,11 +65,11 @@ def login():
         response.set_cookie("adAuthCookie", cookie, max_age=7776000)
         response.set_cookie("username", username, max_age=7776000)
         response.set_cookie("campus", campus, max_age=7776000)
-        response.set_cookie("loginVer", "1.1", max_age=7776000)
+        response.set_cookie("loginVer", "1.2", max_age=7776000)
     else:
         response.set_cookie("adAuthCookie", cookie)
         response.set_cookie("username", username)
         response.set_cookie("campus", campus)
-        response.set_cookie("loginVer", "1.1")
+        response.set_cookie("loginVer", "1.2")
 
     return response

@@ -158,7 +158,7 @@ app.register_blueprint(supportBlueprint)
 # --[[ Get Version API ]]--
 @app.route("/api/getVersion", methods=["GET"])
 def getVersion():
-    return '2.5.0'
+    return '2.5.1'
 
 # --[[ Start ]]--
 #       --[[ PRODUCTION ]]--
