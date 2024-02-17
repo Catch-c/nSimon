@@ -101,7 +101,7 @@ def getCalendarEvents(cookie):
 def getClassResources(cookie):
     url = "https://simon.sfx.vic.edu.au/Default.asmx/GetClassResources"
     headers = {"Content-Type": "application/json", "Cookie": f"adAuthCookie={cookie}"}
-    data = {"FileSeq": 44, "UserID": None}
+    data = {"FileSeq": 45, "UserID": None}
 
     response = requests.post(url, headers=headers, json=data)
     return response.json()
